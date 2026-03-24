@@ -199,7 +199,7 @@ async fn app_js() -> impl IntoResponse {
 
 // ── Router ────────────────────────────────────────────────────────────────────
 
-pub async fn serve(courses_dir: PathBuf, port: u16) -> anyhow::Result<()> {
+pub async fn serve(courses_dir: PathBuf, port: u16, host: &str) -> anyhow::Result<()> {
     let mut entries: Vec<_> = std::fs::read_dir(&courses_dir)
         .with_context(|| format!("reading courses directory: {}", courses_dir.display()))?
         .filter_map(|e| e.ok())
@@ -261,7 +261,7 @@ pub async fn serve(courses_dir: PathBuf, port: u16) -> anyhow::Result<()> {
         .layer(CorsLayer::permissive())
         .with_state(state);
 
-    let addr = format!("127.0.0.1:{port}");
+    let addr = format!("{host}:{port}");
     let listener = tokio::net::TcpListener::bind(&addr).await?;
     println!("course-engine running at http://{addr}");
     println!("Open your browser and start learning!");

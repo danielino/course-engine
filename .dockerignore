@@ -1,0 +1,8 @@
+target/
+.git/
+.github/
+.pre-commit-config.yaml
+*.md
+!courses/**/*.md
+scripts/
+.claude/
