@@ -365,6 +365,517 @@ function registerRustCompletions() {
   });
 }
 
+/* ── Python completion provider ──────────────────────────────────────────── */
+let pythonCompletionsRegistered = false;
+function registerPythonCompletionsOnce() {
+  if (pythonCompletionsRegistered) return;
+  pythonCompletionsRegistered = true;
+  registerPythonCompletions();
+}
+
+function registerPythonCompletions() {
+  const S = monaco.languages.CompletionItemKind;
+  const SNIPPET = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+
+  const METHODS = {
+    str: [
+      ["upper",       "upper()",                       "str.upper() -> str",              "Return a copy in uppercase."],
+      ["lower",       "lower()",                       "str.lower() -> str",              "Return a copy in lowercase."],
+      ["strip",       "strip()",                       "str.strip() -> str",              "Remove leading/trailing whitespace."],
+      ["lstrip",      "lstrip()",                      "str.lstrip() -> str",             "Remove leading whitespace."],
+      ["rstrip",      "rstrip()",                      "str.rstrip() -> str",             "Remove trailing whitespace."],
+      ["split",       "split(${1:sep})",               "str.split(sep=None) -> list",     "Split by separator, returns list."],
+      ["splitlines",  "splitlines()",                  "str.splitlines() -> list",        "Split on line boundaries."],
+      ["join",        "join(${1:iterable})",           "str.join(iterable) -> str",       "Join iterable with this string as separator."],
+      ["replace",     "replace(${1:old}, ${2:new})",   "str.replace(old, new) -> str",    "Replace all occurrences of old with new."],
+      ["find",        "find(${1:sub})",                "str.find(sub) -> int",            "Return index of first occurrence, -1 if not found."],
+      ["index",       "index(${1:sub})",               "str.index(sub) -> int",           "Like find() but raises ValueError if not found."],
+      ["count",       "count(${1:sub})",               "str.count(sub) -> int",           "Return number of non-overlapping occurrences."],
+      ["startswith",  "startswith(${1:prefix})",       "str.startswith(prefix) -> bool",  "Return True if string starts with prefix."],
+      ["endswith",    "endswith(${1:suffix})",         "str.endswith(suffix) -> bool",    "Return True if string ends with suffix."],
+      ["format",      "format(${1})",                  "str.format(*args, **kwargs) -> str", "Perform string formatting."],
+      ["encode",      "encode(${1:'utf-8'})",          "str.encode(encoding) -> bytes",   "Encode to bytes."],
+      ["isdigit",     "isdigit()",                     "str.isdigit() -> bool",           "Return True if all chars are digits."],
+      ["isalpha",     "isalpha()",                     "str.isalpha() -> bool",           "Return True if all chars are alphabetic."],
+      ["isalnum",     "isalnum()",                     "str.isalnum() -> bool",           "Return True if all chars are alphanumeric."],
+      ["zfill",       "zfill(${1:width})",             "str.zfill(width) -> str",         "Pad with leading zeros to given width."],
+      ["center",      "center(${1:width})",            "str.center(width) -> str",        "Center in a field of given width."],
+      ["ljust",       "ljust(${1:width})",             "str.ljust(width) -> str",         "Left-justify in a field of given width."],
+      ["rjust",       "rjust(${1:width})",             "str.rjust(width) -> str",         "Right-justify in a field of given width."],
+      ["title",       "title()",                       "str.title() -> str",              "Return titlecased version."],
+      ["capitalize",  "capitalize()",                  "str.capitalize() -> str",         "Return copy with first char uppercased."],
+    ],
+    list: [
+      ["append",      "append(${1:item})",             "list.append(item)",               "Append item to end of list."],
+      ["extend",      "extend(${1:iterable})",         "list.extend(iterable)",           "Extend list by appending all items from iterable."],
+      ["insert",      "insert(${1:i}, ${2:item})",     "list.insert(i, item)",            "Insert item at position i."],
+      ["remove",      "remove(${1:item})",             "list.remove(item)",               "Remove first occurrence of item."],
+      ["pop",         "pop(${1:-1})",                  "list.pop(index=-1) -> item",      "Remove and return item at index."],
+      ["clear",       "clear()",                       "list.clear()",                    "Remove all items."],
+      ["index",       "index(${1:item})",              "list.index(item) -> int",         "Return index of first occurrence."],
+      ["count",       "count(${1:item})",              "list.count(item) -> int",         "Return number of occurrences of item."],
+      ["sort",        "sort(${1:key=None, reverse=False})", "list.sort(key=None, reverse=False)", "Sort list in place."],
+      ["reverse",     "reverse()",                     "list.reverse()",                  "Reverse list in place."],
+      ["copy",        "copy()",                        "list.copy() -> list",             "Return a shallow copy."],
+    ],
+    dict: [
+      ["get",         "get(${1:key}, ${2:None})",      "dict.get(key, default=None)",     "Return value for key, or default if not found."],
+      ["keys",        "keys()",                        "dict.keys() -> KeysView",         "Return a view of the dictionary's keys."],
+      ["values",      "values()",                      "dict.values() -> ValuesView",     "Return a view of the dictionary's values."],
+      ["items",       "items()",                       "dict.items() -> ItemsView",       "Return a view of (key, value) pairs."],
+      ["update",      "update(${1:other})",            "dict.update(other)",              "Update the dictionary with another dict or iterable of pairs."],
+      ["pop",         "pop(${1:key})",                 "dict.pop(key) -> value",          "Remove key and return its value."],
+      ["setdefault",  "setdefault(${1:key}, ${2:None})", "dict.setdefault(key, default=None)", "Return value for key; insert key with default if absent."],
+      ["clear",       "clear()",                       "dict.clear()",                    "Remove all items."],
+      ["copy",        "copy()",                        "dict.copy() -> dict",             "Return a shallow copy."],
+    ],
+    set: [
+      ["add",             "add(${1:elem})",                "set.add(elem)",                     "Add element to the set."],
+      ["remove",          "remove(${1:elem})",             "set.remove(elem)",                  "Remove element; raises KeyError if not present."],
+      ["discard",         "discard(${1:elem})",            "set.discard(elem)",                 "Remove element if present (no error if absent)."],
+      ["pop",             "pop()",                         "set.pop() -> elem",                 "Remove and return an arbitrary element."],
+      ["clear",           "clear()",                       "set.clear()",                       "Remove all elements."],
+      ["union",           "union(${1:other})",             "set.union(*others) -> set",         "Return a new set with elements from all sets."],
+      ["intersection",    "intersection(${1:other})",      "set.intersection(*others) -> set",  "Return a new set with elements common to all sets."],
+      ["difference",      "difference(${1:other})",        "set.difference(*others) -> set",    "Return a new set with elements not in others."],
+      ["issubset",        "issubset(${1:other})",          "set.issubset(other) -> bool",       "Return True if set is a subset of other."],
+      ["issuperset",      "issuperset(${1:other})",        "set.issuperset(other) -> bool",     "Return True if set is a superset of other."],
+      ["isdisjoint",      "isdisjoint(${1:other})",        "set.isdisjoint(other) -> bool",     "Return True if set has no elements in common with other."],
+    ],
+  };
+
+  const SNIPPETS = [
+    { label: "def",          insert: "def ${1:name}(${2}):\n\t${3:pass}",                   detail: "function definition" },
+    { label: "def →",        insert: "def ${1:name}(${2}) -> ${3:None}:\n\t${4:pass}",       detail: "function with return type hint" },
+    { label: "class",        insert: "class ${1:Name}:\n\tdef __init__(self${2}):\n\t\t${3:pass}", detail: "class definition" },
+    { label: "if",           insert: "if ${1:condition}:\n\t${2:pass}",                      detail: "if statement" },
+    { label: "if/else",      insert: "if ${1:condition}:\n\t${2:pass}\nelse:\n\t${3:pass}",  detail: "if/else statement" },
+    { label: "elif",         insert: "elif ${1:condition}:\n\t${2:pass}",                    detail: "elif clause" },
+    { label: "for in",       insert: "for ${1:item} in ${2:iterable}:\n\t${3:pass}",         detail: "for loop" },
+    { label: "for range",    insert: "for ${1:i} in range(${2:n}):\n\t${3:pass}",            detail: "for loop with range" },
+    { label: "while",        insert: "while ${1:condition}:\n\t${2:pass}",                   detail: "while loop" },
+    { label: "with",         insert: "with ${1:expr} as ${2:f}:\n\t${3:pass}",               detail: "context manager" },
+    { label: "try",          insert: "try:\n\t${1:pass}\nexcept ${2:Exception} as ${3:e}:\n\t${4:pass}", detail: "try/except block" },
+    { label: "try/finally",  insert: "try:\n\t${1:pass}\nfinally:\n\t${2:pass}",             detail: "try/finally block" },
+    { label: "lambda",       insert: "lambda ${1:x}: ${2:x}",                               detail: "lambda expression" },
+    { label: "import",       insert: "import ${1:module}",                                   detail: "import statement" },
+    { label: "from import",  insert: "from ${1:module} import ${2:name}",                    detail: "from … import statement" },
+    { label: "print",        insert: "print(${1})",                                          detail: "print to stdout" },
+    { label: "print f",      insert: "print(f\"${1}\")",                                    detail: "print f-string" },
+    { label: "len",          insert: "len(${1:obj})",                                        detail: "builtin: length of object" },
+    { label: "range",        insert: "range(${1:stop})",                                     detail: "builtin: range sequence" },
+    { label: "enumerate",    insert: "enumerate(${1:iterable})",                             detail: "builtin: (index, value) pairs" },
+    { label: "zip",          insert: "zip(${1:a}, ${2:b})",                                  detail: "builtin: zip iterables" },
+    { label: "map",          insert: "map(${1:fn}, ${2:iterable})",                          detail: "builtin: apply function to each item" },
+    { label: "filter",       insert: "filter(${1:fn}, ${2:iterable})",                       detail: "builtin: filter items by predicate" },
+    { label: "sorted",       insert: "sorted(${1:iterable})",                                detail: "builtin: return sorted list" },
+    { label: "isinstance",   insert: "isinstance(${1:obj}, ${2:type})",                      detail: "builtin: check type" },
+    { label: "list comp",    insert: "[${1:expr} for ${2:x} in ${3:iterable}]",              detail: "list comprehension" },
+    { label: "dict comp",    insert: "{${1:k}: ${2:v} for ${3:k}, ${4:v} in ${5:items}}",   detail: "dict comprehension" },
+    { label: "set comp",     insert: "{${1:expr} for ${2:x} in ${3:iterable}}",              detail: "set comprehension" },
+    { label: "gen expr",     insert: "(${1:expr} for ${2:x} in ${3:iterable})",              detail: "generator expression" },
+    { label: "@property",    insert: "@property\ndef ${1:name}(self):\n\treturn self._${1:name}", detail: "property decorator" },
+    { label: "@staticmethod",insert: "@staticmethod\ndef ${1:name}(${2}):\n\t${3:pass}",     detail: "static method decorator" },
+    { label: "@classmethod", insert: "@classmethod\ndef ${1:name}(cls${2}):\n\t${3:pass}",   detail: "class method decorator" },
+    { label: "if __main__",  insert: "if __name__ == \"__main__\":\n\t${1:main()}",           detail: "main guard" },
+  ];
+
+  monaco.languages.registerCompletionItemProvider("python", {
+    triggerCharacters: ["."],
+
+    provideCompletionItems(model, position) {
+      const lineText = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn:     1,
+        endLineNumber:   position.lineNumber,
+        endColumn:       position.column,
+      });
+
+      const word      = model.getWordUntilPosition(position);
+      const wordRange = {
+        startLineNumber: position.lineNumber,
+        endLineNumber:   position.lineNumber,
+        startColumn:     word.startColumn,
+        endColumn:       word.endColumn,
+      };
+
+      const dotMatch = lineText.match(/\.(\w*)$/);
+      if (dotMatch) {
+        const typed    = dotMatch[1];
+        const dotCol   = position.column - dotMatch[0].length;
+        const afterDot = {
+          startLineNumber: position.lineNumber,
+          endLineNumber:   position.lineNumber,
+          startColumn:     dotCol + 1,
+          endColumn:       position.column,
+        };
+
+        const allMethods = [
+          ...METHODS.str,
+          ...METHODS.list,
+          ...METHODS.dict,
+          ...METHODS.set,
+        ];
+
+        const seen   = new Set();
+        const prefix = typed.toLowerCase();
+        const unique = allMethods.filter(([label]) => {
+          if (seen.has(label)) return false;
+          seen.add(label);
+          return label.startsWith(prefix);
+        });
+
+        return {
+          suggestions: unique.map(([label, insert, detail, doc]) => ({
+            label,
+            filterText:      label,
+            kind:            S.Method,
+            detail,
+            documentation:   { value: doc },
+            insertText:      insert,
+            insertTextRules: SNIPPET,
+            range:           afterDot,
+            sortText:        label,
+          })),
+          incomplete: false,
+        };
+      }
+
+      return {
+        suggestions: SNIPPETS.map(({ label, insert, detail }) => ({
+          label,
+          kind:            S.Keyword,
+          detail,
+          insertText:      insert,
+          insertTextRules: SNIPPET,
+          range:           wordRange,
+          sortText:        "z" + label,
+        })),
+      };
+    },
+  });
+}
+
+/* ── JavaScript completion provider ──────────────────────────────────────── */
+let javascriptCompletionsRegistered = false;
+function registerJavaScriptCompletionsOnce() {
+  if (javascriptCompletionsRegistered) return;
+  javascriptCompletionsRegistered = true;
+  registerJavaScriptCompletions();
+}
+
+function registerJavaScriptCompletions() {
+  const S = monaco.languages.CompletionItemKind;
+  const SNIPPET = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+
+  const METHODS = {
+    array: [
+      ["push",        "push(${1:item})",                        "Array.push(item) -> length",        "Append one or more elements to the end."],
+      ["pop",         "pop()",                                  "Array.pop() -> item",               "Remove and return the last element."],
+      ["shift",       "shift()",                                "Array.shift() -> item",             "Remove and return the first element."],
+      ["unshift",     "unshift(${1:item})",                     "Array.unshift(item) -> length",     "Insert element(s) at the beginning."],
+      ["map",         "map((${1:item}) => ${2:item})",          "Array.map(fn) -> Array",            "Transform each element with a function."],
+      ["filter",      "filter((${1:item}) => ${2:true})",       "Array.filter(fn) -> Array",         "Keep only elements matching the predicate."],
+      ["reduce",      "reduce((${1:acc}, ${2:cur}) => ${3:acc}, ${4:0})", "Array.reduce(fn, init) -> value", "Fold elements into a single value."],
+      ["forEach",     "forEach((${1:item}) => { ${2} })",       "Array.forEach(fn) -> void",         "Execute a function for each element."],
+      ["find",        "find((${1:item}) => ${2:true})",         "Array.find(fn) -> item|undefined",  "Return first element matching predicate."],
+      ["findIndex",   "findIndex((${1:item}) => ${2:true})",    "Array.findIndex(fn) -> int",        "Return index of first match, or -1."],
+      ["some",        "some((${1:item}) => ${2:true})",         "Array.some(fn) -> bool",            "Return true if any element matches."],
+      ["every",       "every((${1:item}) => ${2:true})",        "Array.every(fn) -> bool",           "Return true if all elements match."],
+      ["includes",    "includes(${1:item})",                    "Array.includes(item) -> bool",      "Return true if item is in array."],
+      ["indexOf",     "indexOf(${1:item})",                     "Array.indexOf(item) -> int",        "Return index of first occurrence, or -1."],
+      ["join",        "join(${1:''})",                          "Array.join(sep) -> string",         "Join all elements into a string."],
+      ["slice",       "slice(${1:start}, ${2:end})",            "Array.slice(start, end) -> Array",  "Return a shallow copy of a portion."],
+      ["splice",      "splice(${1:start}, ${2:count})",         "Array.splice(start, count)",        "Change array by removing/adding elements."],
+      ["sort",        "sort((${1:a}, ${2:b}) => ${1:a} - ${2:b})", "Array.sort(fn) -> Array",       "Sort elements in place."],
+      ["reverse",     "reverse()",                              "Array.reverse() -> Array",          "Reverse elements in place."],
+      ["flat",        "flat(${1:1})",                           "Array.flat(depth) -> Array",        "Flatten nested arrays."],
+      ["flatMap",     "flatMap((${1:item}) => ${2:item})",      "Array.flatMap(fn) -> Array",        "Map then flatten one level."],
+      ["concat",      "concat(${1:other})",                     "Array.concat(...args) -> Array",    "Merge arrays without mutation."],
+      ["fill",        "fill(${1:value})",                       "Array.fill(value) -> Array",        "Fill all elements with a value."],
+    ],
+    string: [
+      ["split",       "split(${1:''})",                         "String.split(sep) -> Array",        "Split string into an array."],
+      ["trim",        "trim()",                                  "String.trim() -> string",           "Remove leading/trailing whitespace."],
+      ["trimStart",   "trimStart()",                            "String.trimStart() -> string",      "Remove leading whitespace."],
+      ["trimEnd",     "trimEnd()",                              "String.trimEnd() -> string",        "Remove trailing whitespace."],
+      ["toLowerCase", "toLowerCase()",                          "String.toLowerCase() -> string",    "Convert to lowercase."],
+      ["toUpperCase", "toUpperCase()",                          "String.toUpperCase() -> string",    "Convert to uppercase."],
+      ["includes",    "includes(${1:substr})",                  "String.includes(str) -> bool",      "Return true if string contains substr."],
+      ["startsWith",  "startsWith(${1:prefix})",                "String.startsWith(str) -> bool",    "Return true if starts with prefix."],
+      ["endsWith",    "endsWith(${1:suffix})",                  "String.endsWith(str) -> bool",      "Return true if ends with suffix."],
+      ["indexOf",     "indexOf(${1:substr})",                   "String.indexOf(str) -> int",        "Return index of first occurrence, or -1."],
+      ["slice",       "slice(${1:start}, ${2:end})",            "String.slice(start, end) -> string","Extract a section of a string."],
+      ["substring",   "substring(${1:start}, ${2:end})",        "String.substring(start, end) -> string", "Return part of the string between indices."],
+      ["replace",     "replace(${1:search}, ${2:replacement})", "String.replace(str, str) -> string","Replace first occurrence."],
+      ["replaceAll",  "replaceAll(${1:search}, ${2:replacement})", "String.replaceAll(str, str) -> string", "Replace all occurrences."],
+      ["padStart",    "padStart(${1:length}, ${2:' '})",        "String.padStart(length, char) -> string", "Pad start to target length."],
+      ["padEnd",      "padEnd(${1:length}, ${2:' '})",          "String.padEnd(length, char) -> string",   "Pad end to target length."],
+      ["repeat",      "repeat(${1:n})",                         "String.repeat(n) -> string",        "Repeat string n times."],
+      ["match",       "match(${1:/pattern/})",                  "String.match(regex) -> Array|null", "Match against a regular expression."],
+      ["charAt",      "charAt(${1:index})",                     "String.charAt(index) -> string",    "Return character at given index."],
+      ["charCodeAt",  "charCodeAt(${1:index})",                 "String.charCodeAt(index) -> int",   "Return UTF-16 code unit at index."],
+    ],
+    object: [
+      ["hasOwnProperty", "hasOwnProperty(${1:key})",           "Object.hasOwnProperty(key) -> bool","Check if key is own property."],
+    ],
+    promise: [
+      ["then",        "then((${1:result}) => { ${2} })",        "Promise.then(fn) -> Promise",       "Handle fulfilled value."],
+      ["catch",       "catch((${1:err}) => { ${2} })",          "Promise.catch(fn) -> Promise",      "Handle rejected reason."],
+      ["finally",     "finally(() => { ${1} })",                "Promise.finally(fn) -> Promise",    "Run regardless of outcome."],
+    ],
+    map: [
+      ["set",         "set(${1:key}, ${2:value})",              "Map.set(key, value) -> Map",        "Set key to value."],
+      ["get",         "get(${1:key})",                          "Map.get(key) -> value",             "Return value for key."],
+      ["has",         "has(${1:key})",                          "Map.has(key) -> bool",              "Return true if key exists."],
+      ["delete",      "delete(${1:key})",                       "Map.delete(key) -> bool",           "Remove key from map."],
+      ["keys",        "keys()",                                  "Map.keys() -> Iterator",            "Iterate over keys."],
+      ["values",      "values()",                               "Map.values() -> Iterator",          "Iterate over values."],
+      ["entries",     "entries()",                              "Map.entries() -> Iterator",         "Iterate over [key, value] pairs."],
+      ["forEach",     "forEach((${1:val}, ${2:key}) => { ${3} })", "Map.forEach(fn)",              "Execute function for each entry."],
+      ["clear",       "clear()",                                "Map.clear()",                       "Remove all entries."],
+    ],
+    set: [
+      ["add",         "add(${1:value})",                        "Set.add(value) -> Set",             "Add value to the set."],
+      ["has",         "has(${1:value})",                        "Set.has(value) -> bool",            "Return true if value is in set."],
+      ["delete",      "delete(${1:value})",                     "Set.delete(value) -> bool",         "Remove value from set."],
+      ["forEach",     "forEach((${1:val}) => { ${2} })",        "Set.forEach(fn)",                   "Execute function for each value."],
+      ["clear",       "clear()",                                "Set.clear()",                       "Remove all values."],
+    ],
+  };
+
+  const SNIPPETS = [
+    { label: "const",         insert: "const ${1:name} = ${2:value};",                           detail: "constant declaration" },
+    { label: "let",           insert: "let ${1:name} = ${2:value};",                             detail: "variable declaration" },
+    { label: "function",      insert: "function ${1:name}(${2}) {\n\t${3}\n}",                   detail: "function declaration" },
+    { label: "arrow fn",      insert: "const ${1:name} = (${2}) => {\n\t${3}\n};",               detail: "arrow function" },
+    { label: "arrow expr",    insert: "(${1:x}) => ${2:x}",                                      detail: "arrow function expression" },
+    { label: "async fn",      insert: "async function ${1:name}(${2}) {\n\t${3}\n}",             detail: "async function declaration" },
+    { label: "async arrow",   insert: "const ${1:name} = async (${2}) => {\n\t${3}\n};",         detail: "async arrow function" },
+    { label: "class",         insert: "class ${1:Name} {\n\tconstructor(${2}) {\n\t\t${3}\n\t}\n}", detail: "class declaration" },
+    { label: "class extends", insert: "class ${1:Name} extends ${2:Base} {\n\tconstructor(${3}) {\n\t\tsuper(${4});\n\t\t${5}\n\t}\n}", detail: "class with inheritance" },
+    { label: "if",            insert: "if (${1:condition}) {\n\t${2}\n}",                        detail: "if statement" },
+    { label: "if/else",       insert: "if (${1:condition}) {\n\t${2}\n} else {\n\t${3}\n}",      detail: "if/else statement" },
+    { label: "ternary",       insert: "${1:condition} ? ${2:then} : ${3:else}",                  detail: "ternary expression" },
+    { label: "for",           insert: "for (let ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {\n\t${3}\n}", detail: "for loop" },
+    { label: "for of",        insert: "for (const ${1:item} of ${2:iterable}) {\n\t${3}\n}",     detail: "for…of loop" },
+    { label: "for in",        insert: "for (const ${1:key} in ${2:object}) {\n\t${3}\n}",        detail: "for…in loop" },
+    { label: "while",         insert: "while (${1:condition}) {\n\t${2}\n}",                     detail: "while loop" },
+    { label: "switch",        insert: "switch (${1:expr}) {\n\tcase ${2:value}:\n\t\t${3}\n\t\tbreak;\n\tdefault:\n\t\t${4}\n}", detail: "switch statement" },
+    { label: "try/catch",     insert: "try {\n\t${1}\n} catch (${2:err}) {\n\t${3}\n}",          detail: "try/catch block" },
+    { label: "try/finally",   insert: "try {\n\t${1}\n} finally {\n\t${2}\n}",                   detail: "try/finally block" },
+    { label: "await",         insert: "await ${1:promise}",                                      detail: "await expression" },
+    { label: "Promise.all",   insert: "await Promise.all([${1}])",                               detail: "await multiple promises" },
+    { label: "new Promise",   insert: "new Promise((${1:resolve}, ${2:reject}) => {\n\t${3}\n})", detail: "Promise constructor" },
+    { label: "require",       insert: "const ${1:name} = require('${2:module}');",               detail: "CommonJS require" },
+    { label: "console.log",   insert: "console.log(${1});",                                      detail: "log to console" },
+    { label: "console.error", insert: "console.error(${1});",                                    detail: "log error to console" },
+    { label: "JSON.parse",    insert: "JSON.parse(${1:str})",                                    detail: "parse JSON string" },
+    { label: "JSON.stringify",insert: "JSON.stringify(${1:obj}, null, 2)",                        detail: "stringify to JSON" },
+    { label: "Object.keys",   insert: "Object.keys(${1:obj})",                                   detail: "get object keys" },
+    { label: "Object.values", insert: "Object.values(${1:obj})",                                 detail: "get object values" },
+    { label: "Object.entries",insert: "Object.entries(${1:obj})",                                detail: "get [key, value] pairs" },
+    { label: "Object.assign", insert: "Object.assign(${1:target}, ${2:source})",                 detail: "shallow merge objects" },
+    { label: "spread obj",    insert: "{ ...${1:obj}, ${2:key}: ${3:value} }",                   detail: "spread operator (object)" },
+    { label: "spread arr",    insert: "[...${1:arr}, ${2:item}]",                                detail: "spread operator (array)" },
+    { label: "destructure",   insert: "const { ${1:key} } = ${2:obj};",                          detail: "object destructuring" },
+    { label: "Array.from",    insert: "Array.from(${1:iterable})",                               detail: "create array from iterable" },
+    { label: "Array.isArray", insert: "Array.isArray(${1:val})",                                 detail: "check if value is an array" },
+    { label: "typeof",        insert: "typeof ${1:val}",                                         detail: "type of value" },
+    { label: "instanceof",    insert: "${1:obj} instanceof ${2:Class}",                           detail: "prototype chain check" },
+  ];
+
+  monaco.languages.registerCompletionItemProvider("javascript", {
+    triggerCharacters: ["."],
+
+    provideCompletionItems(model, position) {
+      const lineText = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn:     1,
+        endLineNumber:   position.lineNumber,
+        endColumn:       position.column,
+      });
+
+      const word      = model.getWordUntilPosition(position);
+      const wordRange = {
+        startLineNumber: position.lineNumber,
+        endLineNumber:   position.lineNumber,
+        startColumn:     word.startColumn,
+        endColumn:       word.endColumn,
+      };
+
+      const dotMatch = lineText.match(/\.(\w*)$/);
+      if (dotMatch) {
+        const typed    = dotMatch[1];
+        const dotCol   = position.column - dotMatch[0].length;
+        const afterDot = {
+          startLineNumber: position.lineNumber,
+          endLineNumber:   position.lineNumber,
+          startColumn:     dotCol + 1,
+          endColumn:       position.column,
+        };
+
+        const allMethods = [
+          ...METHODS.array,
+          ...METHODS.string,
+          ...METHODS.object,
+          ...METHODS.promise,
+          ...METHODS.map,
+          ...METHODS.set,
+        ];
+
+        const seen   = new Set();
+        const prefix = typed.toLowerCase();
+        const unique = allMethods.filter(([label]) => {
+          if (seen.has(label)) return false;
+          seen.add(label);
+          return label.toLowerCase().startsWith(prefix);
+        });
+
+        return {
+          suggestions: unique.map(([label, insert, detail, doc]) => ({
+            label,
+            filterText:      label,
+            kind:            S.Method,
+            detail,
+            documentation:   { value: doc },
+            insertText:      insert,
+            insertTextRules: SNIPPET,
+            range:           afterDot,
+            sortText:        label,
+          })),
+          incomplete: false,
+        };
+      }
+
+      return {
+        suggestions: SNIPPETS.map(({ label, insert, detail }) => ({
+          label,
+          kind:            label.startsWith("console") ? S.Function : S.Keyword,
+          detail,
+          insertText:      insert,
+          insertTextRules: SNIPPET,
+          range:           wordRange,
+          sortText:        "z" + label,
+        })),
+      };
+    },
+  });
+}
+
+/* ── C completion provider ───────────────────────────────────────────────── */
+let cCompletionsRegistered = false;
+function registerCCompletionsOnce() {
+  if (cCompletionsRegistered) return;
+  cCompletionsRegistered = true;
+  registerCCompletions();
+}
+
+function registerCCompletions() {
+  const S = monaco.languages.CompletionItemKind;
+  const SNIPPET = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+
+  const SNIPPETS = [
+    // Preprocessor
+    { label: "#include <stdio.h>",   insert: "#include <stdio.h>",                           detail: "standard I/O header" },
+    { label: "#include <stdlib.h>",  insert: "#include <stdlib.h>",                          detail: "standard library header (malloc, free, exit)" },
+    { label: "#include <string.h>",  insert: "#include <string.h>",                          detail: "string functions header" },
+    { label: "#include <math.h>",    insert: "#include <math.h>",                            detail: "math functions header" },
+    { label: "#include <stdbool.h>", insert: "#include <stdbool.h>",                         detail: "bool type header" },
+    { label: "#include <stdint.h>",  insert: "#include <stdint.h>",                          detail: "fixed-width integer types" },
+    { label: "#include <limits.h>",  insert: "#include <limits.h>",                          detail: "integer limits (INT_MAX, etc.)" },
+    { label: "#define",              insert: "#define ${1:NAME} ${2:value}",                  detail: "preprocessor macro definition" },
+
+    // Entry point
+    { label: "main",           insert: "int main(void) {\n\t${1}\n\treturn 0;\n}",           detail: "main function (no args)" },
+    { label: "main argc",      insert: "int main(int argc, char *argv[]) {\n\t${1}\n\treturn 0;\n}", detail: "main function with arguments" },
+
+    // I/O functions
+    { label: "printf",         insert: "printf(\"${1:%s}\\n\", ${2});",                      detail: "formatted print to stdout" },
+    { label: "fprintf",        insert: "fprintf(${1:stderr}, \"${2:%s}\\n\", ${3});",        detail: "formatted print to stream" },
+    { label: "scanf",          insert: "scanf(\"${1:%d}\", &${2:var});",                     detail: "formatted read from stdin" },
+    { label: "fgets",          insert: "fgets(${1:buf}, sizeof(${1:buf}), stdin);",           detail: "read line from stream" },
+    { label: "puts",           insert: "puts(${1:str});",                                    detail: "print string + newline" },
+    { label: "getchar",        insert: "getchar()",                                          detail: "read one character from stdin" },
+    { label: "putchar",        insert: "putchar(${1:c});",                                   detail: "write one character to stdout" },
+    { label: "perror",         insert: "perror(\"${1:message}\");",                          detail: "print error message (errno)" },
+
+    // Memory management
+    { label: "malloc",         insert: "malloc(${1:size})",                                  detail: "allocate heap memory" },
+    { label: "calloc",         insert: "calloc(${1:count}, ${2:size})",                      detail: "allocate zero-initialised heap memory" },
+    { label: "realloc",        insert: "realloc(${1:ptr}, ${2:new_size})",                   detail: "resize allocated memory" },
+    { label: "free",           insert: "free(${1:ptr});",                                    detail: "release heap memory" },
+
+    // String functions (string.h)
+    { label: "strlen",         insert: "strlen(${1:str})",                                   detail: "string.h: length of string" },
+    { label: "strcpy",         insert: "strcpy(${1:dest}, ${2:src});",                       detail: "string.h: copy string" },
+    { label: "strncpy",        insert: "strncpy(${1:dest}, ${2:src}, ${3:n});",              detail: "string.h: copy at most n chars" },
+    { label: "strcat",         insert: "strcat(${1:dest}, ${2:src});",                       detail: "string.h: concatenate strings" },
+    { label: "strcmp",         insert: "strcmp(${1:s1}, ${2:s2})",                           detail: "string.h: compare strings (0 = equal)" },
+    { label: "strncmp",        insert: "strncmp(${1:s1}, ${2:s2}, ${3:n})",                  detail: "string.h: compare at most n chars" },
+    { label: "strchr",         insert: "strchr(${1:str}, ${2:c})",                           detail: "string.h: find char in string" },
+    { label: "strstr",         insert: "strstr(${1:haystack}, ${2:needle})",                 detail: "string.h: find substring" },
+    { label: "memset",         insert: "memset(${1:ptr}, ${2:0}, ${3:size});",               detail: "string.h: fill memory with a byte value" },
+    { label: "memcpy",         insert: "memcpy(${1:dest}, ${2:src}, ${3:size});",            detail: "string.h: copy memory block" },
+
+    // Type definitions and control flow
+    { label: "struct",         insert: "struct ${1:Name} {\n\t${2:int field};\n};",          detail: "struct definition" },
+    { label: "typedef struct", insert: "typedef struct {\n\t${2:int field};\n} ${1:Name};", detail: "typedef struct" },
+    { label: "enum",           insert: "enum ${1:Name} {\n\t${2:VALUE},\n};",               detail: "enum definition" },
+    { label: "typedef enum",   insert: "typedef enum {\n\t${2:VALUE},\n} ${1:Name};",       detail: "typedef enum" },
+    { label: "if",             insert: "if (${1:condition}) {\n\t${2}\n}",                  detail: "if statement" },
+    { label: "if/else",        insert: "if (${1:condition}) {\n\t${2}\n} else {\n\t${3}\n}", detail: "if/else statement" },
+    { label: "for",            insert: "for (int ${1:i} = 0; ${1:i} < ${2:n}; ${1:i}++) {\n\t${3}\n}", detail: "for loop" },
+    { label: "while",          insert: "while (${1:condition}) {\n\t${2}\n}",               detail: "while loop" },
+    { label: "do while",       insert: "do {\n\t${1}\n} while (${2:condition});",           detail: "do-while loop" },
+    { label: "switch",         insert: "switch (${1:expr}) {\n\tcase ${2:0}:\n\t\t${3}\n\t\tbreak;\n\tdefault:\n\t\tbreak;\n}", detail: "switch statement" },
+    { label: "fn",             insert: "${1:int} ${2:name}(${3}) {\n\t${4}\n\treturn ${5:0};\n}", detail: "function definition" },
+    { label: "ptr",            insert: "${1:int} *${2:ptr}",                                 detail: "pointer declaration" },
+    { label: "array",          insert: "${1:int} ${2:arr}[${3:size}];",                      detail: "array declaration" },
+    { label: "NULL",           insert: "NULL",                                               detail: "null pointer constant" },
+    { label: "sizeof",         insert: "sizeof(${1:type})",                                  detail: "size of type in bytes" },
+    { label: "exit",           insert: "exit(${1:EXIT_SUCCESS});",                           detail: "terminate program" },
+  ];
+
+  monaco.languages.registerCompletionItemProvider("c", {
+    triggerCharacters: [".", ">"],
+
+    provideCompletionItems(model, position) {
+      const word      = model.getWordUntilPosition(position);
+      const wordRange = {
+        startLineNumber: position.lineNumber,
+        endLineNumber:   position.lineNumber,
+        startColumn:     word.startColumn,
+        endColumn:       word.endColumn,
+      };
+
+      const lineText = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn:     1,
+        endLineNumber:   position.lineNumber,
+        endColumn:       position.column,
+      });
+
+      // Skip suggestions when inside a member access (we can't do type inference)
+      if (/[.>]\w*$/.test(lineText)) return { suggestions: [] };
+
+      return {
+        suggestions: SNIPPETS.map(({ label, insert, detail }) => ({
+          label,
+          kind:            label.startsWith("#") ? S.Module
+                         : label.endsWith(")") || label.endsWith(");") ? S.Function
+                         : S.Keyword,
+          detail,
+          insertText:      insert,
+          insertTextRules: SNIPPET,
+          range:           wordRange,
+          sortText:        "z" + label,
+        })),
+      };
+    },
+  });
+}
+
 /* ── Init ────────────────────────────────────────────────────────────────── */
 async function init() {
   await loadCourses();
@@ -409,7 +920,10 @@ async function selectCourse(slug) {
   document.getElementById("course-select").value = slug;
 
   const cfg = await api(`/api/courses/${slug}/config`);
-  if (cfg.language === "rust") registerRustCompletionsOnce();
+  if (cfg.language === "rust")       registerRustCompletionsOnce();
+  if (cfg.language === "python")     registerPythonCompletionsOnce();
+  if (cfg.language === "javascript") registerJavaScriptCompletionsOnce();
+  if (cfg.language === "c")          registerCCompletionsOnce();
   monaco.editor.setModelLanguage(state.editor.getModel(), cfg.language);
 
   state.currentLesson = null;
