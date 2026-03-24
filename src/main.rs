@@ -36,6 +36,9 @@ enum Cmd {
         /// Port to listen on (default: 3000)
         #[arg(long, default_value = "3000")]
         port: u16,
+        /// Host to bind to (default: 127.0.0.1; use 0.0.0.0 for Docker)
+        #[arg(long, default_value = "127.0.0.1")]
+        host: String,
     },
     /// List all lessons with completion status
     List,
@@ -52,8 +55,12 @@ async fn main() -> anyhow::Result<()> {
         .unwrap_or_else(|| PathBuf::from("courses/rust"));
 
     match cli.command.unwrap_or(Cmd::Run) {
-        Cmd::Serve { courses_dir, port } => {
-            serve(courses_dir, port).await?;
+        Cmd::Serve {
+            courses_dir,
+            port,
+            host,
+        } => {
+            serve(courses_dir, port, &host).await?;
             return Ok(());
         }
         other => {

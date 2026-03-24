@@ -179,7 +179,7 @@ use std::path::PathBuf;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Scans courses/ subdirs, maps dirname → LanguageConfig preset
-    serve(PathBuf::from("courses"), 3000).await?;
+    serve(PathBuf::from("courses"), 3000, "127.0.0.1").await?;
     Ok(())
 }
 ```
@@ -205,3 +205,19 @@ let lang = LanguageConfig {
 Argument placeholders:
 - `{src}` — absolute path to the source file in the temp directory
 - `{out}` — absolute path for the compiled binary (only meaningful when `compile` is `Some`)
+
+---
+
+## Deployment (Fly.io)
+
+The repo includes a `Dockerfile` and `fly.toml` for one-command deployment:
+
+```bash
+# Install the Fly CLI: https://fly.io/docs/flyctl/install/
+fly auth login
+fly launch          # first time: creates the app
+fly deploy          # subsequent deploys
+```
+
+The Docker image includes all required runtimes (Rust, C, Python, Node.js, Go).
+The server binds to `0.0.0.0:3000` inside the container.
