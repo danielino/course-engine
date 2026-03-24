@@ -1,5 +1,10 @@
-app = 'app-nameless-log-1341'
-primary_region = 'fra'
+# fly.toml app configuration file generated for course-engine on 2026-03-24T16:15:47Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'course-engine'
+primary_region = 'iad'
 
 [build]
 
@@ -12,6 +17,7 @@ primary_region = 'fra'
   processes = ['app']
 
 [[vm]]
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 512
+  memory_mb = 1024
