@@ -28,6 +28,67 @@ Available presets (as of now): `rust()` · `python()` · `javascript()` · `c()`
 
 ---
 
+## Adding Monaco autocomplete for the new language
+
+Every course must ship with a Monaco completion provider in `web/app.js`. Follow the exact same pattern used for the existing languages.
+
+### Steps
+
+1. **Add a registration guard** near the top of the completion providers section:
+   ```js
+   let {language}CompletionsRegistered = false;
+   function register{Language}CompletionsOnce() {
+     if ({language}CompletionsRegistered) return;
+     {language}CompletionsRegistered = true;
+     register{Language}Completions();
+   }
+   ```
+
+2. **Add the provider function** `register{Language}Completions()` immediately after the guard.
+   Include two categories of completions:
+
+   - **Dot-triggered method completions** — triggered when the user types `.`.
+     Group methods by type (e.g. `str`, `list`, `array`, …).
+     Each entry: `[label, insertText (snippet), detail, documentation]`.
+     Skip this category for languages where dot-access isn't idiomatic (e.g. C).
+
+   - **Keyword / snippet completions** — always available.
+     Cover: control flow (`if`, `for`, `while`, …), type/function definitions,
+     common stdlib calls, and any language-specific idioms.
+     Each entry: `{ label, insert, detail }`.
+
+3. **Register with Monaco** at the end of the function:
+   ```js
+   monaco.languages.registerCompletionItemProvider("{monaco-language-id}", {
+     triggerCharacters: ["."],   // omit or adjust per language
+     provideCompletionItems(model, position) { … }
+   });
+   ```
+   Use `InsertAsSnippet` for all insertions so tab stops (`${1:…}`) work.
+
+4. **Wire into `selectCourse()`** — add one line alongside the existing guards:
+   ```js
+   if (cfg.language === "{monaco-language-id}") register{Language}CompletionsOnce();
+   ```
+
+5. **Rebuild** — static files are embedded via `include_str!`, so run `cargo build`
+   after every `web/app.js` change for the server to pick them up.
+
+### What to cover per language
+
+Provide completions for the most-used stdlib types and functions a student will
+encounter in the 26-lesson curriculum. Aim for:
+
+- **Interpreted languages** (Python, JS, Ruby, …): method completions for the 3–5
+  most common collection/string types + 30–50 keyword/snippet entries.
+- **Compiled languages** (C, Go, Zig, …): snippet completions for includes/imports,
+  common stdlib functions, type definitions, control flow, and the main entry point.
+  Skip dot-method completions unless the language has a clear method-call syntax.
+
+Look at the existing providers in `web/app.js` for reference on depth and style.
+
+---
+
 ## Template — paste this as `CLAUDE.md` in a scratch directory, or use inline
 
 ````markdown
