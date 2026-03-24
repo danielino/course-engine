@@ -1,0 +1,122 @@
+id          = "13-string-methods"
+title       = "String Methods & Formatting"
+description = "Build and format strings using fmt.Sprintf, strconv, and strings.Builder."
+
+[[exercises]]
+id              = "ex_01"
+title           = "fmt.Sprintf"
+prompt          = """Use fmt.Sprintf to build the string \"item: apple, qty: 3, price: $1.50\" and print it."""
+expected_output = "item: apple, qty: 3, price: $1.50\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	item := "apple"
+	qty  := 3
+	price := 1.50
+	s := fmt.Sprintf("item: %s, qty: %d, price: $%.2f", item, qty, price)
+	fmt.Println(s)
+}
+"""
+hints           = [
+  "Use %s for strings, %d for integers, %.2f for floats with 2 decimal places.",
+  "fmt.Sprintf returns the formatted string without printing it.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "strconv.Itoa and Atoi"
+prompt          = """Convert the integer 42 to the string \"42\", then convert the string \"99\" back to int 99. Print both on separate lines."""
+expected_output = "42\n99\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+func main() {
+	// int to string
+	s := strconv.Itoa(42)
+	fmt.Println(s)
+	// string to int
+	n, _ := strconv.Atoi("99")
+	fmt.Println(n)
+}
+"""
+hints           = [
+  "strconv.Itoa converts int to string.",
+  "strconv.Atoi converts string to int and returns (int, error); use _ to ignore the error here.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "strconv.FormatFloat and ParseFloat"
+prompt          = """Format 3.14159 with 3 decimal places as a string, then parse \"2.718\" as float64. Print both on separate lines."""
+expected_output = "3.142\n2.718\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+func main() {
+	s := strconv.FormatFloat(3.14159, 'f', 3, 64)
+	fmt.Println(s)
+	f, _ := strconv.ParseFloat("2.718", 64)
+	fmt.Println(f)
+}
+"""
+hints           = [
+  "strconv.FormatFloat(v, 'f', prec, bitSize) formats as decimal notation.",
+  "strconv.ParseFloat(\"2.718\", 64) returns (float64, error).",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "strings.Builder"
+prompt          = """Use strings.Builder to concatenate \"Go\", \" \", \"rocks\" without string allocation for each step. Print the result."""
+expected_output = "Go rocks\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	var b strings.Builder
+	// WriteString three times
+	fmt.Println(b.String())
+}
+"""
+hints           = [
+  "b.WriteString(\"Go\") appends to the builder; it does not return the builder.",
+  "Call b.String() at the end to get the accumulated string.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Padding and alignment"
+prompt          = """Print the number 7 right-aligned in a field of width 5, then \"left\" left-aligned in a field of width 8."""
+expected_output = "    7\nleft    \n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	fmt.Printf("%5d\n", 7)
+	fmt.Printf("%-8s\n", "left")
+}
+"""
+hints           = [
+  "%5d right-aligns an integer in a 5-character field.",
+  "%-8s left-aligns a string in an 8-character field (the - means left-align).",
+]
+validation_mode = "exact_stdout"

@@ -1,0 +1,131 @@
+id          = "18-pointers"
+title       = "Pointers"
+description = "Understand Go pointers: &, *, pointer receivers, new(), and when to use pointers."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Address-of and dereference"
+prompt          = """Declare x := 10. Create a pointer p := &x. Modify x through p to 20. Print x."""
+expected_output = "20\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	x := 10
+	p := &x
+	*p = 20
+	fmt.Println(x)
+}
+"""
+hints           = [
+  "& gives the memory address of a variable; * dereferences a pointer.",
+  "*p = 20 writes 20 to the memory location p points to, modifying x.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Passing a pointer to a function"
+prompt          = """Write increment(p *int) that adds 1 to the value at p. Call it on x := 5 and print x."""
+expected_output = "6\n"
+starter_code    = """package main
+
+import "fmt"
+
+func increment(p *int) {
+	*p++
+}
+
+func main() {
+	x := 5
+	increment(&x)
+	fmt.Println(x)
+}
+"""
+hints           = [
+  "Pass &x to get a *int pointing to x.",
+  "Inside increment, *p++ dereferences and increments the value.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "new() built-in"
+prompt          = """Use new(int) to allocate an int on the heap. Set it to 7 and print the value (not the address)."""
+expected_output = "7\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	p := new(int)
+	*p = 7
+	fmt.Println(*p)
+}
+"""
+hints           = [
+  "new(T) allocates zeroed memory for type T and returns *T.",
+  "*p = 7 sets the value; fmt.Println(*p) prints the dereferenced value.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Pointer receiver modifies struct"
+prompt          = """Create a Counter struct with a Value int field. Add an Inc() method with a pointer receiver. Call Inc() 3 times and print Value."""
+expected_output = "3\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Counter struct {
+	Value int
+}
+
+func (c *Counter) Inc() {
+	c.Value++
+}
+
+func main() {
+	var c Counter
+	c.Inc()
+	c.Inc()
+	c.Inc()
+	fmt.Println(c.Value)
+}
+"""
+hints           = [
+  "A pointer receiver (*Counter) allows the method to modify the struct's fields.",
+  "c.Inc() is shorthand for (&c).Inc() when c is addressable.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Nil pointer guard"
+prompt          = """Write safePrint(p *string) that prints the string if p is not nil, otherwise prints \"nil pointer\". Call it with nil and with a pointer to \"hello\"."""
+expected_output = "nil pointer\nhello\n"
+starter_code    = """package main
+
+import "fmt"
+
+func safePrint(p *string) {
+	if p == nil {
+		fmt.Println("nil pointer")
+	} else {
+		fmt.Println(*p)
+	}
+}
+
+func main() {
+	safePrint(nil)
+	s := "hello"
+	safePrint(&s)
+}
+"""
+hints           = [
+  "Check p == nil before dereferencing to avoid a runtime panic.",
+  "Pass &s where s is a local string variable to get a non-nil *string.",
+]
+validation_mode = "exact_stdout"

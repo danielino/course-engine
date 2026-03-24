@@ -85,6 +85,26 @@ impl LanguageConfig {
         }
     }
 
+    /// Go — compiles with `go build`.
+    pub fn go() -> Self {
+        Self {
+            monaco_language: "go".to_string(),
+            source_file: "main.go".to_string(),
+            compile: Some((
+                "go".to_string(),
+                vec![
+                    "build".to_string(),
+                    "-o".to_string(),
+                    "{out}".to_string(),
+                    "{src}".to_string(),
+                ],
+            )),
+            run: ("{out}".to_string(), vec![]),
+            compile_timeout_secs: 20,
+            run_timeout_secs: 5,
+        }
+    }
+
     /// Returns a preset for a well-known language name, or an error if unknown.
     pub fn from_name(name: &str) -> anyhow::Result<Self> {
         match name {
@@ -92,8 +112,9 @@ impl LanguageConfig {
             "python" => Ok(Self::python()),
             "javascript" => Ok(Self::javascript()),
             "c" => Ok(Self::c()),
+            "go" => Ok(Self::go()),
             other => anyhow::bail!(
-                "unknown course: {other:?}; expected one of: rust, python, javascript, c"
+                "unknown course: {other:?}; expected one of: rust, python, javascript, c, go"
             ),
         }
     }
@@ -150,6 +171,19 @@ mod tests {
     }
 
     #[test]
+    fn go_preset_has_compile_step() {
+        let lang = LanguageConfig::go();
+        assert!(lang.compile.is_some());
+        let (prog, args) = lang.compile.unwrap();
+        assert_eq!(prog, "go");
+        assert!(args.contains(&"build".to_string()));
+        assert!(args.contains(&"{src}".to_string()));
+        assert!(args.contains(&"{out}".to_string()));
+        assert_eq!(lang.source_file, "main.go");
+        assert_eq!(lang.monaco_language, "go");
+    }
+
+    #[test]
     fn from_name_returns_correct_presets() {
         assert_eq!(
             LanguageConfig::from_name("rust").unwrap().monaco_language,
@@ -166,6 +200,10 @@ mod tests {
             "javascript"
         );
         assert_eq!(LanguageConfig::from_name("c").unwrap().monaco_language, "c");
+        assert_eq!(
+            LanguageConfig::from_name("go").unwrap().monaco_language,
+            "go"
+        );
         assert!(LanguageConfig::from_name("cobol").is_err());
     }
 }

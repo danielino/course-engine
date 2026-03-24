@@ -51,7 +51,7 @@ cargo fmt
 src/
   lib.rs           — library root; re-exports LanguageConfig, RunResult, run, serve
   main.rs          — rust-course binary; clap subcommands; serve uses --courses-dir (default: courses/)
-  language.rs      — LanguageConfig struct; presets: rust(), python(), javascript(); from_name()
+  language.rs      — LanguageConfig struct; presets: rust(), python(), javascript(), c(), go(); from_name()
   exercise/model.rs  — Exercise, ValidationMode (exact_stdout | contains)
   lesson/
     model.rs       — Lesson { id, title, description, exercises }
@@ -66,11 +66,13 @@ src/
 web/
   index.html       — SPA shell; <select id="course-select"> in sidebar header; loads Monaco from CDN
   style.css        — Catppuccin dark theme; split-pane flex layout
-  app.js           — loadCourses() → selectCourse() → courseApi() for all per-course calls
+  app.js           — loadCourses() → selectCourse() → courseApi(); per-language completion providers
 courses/
-  rust/            — starter lesson for the Rust preset
-  python/          — starter lesson for the Python preset
-  javascript/      — starter lesson for the JavaScript preset
+  rust/            — 25 lessons for the Rust preset
+  c/               — 26 lessons for the C preset
+  python/          — 26 lessons for the Python preset
+  javascript/      — 26 lessons for the JavaScript preset
+  go/              — 26 lessons for the Go preset
 ```
 
 ### REST API
@@ -101,7 +103,7 @@ courses/
 - `{src}` — path to the source file in the temp directory
 - `{out}` — path for the compiled binary (only used when `compile` is `Some`)
 
-Presets: `LanguageConfig::rust()` (rustc, 15 s compile / 5 s run), `python()` (python3, no compile, 10 s run), `javascript()` (node, no compile, 10 s run).
+Presets: `rust()` (rustc, 15 s compile / 5 s run), `python()` (python3, no compile, 10 s run), `javascript()` (node, no compile, 10 s run), `c()` (cc, 10 s compile / 5 s run), `go()` (go build, 20 s compile / 5 s run).
 
 `from_name(name)` maps directory name → preset (used by `serve()` during course discovery).
 

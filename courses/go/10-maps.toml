@@ -1,0 +1,111 @@
+id          = "10-maps"
+title       = "Maps"
+description = "Use Go maps: literals, make, lookup with comma-ok, delete, and range iteration."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Map literal and lookup"
+prompt          = """Create a map capitals := map[string]string{\"France\": \"Paris\", \"Japan\": \"Tokyo\"}. Print the capital of Japan."""
+expected_output = "Tokyo\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	capitals := map[string]string{"France": "Paris", "Japan": "Tokyo"}
+	// print capital of Japan
+}
+"""
+hints           = [
+  "Map lookup uses square brackets: capitals[\"Japan\"].",
+  "fmt.Println(capitals[\"Japan\"]) prints \"Tokyo\".",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Comma-ok idiom"
+prompt          = """Given scores := map[string]int{\"Alice\": 95}, check whether \"Bob\" exists in the map. Print \"found\" or \"not found\"."""
+expected_output = "not found\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	scores := map[string]int{"Alice": 95}
+	// use comma-ok to check for "Bob"
+}
+"""
+hints           = [
+  "val, ok := scores[\"Bob\"] — ok is false when the key is absent.",
+  "if ok { fmt.Println(\"found\") } else { fmt.Println(\"not found\") }",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Add and delete entries"
+prompt          = """Start with an empty map[string]int. Add \"a\"->1, \"b\"->2, \"c\"->3. Delete \"b\". Print the length of the map."""
+expected_output = "2\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	m := make(map[string]int)
+	// add three entries, delete one
+	fmt.Println(len(m))
+}
+"""
+hints           = [
+  "Assign with m[\"a\"] = 1, etc. Delete with delete(m, \"b\").",
+  "len(m) returns the number of key-value pairs after deletion.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Range over a map (deterministic)"
+prompt          = """Given m := map[string]int{\"x\": 10}, use range to print each key and value in the format \"x: 10\"."""
+expected_output = "x: 10\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	m := map[string]int{"x": 10}
+	for k, v := range m {
+		fmt.Printf("%s: %d\n", k, v)
+	}
+}
+"""
+hints           = [
+  "for k, v := range m iterates over key-value pairs.",
+  "With a single entry the output order is deterministic.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Word frequency counter"
+prompt          = """Count the frequency of each word in []string{\"go\", \"is\", \"go\", \"fun\"}. Print counts for \"go\" and \"fun\" on separate lines in the format \"go: 2\"."""
+expected_output = "go: 2\nfun: 1\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	words := []string{"go", "is", "go", "fun"}
+	freq := make(map[string]int)
+	for _, w := range words {
+		// increment frequency
+	}
+	fmt.Printf("go: %d\n", freq["go"])
+	fmt.Printf("fun: %d\n", freq["fun"])
+}
+"""
+hints           = [
+  "freq[w]++ increments the count for word w (zero value for missing key is 0).",
+  "After the loop, access freq[\"go\"] and freq[\"fun\"] directly.",
+]
+validation_mode = "exact_stdout"

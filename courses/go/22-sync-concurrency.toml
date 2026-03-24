@@ -1,0 +1,190 @@
+id          = "22-sync-concurrency"
+title       = "Sync & Concurrency"
+description = "Use sync.Mutex, sync.WaitGroup, and sync.Once to write safe concurrent Go programs."
+
+[[exercises]]
+id              = "ex_01"
+title           = "sync.WaitGroup"
+prompt          = """Launch 3 goroutines that each send a fixed message \"done\" on a channel. Use WaitGroup to wait for all, close the channel, then print how many messages were received."""
+expected_output = "3\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	var wg sync.WaitGroup
+	ch := make(chan string, 3)
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			ch <- "done"
+		}()
+	}
+	wg.Wait()
+	close(ch)
+	count := 0
+	for range ch {
+		count++
+	}
+	fmt.Println(count)
+}
+"""
+hints           = [
+  "wg.Add(1) before launching each goroutine; wg.Done() inside each goroutine.",
+  "wg.Wait() blocks until all goroutines call Done; then close and drain the channel.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "sync.Mutex for safe counter"
+prompt          = """Use a Mutex-protected counter incremented by 100 goroutines. Print the final count."""
+expected_output = "100\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type SafeCounter struct {
+	mu sync.Mutex
+	v  int
+}
+
+func (c *SafeCounter) Inc() {
+	c.mu.Lock()
+	c.v++
+	c.mu.Unlock()
+}
+
+func main() {
+	var wg sync.WaitGroup
+	c := &SafeCounter{}
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			c.Inc()
+		}()
+	}
+	wg.Wait()
+	fmt.Println(c.v)
+}
+"""
+hints           = [
+  "Lock the mutex before reading or writing shared state; Unlock after.",
+  "Use defer wg.Done() so the WaitGroup is decremented even if a panic occurs.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "sync.Once"
+prompt          = """Use sync.Once to ensure an initialisation message is printed only once, even when triggered from 3 goroutines. Print \"initialised\" exactly once."""
+expected_output = "initialised\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	var once sync.Once
+	var wg sync.WaitGroup
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			once.Do(func() {
+				fmt.Println("initialised")
+			})
+		}()
+	}
+	wg.Wait()
+}
+"""
+hints           = [
+  "sync.Once.Do runs its function exactly once across all concurrent calls.",
+  "Only one goroutine will print \"initialised\"; the others skip the function.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "sync.RWMutex"
+prompt          = """Use a sync.RWMutex to protect a shared map. Write \"key\"->42 with a write lock, then read it with a read lock and print the value."""
+expected_output = "42\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	var mu sync.RWMutex
+	m := make(map[string]int)
+
+	mu.Lock()
+	m["key"] = 42
+	mu.Unlock()
+
+	mu.RLock()
+	v := m["key"]
+	mu.RUnlock()
+
+	fmt.Println(v)
+}
+"""
+hints           = [
+  "mu.Lock()/Unlock() for writes; mu.RLock()/RUnlock() for reads.",
+  "Multiple goroutines can hold RLock simultaneously; Lock is exclusive.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Pipeline with goroutines"
+prompt          = """Build a two-stage pipeline: stage 1 sends 1,2,3 on a channel; stage 2 squares each value. Collect and print results in order."""
+expected_output = "1\n4\n9\n"
+starter_code    = """package main
+
+import "fmt"
+
+func generate(nums ...int) <-chan int {
+	out := make(chan int, len(nums))
+	for _, n := range nums {
+		out <- n
+	}
+	close(out)
+	return out
+}
+
+func square(in <-chan int) <-chan int {
+	out := make(chan int, 3)
+	go func() {
+		for n := range in {
+			out <- n * n
+		}
+		close(out)
+	}()
+	return out
+}
+
+func main() {
+	for v := range square(generate(1, 2, 3)) {
+		fmt.Println(v)
+	}
+}
+"""
+hints           = [
+  "generate sends all values then closes; square consumes them and closes its output.",
+  "Ranging over a closed channel drains it in order.",
+]
+validation_mode = "exact_stdout"

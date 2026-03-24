@@ -1,0 +1,159 @@
+id          = "12-error-handling"
+title       = "Error Handling"
+description = "Handle errors the Go way: errors.New, fmt.Errorf, error wrapping with %w, and errors.Is."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Return and check an error"
+prompt          = """Write sqrt(x float64) (float64, error) that returns an error for negative input. Call sqrt(-1) and print the error message."""
+expected_output = "cannot sqrt negative number\n"
+starter_code    = """package main
+
+import (
+	"errors"
+	"fmt"
+	"math"
+)
+
+func sqrt(x float64) (float64, error) {
+	if x < 0 {
+		return 0, errors.New("cannot sqrt negative number")
+	}
+	return math.Sqrt(x), nil
+}
+
+func main() {
+	_, err := sqrt(-1)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+"""
+hints           = [
+  "errors.New(\"...\") creates a simple error value.",
+  "Check err != nil after calling sqrt and print err.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "fmt.Errorf with context"
+prompt          = """Write openFile(name string) error that always returns an error wrapped with context: \"openFile failed: file not found\". Print the error."""
+expected_output = "openFile failed: file not found\n"
+starter_code    = """package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+func openFile(name string) error {
+	base := errors.New("file not found")
+	return fmt.Errorf("openFile failed: %w", base)
+}
+
+func main() {
+	err := openFile("test.txt")
+	fmt.Println(err)
+}
+"""
+hints           = [
+  "fmt.Errorf(\"openFile failed: %w\", base) wraps the base error with context.",
+  "Printing an error with fmt.Println calls its Error() method.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "errors.Is for wrapped errors"
+prompt          = """Create a sentinel ErrNotFound. Wrap it with fmt.Errorf. Use errors.Is to check the wrapped error and print \"not found error detected\"."""
+expected_output = "not found error detected\n"
+starter_code    = """package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+var ErrNotFound = errors.New("not found")
+
+func main() {
+	wrapped := fmt.Errorf("lookup failed: %w", ErrNotFound)
+	if errors.Is(wrapped, ErrNotFound) {
+		fmt.Println("not found error detected")
+	}
+}
+"""
+hints           = [
+  "errors.Is(err, target) unwraps the error chain to find target.",
+  "%w in fmt.Errorf preserves the error chain so errors.Is can find the sentinel.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Custom error type"
+prompt          = """Define a ValidationError struct with Field string. Implement Error() string returning \"invalid field: \" + e.Field. Return one and print it."""
+expected_output = "invalid field: email\n"
+starter_code    = """package main
+
+import "fmt"
+
+type ValidationError struct {
+	Field string
+}
+
+func (e ValidationError) Error() string {
+	return "invalid field: " + e.Field
+}
+
+func validate(field string) error {
+	return ValidationError{Field: field}
+}
+
+func main() {
+	err := validate("email")
+	fmt.Println(err)
+}
+"""
+hints           = [
+  "Any type that implements Error() string satisfies the error interface.",
+  "fmt.Println(err) calls the Error() method on your custom type.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Multiple error checks"
+prompt          = """Write a function that divides two ints. Return an error if the divisor is zero. Call it with (10, 2) and (6, 0) and print either the result or the error."""
+expected_output = "5\ndivide by zero\n"
+starter_code    = """package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+func divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, errors.New("divide by zero")
+	}
+	return a / b, nil
+}
+
+func main() {
+	for _, pair := range [][2]int{{10, 2}, {6, 0}} {
+		result, err := divide(pair[0], pair[1])
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println(result)
+		}
+	}
+}
+"""
+hints           = [
+  "Loop over the pairs and call divide for each.",
+  "Check err != nil to decide whether to print the result or the error.",
+]
+validation_mode = "exact_stdout"

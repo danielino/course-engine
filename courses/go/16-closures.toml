@@ -1,0 +1,154 @@
+id          = "16-closures"
+title       = "Closures"
+description = "Understand function literals and closures: capturing variables, counters, and function factories."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Simple closure"
+prompt          = """Create a function makeAdder(n int) func(int) int that returns a closure adding n to its argument. Use makeAdder(5) to add 3 and print the result."""
+expected_output = "8\n"
+starter_code    = """package main
+
+import "fmt"
+
+func makeAdder(n int) func(int) int {
+	return func(x int) int {
+		return x + n
+	}
+}
+
+func main() {
+	add5 := makeAdder(5)
+	fmt.Println(add5(3))
+}
+"""
+hints           = [
+  "The returned function literal captures n from the outer function's scope.",
+  "add5(3) evaluates to 3 + 5 = 8.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Counter closure"
+prompt          = """Write makeCounter() func() int that returns a closure. Each call increments and returns an internal counter starting at 0. Call it 3 times and print each result."""
+expected_output = "1\n2\n3\n"
+starter_code    = """package main
+
+import "fmt"
+
+func makeCounter() func() int {
+	count := 0
+	return func() int {
+		count++
+		return count
+	}
+}
+
+func main() {
+	next := makeCounter()
+	fmt.Println(next())
+	fmt.Println(next())
+	fmt.Println(next())
+}
+"""
+hints           = [
+  "count is captured by reference; each call to the returned func modifies the same count variable.",
+  "The counter starts at 0 and increments before returning.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Closure over a slice"
+prompt          = """Create a function that returns a closure which appends an int to an internal slice and returns the slice length. Call it 3 times with values 10, 20, 30 and print each returned length."""
+expected_output = "1\n2\n3\n"
+starter_code    = """package main
+
+import "fmt"
+
+func makeAccumulator() func(int) int {
+	var data []int
+	return func(v int) int {
+		data = append(data, v)
+		return len(data)
+	}
+}
+
+func main() {
+	acc := makeAccumulator()
+	fmt.Println(acc(10))
+	fmt.Println(acc(20))
+	fmt.Println(acc(30))
+}
+"""
+hints           = [
+  "data is captured by the closure; append updates it across calls.",
+  "Return len(data) after appending.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Function pipeline"
+prompt          = """Use closures to build a double function (x*2) and a square function (x*x). Apply them in sequence to the value 3 and print the result (double then square: (3*2)^2 = 36)."""
+expected_output = "36\n"
+starter_code    = """package main
+
+import "fmt"
+
+func apply(fns []func(int) int, v int) int {
+	for _, f := range fns {
+		v = f(v)
+	}
+	return v
+}
+
+func main() {
+	double := func(x int) int { return x * 2 }
+	square := func(x int) int { return x * x }
+	fmt.Println(apply([]func(int) int{double, square}, 3))
+}
+"""
+hints           = [
+  "Functions are first-class values in Go and can be stored in slices.",
+  "apply iterates over the slice, threading the value through each function.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Memoisation closure"
+prompt          = """Write a memoised fibonacci using a map closure. Compute fib(10) and print it."""
+expected_output = "55\n"
+starter_code    = """package main
+
+import "fmt"
+
+func makeFib() func(int) int {
+	cache := map[int]int{}
+	var fib func(int) int
+	fib = func(n int) int {
+		if n <= 1 {
+			return n
+		}
+		if v, ok := cache[n]; ok {
+			return v
+		}
+		result := fib(n-1) + fib(n-2)
+		cache[n] = result
+		return result
+	}
+	return fib
+}
+
+func main() {
+	fib := makeFib()
+	fmt.Println(fib(10))
+}
+"""
+hints           = [
+  "cache is a map captured by fib; each unique n is computed only once.",
+  "fib(10) = 55 in the standard Fibonacci sequence (0-indexed).",
+]
+validation_mode = "exact_stdout"

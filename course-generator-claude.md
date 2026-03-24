@@ -24,7 +24,7 @@ If the language is not yet in `src/language.rs`, you must add it before the cour
 3. Add a test in the `#[cfg(test)]` block.
 4. Run `cargo test` and `cargo clippy -- -D warnings` to verify.
 
-Available presets (as of now): `rust()` · `python()` · `javascript()` · `c()`.
+Available presets (as of now): `rust()` · `python()` · `javascript()` · `c()` · `go()`.
 
 ---
 

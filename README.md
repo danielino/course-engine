@@ -90,6 +90,7 @@ write your solution, save and close. The tool compiles, runs, and shows the resu
 | `courses/c/` | C | `cc` (system C compiler) | 26 |
 | `courses/python/` | Python 3 | `python3` | 26 |
 | `courses/javascript/` | JavaScript | `node` | 26 |
+| `courses/go/` | Go | `go build` | 26 |
 
 Each course covers the full zero-to-hero curriculum: foundation → intermediate → advanced.
 See [`course-generator-claude.md`](course-generator-claude.md) for the complete curriculum structure and instructions for adding a new course.

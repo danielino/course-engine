@@ -1,0 +1,102 @@
+id          = "03-data-types"
+title       = "Data Types"
+description = "Explore Go's basic types: int, float64, bool, string, and explicit type conversions."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Integer and float"
+prompt          = """Declare an int variable a = 7 and a float64 variable b = 2.5. Print their sum as a float64."""
+expected_output = "9.5\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	a := 7
+	b := 2.5
+	// print a + b as float64
+}
+"""
+hints           = [
+  "You cannot add int and float64 directly; convert a first with float64(a).",
+  "fmt.Println(float64(a) + b) will print 9.5.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Boolean expressions"
+prompt          = """Print the result of (10 > 3) and the result of (10 == 3) on separate lines."""
+expected_output = "true\nfalse\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// print two boolean expressions
+}
+"""
+hints           = [
+  "fmt.Println(10 > 3) evaluates the expression and prints true or false.",
+  "Follow with fmt.Println(10 == 3) for the second line.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "String basics"
+prompt          = """Declare s := \"Gopher\" and print its length followed by the string itself on one line."""
+expected_output = "6 Gopher\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	s := "Gopher"
+	// print length and string
+}
+"""
+hints           = [
+  "The built-in len(s) returns the number of bytes (same as characters for ASCII).",
+  "fmt.Println(len(s), s) prints them separated by a space.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Type conversion"
+prompt          = """Convert the float64 value 9.99 to int and print the result."""
+expected_output = "9\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	f := 9.99
+	// convert to int and print
+}
+"""
+hints           = [
+  "int(f) truncates the decimal part — it does not round.",
+  "fmt.Println(int(f)) should print 9.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Rune and byte"
+prompt          = """Print the byte value of the character 'A' and then the character represented by byte 66."""
+expected_output = "65\nB\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// print byte value of 'A', then character for 66
+}
+"""
+hints           = [
+  "fmt.Println(int('A')) prints the ASCII value 65.",
+  "fmt.Printf(\"%c\\n\", 66) prints the character B corresponding to byte 66.",
+]
+validation_mode = "exact_stdout"

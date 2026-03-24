@@ -1,0 +1,168 @@
+id          = "19-type-embedding"
+title       = "Type Embedding"
+description = "Use struct embedding for composition: promoted fields, promoted methods, and embedding interfaces."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Embedding a struct"
+prompt          = """Embed Animal (Name string, Speak() string) inside Dog. Override Speak() on Dog to return \"Woof!\". Print the name and sound of Dog{Animal{\"Rex\"}}."""
+expected_output = "Rex\nWoof!\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Animal struct {
+	Name string
+}
+
+func (a Animal) Speak() string {
+	return "..."
+}
+
+type Dog struct {
+	Animal
+}
+
+func (d Dog) Speak() string {
+	return "Woof!"
+}
+
+func main() {
+	d := Dog{Animal{"Rex"}}
+	fmt.Println(d.Name)
+	fmt.Println(d.Speak())
+}
+"""
+hints           = [
+  "Embedding Animal in Dog promotes the Name field so d.Name works directly.",
+  "Dog's own Speak() shadows Animal's Speak(); d.Speak() calls Dog's version.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Promoted method"
+prompt          = """Embed a Logger struct (Prefix string) with method Log(msg string) string returning Prefix+\": \"+msg inside Service. Call Log on a Service and print the result."""
+expected_output = "INFO: service started\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Logger struct {
+	Prefix string
+}
+
+func (l Logger) Log(msg string) string {
+	return l.Prefix + ": " + msg
+}
+
+type Service struct {
+	Logger
+}
+
+func main() {
+	svc := Service{Logger{Prefix: "INFO"}}
+	fmt.Println(svc.Log("service started"))
+}
+"""
+hints           = [
+  "The Logger.Log method is promoted to Service, so svc.Log(...) works without qualification.",
+  "svc.Prefix is also promoted from Logger.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Multiple embeddings"
+prompt          = """Embed both Walker (Walk() string → \"walking\") and Swimmer (Swim() string → \"swimming\") in Amphibian. Call both and print on separate lines."""
+expected_output = "walking\nswimming\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Walker struct{}
+type Swimmer struct{}
+
+func (Walker) Walk() string  { return "walking" }
+func (Swimmer) Swim() string { return "swimming" }
+
+type Amphibian struct {
+	Walker
+	Swimmer
+}
+
+func main() {
+	a := Amphibian{}
+	fmt.Println(a.Walk())
+	fmt.Println(a.Swim())
+}
+"""
+hints           = [
+  "Both Walk and Swim are promoted to Amphibian with no conflict.",
+  "Call them directly on the Amphibian value.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Embedding satisfies an interface"
+prompt          = """Define interface Sayer with Say() string. Embed Greeter (Say() → \"Hello\") in Bot. Pass Bot to a function accepting Sayer and print the result."""
+expected_output = "Hello\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Sayer interface {
+	Say() string
+}
+
+type Greeter struct{}
+
+func (Greeter) Say() string { return "Hello" }
+
+type Bot struct {
+	Greeter
+}
+
+func speak(s Sayer) {
+	fmt.Println(s.Say())
+}
+
+func main() {
+	speak(Bot{})
+}
+"""
+hints           = [
+  "Bot embeds Greeter, so Bot inherits the Say() method and satisfies Sayer.",
+  "speak accepts any Sayer; Bot qualifies automatically.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Accessing the embedded struct directly"
+prompt          = """Embed Base (ID int) in Derived. Set ID via the embedded field using d.Base.ID = 99 and print d.ID."""
+expected_output = "99\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Base struct {
+	ID int
+}
+
+type Derived struct {
+	Base
+}
+
+func main() {
+	var d Derived
+	d.Base.ID = 99
+	fmt.Println(d.ID)
+}
+"""
+hints           = [
+  "d.Base.ID explicitly names the embedded type to access its field.",
+  "d.ID is shorthand for d.Base.ID — both refer to the same field.",
+]
+validation_mode = "exact_stdout"

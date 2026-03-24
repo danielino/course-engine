@@ -1,0 +1,125 @@
+id          = "15-packages"
+title       = "Packages & Imports"
+description = "Explore Go's standard library: math, sort, time (fixed seed/date), rand, and the init function pattern."
+
+[[exercises]]
+id              = "ex_01"
+title           = "math package"
+prompt          = """Use the math package to print the square root of 144 and the absolute value of -7.5 on separate lines."""
+expected_output = "12\n7.5\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"math"
+)
+
+func main() {
+	// print math.Sqrt(144) and math.Abs(-7.5)
+}
+"""
+hints           = [
+  "math.Sqrt(144) returns 12.0; fmt.Println prints it as 12.",
+  "math.Abs(-7.5) returns 7.5.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "sort package"
+prompt          = """Sort []int{5, 2, 8, 1, 9} in ascending order and print it."""
+expected_output = "[1 2 5 8 9]\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+func main() {
+	nums := []int{5, 2, 8, 1, 9}
+	sort.Ints(nums)
+	fmt.Println(nums)
+}
+"""
+hints           = [
+  "sort.Ints(slice) sorts the slice in place.",
+  "fmt.Println prints the slice as [1 2 5 8 9].",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "sort.Strings"
+prompt          = """Sort []string{\"banana\", \"apple\", \"cherry\"} alphabetically and print it."""
+expected_output = "[apple banana cherry]\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+func main() {
+	fruits := []string{"banana", "apple", "cherry"}
+	sort.Strings(fruits)
+	fmt.Println(fruits)
+}
+"""
+hints           = [
+  "sort.Strings(slice) sorts string slices in place.",
+  "fmt.Println prints the sorted slice with brackets.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "math/rand with fixed seed"
+prompt          = """Create a *rand.Rand with seed 42, generate two random ints in [0,10), and print them on one line."""
+expected_output = "0 5\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"math/rand"
+)
+
+func main() {
+	r := rand.New(rand.NewSource(42))
+	a := r.Intn(10)
+	b := r.Intn(10)
+	fmt.Println(a, b)
+}
+"""
+hints           = [
+  "rand.New(rand.NewSource(seed)) creates a deterministic RNG.",
+  "r.Intn(10) returns a random int in [0, 10).",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "strings.Fields"
+prompt          = """Use strings.Fields to split \"  the  quick brown  fox  \" on any whitespace and print the number of words, then each word on its own line."""
+expected_output = "4\nthe\nquick\nbrown\nfox\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	s := "  the  quick brown  fox  "
+	words := strings.Fields(s)
+	fmt.Println(len(words))
+	for _, w := range words {
+		fmt.Println(w)
+	}
+}
+"""
+hints           = [
+  "strings.Fields splits on any whitespace and ignores leading/trailing spaces.",
+  "len(words) gives the word count; range over words to print each.",
+]
+validation_mode = "exact_stdout"

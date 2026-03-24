@@ -1,0 +1,146 @@
+id          = "17-methods-interfaces"
+title       = "Methods & Interfaces"
+description = "Define methods on types, satisfy interfaces implicitly, and use the empty interface."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Value receiver method"
+prompt          = """Add a Perimeter() float64 method to Rectangle (Width, Height float64). Create Rectangle{4, 3} and print its perimeter."""
+expected_output = "14\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Rectangle struct {
+	Width, Height float64
+}
+
+func (r Rectangle) Perimeter() float64 {
+	return 2 * (r.Width + r.Height)
+}
+
+func main() {
+	r := Rectangle{Width: 4, Height: 3}
+	fmt.Println(r.Perimeter())
+}
+"""
+hints           = [
+  "The perimeter of a rectangle is 2 * (width + height).",
+  "fmt.Println(r.Perimeter()) calls the method and prints 14.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Interface satisfaction"
+prompt          = """Define a Shape interface with Area() float64. Implement it on Circle (Radius) and Rect (W, H). Print areas for Circle{5} and Rect{3,4} on separate lines."""
+expected_output = "78.53975\n12\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type Shape interface {
+	Area() float64
+}
+
+type Circle struct{ Radius float64 }
+type Rect struct{ W, H float64 }
+
+func (c Circle) Area() float64 { return math.Pi * c.Radius * c.Radius }
+func (r Rect) Area() float64   { return r.W * r.H }
+
+func printArea(s Shape) {
+	fmt.Printf("%.5g\n", s.Area())
+}
+
+func main() {
+	printArea(Circle{5})
+	printArea(Rect{3, 4})
+}
+"""
+hints           = [
+  "Both Circle and Rect satisfy Shape automatically by implementing Area().",
+  "%.5g formats to 5 significant digits; math.Pi*25 ≈ 78.53975.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Pointer receiver"
+prompt          = """Add a Scale(factor float64) method with a pointer receiver to Rectangle that multiplies both Width and Height. Scale a Rectangle{2, 3} by 2 and print W and H."""
+expected_output = "4 6\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Rectangle struct {
+	Width, Height float64
+}
+
+func (r *Rectangle) Scale(factor float64) {
+	r.Width *= factor
+	r.Height *= factor
+}
+
+func main() {
+	r := Rectangle{2, 3}
+	r.Scale(2)
+	fmt.Println(r.Width, r.Height)
+}
+"""
+hints           = [
+  "A pointer receiver (*Rectangle) can modify the original value.",
+  "r.Scale(2) multiplies Width and Height in place.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Stringer interface"
+prompt          = """Implement the fmt.Stringer interface on a Point{X, Y int} so that fmt.Println prints \"(3, 4)\"."""
+expected_output = "(3, 4)\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Point struct{ X, Y int }
+
+func (p Point) String() string {
+	return fmt.Sprintf("(%d, %d)", p.X, p.Y)
+}
+
+func main() {
+	fmt.Println(Point{3, 4})
+}
+"""
+hints           = [
+  "fmt.Stringer requires a String() string method.",
+  "fmt.Println calls String() automatically when the value implements Stringer.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Empty interface and type assertion"
+prompt          = """Store an int 42 in an any variable, then use a type assertion to retrieve it and print the value."""
+expected_output = "42\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	var v any = 42
+	n, ok := v.(int)
+	if ok {
+		fmt.Println(n)
+	}
+}
+"""
+hints           = [
+  "any is an alias for interface{}; any value can be stored in it.",
+  "v.(int) asserts that v holds an int; the comma-ok form avoids a panic.",
+]
+validation_mode = "exact_stdout"

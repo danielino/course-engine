@@ -876,6 +876,193 @@ function registerCCompletions() {
   });
 }
 
+/* ── Go completion provider ──────────────────────────────────────────────── */
+let goCompletionsRegistered = false;
+function registerGoCompletionsOnce() {
+  if (goCompletionsRegistered) return;
+  goCompletionsRegistered = true;
+  registerGoCompletions();
+}
+
+function registerGoCompletions() {
+  const S = monaco.languages.CompletionItemKind;
+  const SNIPPET = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+
+  const METHODS = {
+    string: [
+      ["Contains",    "Contains(${1:s}, ${2:substr})",     "strings.Contains(s, substr) bool",    "Report whether substr is within s."],
+      ["HasPrefix",   "HasPrefix(${1:s}, ${2:prefix})",    "strings.HasPrefix(s, prefix) bool",   "Test whether s begins with prefix."],
+      ["HasSuffix",   "HasSuffix(${1:s}, ${2:suffix})",    "strings.HasSuffix(s, suffix) bool",   "Test whether s ends with suffix."],
+      ["Replace",     "Replace(${1:s}, ${2:old}, ${3:new}, ${4:-1})", "strings.Replace(s, old, new, n) string", "Replace occurrences in s."],
+      ["ReplaceAll",  "ReplaceAll(${1:s}, ${2:old}, ${3:new})",       "strings.ReplaceAll(s, old, new) string", "Replace all occurrences."],
+      ["Split",       "Split(${1:s}, ${2:sep})",           "strings.Split(s, sep) []string",      "Split s around each instance of sep."],
+      ["Join",        "Join(${1:elems}, ${2:sep})",        "strings.Join(elems, sep) string",     "Concatenate slice elements with sep."],
+      ["ToUpper",     "ToUpper(${1:s})",                   "strings.ToUpper(s) string",           "Return s with all Unicode letters uppercased."],
+      ["ToLower",     "ToLower(${1:s})",                   "strings.ToLower(s) string",           "Return s with all Unicode letters lowercased."],
+      ["TrimSpace",   "TrimSpace(${1:s})",                 "strings.TrimSpace(s) string",         "Remove leading/trailing whitespace."],
+      ["Trim",        "Trim(${1:s}, ${2:cutset})",         "strings.Trim(s, cutset) string",      "Remove leading/trailing chars in cutset."],
+      ["Fields",      "Fields(${1:s})",                    "strings.Fields(s) []string",          "Split around whitespace runs."],
+      ["Repeat",      "Repeat(${1:s}, ${2:count})",        "strings.Repeat(s, count) string",     "Return s repeated count times."],
+      ["Count",       "Count(${1:s}, ${2:substr})",        "strings.Count(s, substr) int",        "Count non-overlapping instances of substr."],
+      ["Index",       "Index(${1:s}, ${2:substr})",        "strings.Index(s, substr) int",        "Index of first instance, or -1."],
+    ],
+    sync: [
+      ["Add",         "Add(${1:delta})",                   "sync.WaitGroup: Add(delta int)",      "Add delta to the WaitGroup counter."],
+      ["Done",        "Done()",                            "sync.WaitGroup: Done()",              "Decrement the WaitGroup counter by one."],
+      ["Wait",        "Wait()",                            "sync.WaitGroup: Wait()",              "Block until the counter is zero."],
+      ["Lock",        "Lock()",                            "sync.Mutex: Lock()",                  "Lock the mutex."],
+      ["Unlock",      "Unlock()",                          "sync.Mutex: Unlock()",                "Unlock the mutex."],
+    ],
+    error: [
+      ["Error",       "Error()",                           "error.Error() string",                "Return the error message."],
+      ["Unwrap",      "Unwrap()",                          "errors: Unwrap() error",              "Return the wrapped error."],
+    ],
+    io: [
+      ["Close",       "Close()",                           "io.Closer: Close() error",            "Close the resource."],
+      ["Read",        "Read(${1:p})",                      "io.Reader: Read(p []byte) (int, error)", "Read up to len(p) bytes."],
+      ["Write",       "Write(${1:p})",                     "io.Writer: Write(p []byte) (int, error)", "Write len(p) bytes."],
+      ["WriteString", "WriteString(${1:s})",               "io.StringWriter: WriteString(s) (int, error)", "Write a string."],
+    ],
+  };
+
+  const SNIPPETS = [
+    { label: "package main",    insert: "package main",                                        detail: "main package declaration" },
+    { label: "import",          insert: "import \"${1:fmt}\"",                                detail: "single import" },
+    { label: "import (...)",    insert: "import (\n\t\"${1:fmt}\"\n)",                         detail: "grouped import" },
+    { label: "func main",      insert: "func main() {\n\t${1}\n}",                            detail: "main entry point" },
+    { label: "func",            insert: "func ${1:name}(${2}) ${3} {\n\t${4}\n}",             detail: "function definition" },
+    { label: "func ret",       insert: "func ${1:name}(${2}) (${3:error}) {\n\t${4}\n}",     detail: "function with return type" },
+    { label: "func method",    insert: "func (${1:r} ${2:Type}) ${3:Name}(${4}) ${5} {\n\t${6}\n}", detail: "method on type" },
+    { label: "struct",          insert: "type ${1:Name} struct {\n\t${2:Field} ${3:Type}\n}",  detail: "struct type" },
+    { label: "interface",       insert: "type ${1:Name} interface {\n\t${2:Method}(${3}) ${4}\n}", detail: "interface type" },
+    { label: "if",              insert: "if ${1:condition} {\n\t${2}\n}",                      detail: "if statement" },
+    { label: "if/else",         insert: "if ${1:condition} {\n\t${2}\n} else {\n\t${3}\n}",   detail: "if/else statement" },
+    { label: "if err",          insert: "if err != nil {\n\t${1:return err}\n}",               detail: "error check idiom" },
+    { label: "if err :=",       insert: "if ${1:val}, err := ${2:expr}; err != nil {\n\t${3:return err}\n}", detail: "assign + error check" },
+    { label: "switch",          insert: "switch ${1:expr} {\ncase ${2:val}:\n\t${3}\ndefault:\n\t${4}\n}", detail: "switch statement" },
+    { label: "switch type",    insert: "switch ${1:v} := ${2:x}.(type) {\ncase ${3:int}:\n\t${4}\ndefault:\n\t${5}\n}", detail: "type switch" },
+    { label: "select",          insert: "select {\ncase ${1:msg} := <-${2:ch}:\n\t${3}\ndefault:\n\t${4}\n}", detail: "select statement" },
+    { label: "for",             insert: "for ${1:i} := 0; ${1:i} < ${2:n}; ${1:i}++ {\n\t${3}\n}", detail: "C-style for loop" },
+    { label: "for range",       insert: "for ${1:i}, ${2:v} := range ${3:slice} {\n\t${4}\n}", detail: "range loop" },
+    { label: "for while",       insert: "for ${1:condition} {\n\t${2}\n}",                    detail: "while-style loop" },
+    { label: "var",             insert: "var ${1:name} ${2:Type}",                             detail: "variable declaration" },
+    { label: ":=",              insert: "${1:name} := ${2:value}",                             detail: "short variable declaration" },
+    { label: "const",           insert: "const ${1:Name} = ${2:value}",                       detail: "constant declaration" },
+    { label: "fmt.Println",     insert: "fmt.Println(${1})",                                  detail: "print with newline" },
+    { label: "fmt.Printf",     insert: "fmt.Printf(\"${1:%v}\\n\", ${2})",                   detail: "formatted print" },
+    { label: "fmt.Sprintf",    insert: "fmt.Sprintf(\"${1:%v}\", ${2})",                      detail: "format to string" },
+    { label: "fmt.Errorf",     insert: "fmt.Errorf(\"${1:%w}\", ${2:err})",                    detail: "format error with wrapping" },
+    { label: "len",             insert: "len(${1:s})",                                        detail: "builtin: length" },
+    { label: "cap",             insert: "cap(${1:s})",                                        detail: "builtin: capacity" },
+    { label: "make slice",     insert: "make([]${1:Type}, ${2:length})",                       detail: "make a slice" },
+    { label: "make map",       insert: "make(map[${1:KeyType}]${2:ValueType})",                detail: "make a map" },
+    { label: "make chan",      insert: "make(chan ${1:Type})",                                  detail: "make a channel" },
+    { label: "append",         insert: "append(${1:slice}, ${2:elem})",                        detail: "builtin: append to slice" },
+    { label: "delete",          insert: "delete(${1:m}, ${2:key})",                            detail: "builtin: delete map key" },
+    { label: "go func",        insert: "go func() {\n\t${1}\n}()",                             detail: "launch goroutine" },
+    { label: "defer",           insert: "defer ${1:fn}()",                                    detail: "defer a function call" },
+    { label: "defer close",    insert: "defer ${1:f}.Close()",                                 detail: "defer close a resource" },
+    { label: "chan send",      insert: "${1:ch} <- ${2:value}",                                detail: "send to channel" },
+    { label: "chan recv",      insert: "${1:value} := <-${2:ch}",                              detail: "receive from channel" },
+    { label: "errors.New",     insert: "errors.New(\"${1:message}\")",                         detail: "create simple error" },
+    { label: "errors.Is",      insert: "errors.Is(${1:err}, ${2:target})",                     detail: "check error chain" },
+    { label: "os.ReadFile",    insert: "os.ReadFile(\"${1:path}\")",                           detail: "read entire file" },
+    { label: "os.WriteFile",   insert: "os.WriteFile(\"${1:path}\", []byte(${2:data}), 0644)", detail: "write entire file" },
+    { label: "strconv.Itoa",    insert: "strconv.Itoa(${1:i})",                               detail: "int to string" },
+    { label: "strconv.Atoi",    insert: "strconv.Atoi(${1:s})",                               detail: "string to int" },
+    { label: "sort.Strings",   insert: "sort.Strings(${1:slice})",                             detail: "sort string slice" },
+    { label: "sort.Ints",      insert: "sort.Ints(${1:slice})",                                detail: "sort int slice" },
+    { label: "sort.Slice",     insert: "sort.Slice(${1:slice}, func(i, j int) bool {\n\treturn ${1:slice}[i] < ${1:slice}[j]\n})", detail: "sort with comparator" },
+  ];
+
+  monaco.languages.registerCompletionItemProvider("go", {
+    triggerCharacters: ["."],
+
+    provideCompletionItems(model, position) {
+      const lineText = model.getValueInRange({
+        startLineNumber: position.lineNumber,
+        startColumn:     1,
+        endLineNumber:   position.lineNumber,
+        endColumn:       position.column,
+      });
+
+      const word      = model.getWordUntilPosition(position);
+      const wordRange = {
+        startLineNumber: position.lineNumber,
+        endLineNumber:   position.lineNumber,
+        startColumn:     word.startColumn,
+        endColumn:       word.endColumn,
+      };
+
+      const dotMatch = lineText.match(/\.(\w*)$/);
+      if (dotMatch) {
+        const typed    = dotMatch[1];
+        const dotCol   = position.column - dotMatch[0].length;
+        const afterDot = {
+          startLineNumber: position.lineNumber,
+          endLineNumber:   position.lineNumber,
+          startColumn:     dotCol + 1,
+          endColumn:       position.column,
+        };
+
+        const pkgMatch = lineText.match(/(\w+)\.(\w*)$/);
+        const pkg = pkgMatch ? pkgMatch[1] : "";
+
+        let allMethods;
+        if (pkg === "strings") {
+          allMethods = METHODS.string;
+        } else if (pkg === "sync") {
+          allMethods = METHODS.sync;
+        } else {
+          allMethods = [
+            ...METHODS.string,
+            ...METHODS.sync,
+            ...METHODS.error,
+            ...METHODS.io,
+          ];
+        }
+
+        const seen   = new Set();
+        const prefix = typed.toLowerCase();
+        const unique = allMethods.filter(([label]) => {
+          if (seen.has(label)) return false;
+          seen.add(label);
+          return label.toLowerCase().startsWith(prefix);
+        });
+
+        return {
+          suggestions: unique.map(([label, insert, detail, doc]) => ({
+            label,
+            filterText:      label,
+            kind:            S.Method,
+            detail,
+            documentation:   { value: doc },
+            insertText:      insert,
+            insertTextRules: SNIPPET,
+            range:           afterDot,
+            sortText:        label,
+          })),
+          incomplete: false,
+        };
+      }
+
+      return {
+        suggestions: SNIPPETS.map(({ label, insert, detail }) => ({
+          label,
+          kind:            label.startsWith("fmt.") || label.startsWith("os.") || label.startsWith("sort.")
+                             || label.startsWith("strconv.") || label.startsWith("errors.")
+                           ? S.Function : S.Keyword,
+          detail,
+          insertText:      insert,
+          insertTextRules: SNIPPET,
+          range:           wordRange,
+          sortText:        "z" + label,
+        })),
+      };
+    },
+  });
+}
+
 /* ── Init ────────────────────────────────────────────────────────────────── */
 async function init() {
   await loadCourses();
@@ -924,6 +1111,7 @@ async function selectCourse(slug) {
   if (cfg.language === "python")     registerPythonCompletionsOnce();
   if (cfg.language === "javascript") registerJavaScriptCompletionsOnce();
   if (cfg.language === "c")          registerCCompletionsOnce();
+  if (cfg.language === "go")         registerGoCompletionsOnce();
   monaco.editor.setModelLanguage(state.editor.getModel(), cfg.language);
 
   state.currentLesson = null;

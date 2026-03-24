@@ -1,0 +1,117 @@
+id          = "05-strings"
+title       = "Strings"
+description = "Work with Go strings using the strings package: Contains, ToUpper, Split, Join, TrimSpace, and more."
+
+[[exercises]]
+id              = "ex_01"
+title           = "ToUpper and ToLower"
+prompt          = """Print \"hello\" in uppercase and \"WORLD\" in lowercase on separate lines."""
+expected_output = "HELLO\nworld\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	// use strings.ToUpper and strings.ToLower
+}
+"""
+hints           = [
+  "strings.ToUpper(\"hello\") returns \"HELLO\".",
+  "strings.ToLower(\"WORLD\") returns \"world\".",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Contains and HasPrefix"
+prompt          = """Print whether \"Gophers rule\" contains \"rule\", and whether it starts with \"Go\", each on its own line."""
+expected_output = "true\ntrue\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	s := "Gophers rule"
+	// check Contains and HasPrefix
+}
+"""
+hints           = [
+  "strings.Contains(s, \"rule\") returns true if \"rule\" is a substring.",
+  "strings.HasPrefix(s, \"Go\") returns true if s starts with \"Go\".",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Split and Join"
+prompt          = """Split \"a,b,c\" on \",\" then join the parts with \" - \" and print the result."""
+expected_output = "a - b - c\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	s := "a,b,c"
+	// split then join
+}
+"""
+hints           = [
+  "strings.Split(s, \",\") returns a []string slice.",
+  "strings.Join(parts, \" - \") joins the slice with the given separator.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "TrimSpace and Replace"
+prompt          = """Trim surrounding spaces from \"  gopher  \" then replace every 'o' with '0' in \"goo goo\" and print each result on its own line."""
+expected_output = "gopher\ng00 g00\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	a := "  gopher  "
+	b := "goo goo"
+	// trim and replace
+}
+"""
+hints           = [
+  "strings.TrimSpace(a) removes leading and trailing whitespace.",
+  "strings.ReplaceAll(b, \"o\", \"0\") replaces every occurrence.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Count and Repeat"
+prompt          = """Count how many times \"go\" appears in \"go go go\" and print the number. Then print \"ha\" repeated 3 times."""
+expected_output = "3\nhahaha\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"strings"
+)
+
+func main() {
+	// count and repeat
+}
+"""
+hints           = [
+  "strings.Count(\"go go go\", \"go\") counts non-overlapping occurrences.",
+  "strings.Repeat(\"ha\", 3) returns \"hahaha\".",
+]
+validation_mode = "exact_stdout"

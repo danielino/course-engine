@@ -1,0 +1,157 @@
+id          = "23-context"
+title       = "Context"
+description = "Use context.Background, WithCancel, and WithTimeout to control goroutine lifetimes and cancellation."
+
+[[exercises]]
+id              = "ex_01"
+title           = "context.Background"
+prompt          = """Create a context.Background(), add a key-value pair with context.WithValue, retrieve the value, and print it."""
+expected_output = "gopher\n"
+starter_code    = """package main
+
+import (
+	"context"
+	"fmt"
+)
+
+type key string
+
+func main() {
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, key("user"), "gopher")
+	v := ctx.Value(key("user"))
+	fmt.Println(v)
+}
+"""
+hints           = [
+  "context.WithValue(parent, key, val) returns a new context with the value attached.",
+  "ctx.Value(key) retrieves the value; it returns any (interface{}).",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "WithCancel"
+prompt          = """Create a cancellable context. Pass it to a goroutine that waits on ctx.Done() then sends \"cancelled\" on a channel. Call cancel() and print the received message."""
+expected_output = "cancelled\n"
+starter_code    = """package main
+
+import (
+	"context"
+	"fmt"
+)
+
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	ch := make(chan string, 1)
+	go func() {
+		<-ctx.Done()
+		ch <- "cancelled"
+	}()
+	cancel()
+	fmt.Println(<-ch)
+}
+"""
+hints           = [
+  "context.WithCancel returns a context and a cancel function.",
+  "Calling cancel() closes ctx.Done(), unblocking the goroutine.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "WithTimeout"
+prompt          = """Create a context with a 50ms timeout. Run a goroutine that sleeps 200ms then tries to send. Use select to receive either the goroutine's message or ctx.Done() and print \"timeout\"."""
+expected_output = "timeout\n"
+starter_code    = """package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	defer cancel()
+	ch := make(chan string, 1)
+	go func() {
+		time.Sleep(200 * time.Millisecond)
+		ch <- "done"
+	}()
+	select {
+	case msg := <-ch:
+		fmt.Println(msg)
+	case <-ctx.Done():
+		fmt.Println("timeout")
+	}
+}
+"""
+hints           = [
+  "context.WithTimeout cancels the context after the duration expires.",
+  "The select races between the goroutine result and ctx.Done(); 50ms < 200ms so ctx.Done() wins.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Passing context through call chain"
+prompt          = """Write fetchData(ctx context.Context) (string, error) that returns an error if the context is already cancelled, otherwise returns \"data\". Cancel the context before calling it and print the error."""
+expected_output = "context canceled\n"
+starter_code    = """package main
+
+import (
+	"context"
+	"fmt"
+)
+
+func fetchData(ctx context.Context) (string, error) {
+	select {
+	case <-ctx.Done():
+		return "", ctx.Err()
+	default:
+		return "data", nil
+	}
+}
+
+func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	_, err := fetchData(ctx)
+	fmt.Println(err)
+}
+"""
+hints           = [
+  "After cancel() is called, ctx.Done() is immediately readable.",
+  "ctx.Err() returns context.Canceled or context.DeadlineExceeded.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "context.WithDeadline"
+prompt          = """Create a context with a deadline 30ms in the future. Print the deadline's presence (ok bool from ctx.Deadline()) and then wait for cancellation via a 100ms sleep, printing ctx.Err()."""
+expected_output = "has deadline: true\ncontext deadline exceeded\n"
+starter_code    = """package main
+
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+func main() {
+	deadline := time.Now().Add(30 * time.Millisecond)
+	ctx, cancel := context.WithDeadline(context.Background(), deadline)
+	defer cancel()
+	_, ok := ctx.Deadline()
+	fmt.Printf("has deadline: %v\n", ok)
+	time.Sleep(100 * time.Millisecond)
+	fmt.Println(ctx.Err())
+}
+"""
+hints           = [
+  "ctx.Deadline() returns (time.Time, bool); ok is true when a deadline is set.",
+  "After the deadline passes, ctx.Err() returns context.DeadlineExceeded.",
+]
+validation_mode = "exact_stdout"
