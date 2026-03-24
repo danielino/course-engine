@@ -1,6 +1,6 @@
-# course-engine / rust-course
+# course-engine
 
-**course-engine** is a language-agnostic library for building interactive coding courses. It ships with a ready-to-use **rust-course** binary that teaches Rust from scratch through hands-on exercises.
+**course-engine** is a language-agnostic library for building interactive coding courses. It ships with a ready-to-use binary and example lesson starters for Rust, Python, and JavaScript.
 
 Two interfaces available: a **web UI** (recommended) and a **terminal CLI**.
 
@@ -44,12 +44,13 @@ cargo run -- serve --port 8080
 | Expected output | Output panel: result, compile errors, or diff |
 | Hints (revealed on demand) | Prev / Next exercise navigation |
 
+When your output matches the expected output the exercise is marked complete and the next one opens automatically. Progress is saved after each exercise.
+
 ### Autocomplete (Rust)
 
-- **Method completions** — type `.` after any expression to get suggestions for `String`, `Vec`, `Option`, `Result`, `Iterator`, `HashMap`, and general traits. Each entry shows the full signature and a description.
+When using the Rust preset, Monaco provides:
+- **Method completions** — type `.` after any expression to get suggestions for `String`, `Vec`, `Option`, `Result`, `Iterator`, `HashMap`, and general traits.
 - **Keyword and snippet completions** — `fn`, `struct`, `impl`, `enum`, `trait`, `match`, `if let`, `for in`, `println!`, `vec!`, `assert_eq!`, `Box::new`, `Arc::new`, `HashMap::new`, and more.
-
-When your output matches the expected output the exercise is marked complete and the next one opens automatically. Progress is saved after each exercise.
 
 ---
 
@@ -69,7 +70,7 @@ Select a lesson from the arrow-key menu, read the exercise prompt, press **Enter
 | `cargo run -- serve` | Launch the web UI |
 | `cargo run -- list` | List all lessons with completion status |
 | `cargo run -- reset` | Clear all saved progress |
-| `cargo run -- --lessons-dir <path>` | Use a custom lessons directory (default: `examples/rust`) |
+| `cargo run -- --lessons-dir <path>` | Use a custom lessons directory |
 
 ---
 
@@ -79,16 +80,15 @@ The `examples/` directory contains one starter lesson per supported language:
 
 | Path | Language |
 |------|----------|
-| `examples/rust/` | Rust (default for `rust-course`) |
+| `examples/rust/` | Rust |
 | `examples/python/` | Python 3 |
 | `examples/javascript/` | Node.js |
 
-Each example covers Hello World, multi-line output, and variables — enough to verify the runner works end-to-end.
+Each example covers Hello World, multi-line output, and variables — enough to verify the runner works end-to-end. Use `--lessons-dir` to select which example to run:
 
-To run the Python example:
 ```bash
 cargo run -- serve --lessons-dir examples/python
-# then open http://localhost:3000 and select LanguageConfig::python() in your own binary
+cargo run -- serve --lessons-dir examples/javascript
 ```
 
 ---

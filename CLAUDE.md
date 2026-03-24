@@ -13,7 +13,7 @@ After every meaningful change, **both `CLAUDE.md` and `README.md` must be update
 
 ## Project overview
 
-**course-engine** is a language-agnostic library (`course_engine`) for building interactive coding courses. The **rust-course** binary is a thin wrapper that calls `serve(…, LanguageConfig::rust())`.
+**course-engine** is a language-agnostic library (`course_engine`) for building interactive coding courses. The **rust-course** binary is a thin CLI/server wrapper; it defaults to `examples/rust` but any `--lessons-dir` can be passed to use a different language or lesson set.
 
 Two interfaces:
 - **Web UI** (`cargo run -- serve`) — split-pane browser app with Monaco editor.
@@ -48,7 +48,7 @@ cargo fmt
 ```
 src/
   lib.rs           — library root; re-exports LanguageConfig, RunResult, run, serve
-  main.rs          — rust-course binary; clap subcommands; passes LanguageConfig::rust()
+  main.rs          — rust-course binary; clap subcommands; defaults to examples/rust with LanguageConfig::rust()
   language.rs      — LanguageConfig struct; presets: rust(), python(), javascript()
   exercise/model.rs  — Exercise, ValidationMode (exact_stdout | contains)
   lesson/
@@ -66,9 +66,9 @@ web/
   style.css        — Catppuccin dark theme; split-pane flex layout
   app.js           — fetches /api/config for Monaco language; Monaco bootstrap; API calls
 examples/
-  rust/            — example lesson for the Rust preset (default for rust-course binary)
-  python/          — example lesson for the Python preset
-  javascript/      — example lesson for the JavaScript preset
+  rust/            — starter lesson for the Rust preset (binary default)
+  python/          — starter lesson for the Python preset
+  javascript/      — starter lesson for the JavaScript preset
 ```
 
 ### REST API
