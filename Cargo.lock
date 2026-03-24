@@ -259,6 +259,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "toml",
+ "tower",
  "tower-http",
 ]
 

@@ -71,4 +71,28 @@ mod tests {
         save(&path, &Progress::default()).unwrap();
         assert!(path.exists());
     }
+
+    #[test]
+    fn load_errors_on_invalid_json() {
+        let dir = TempDir::new().unwrap();
+        let path = tmp_path(&dir);
+        std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+        std::fs::write(&path, "not valid json {{").unwrap();
+        let result = load(&path);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn save_produces_valid_json() {
+        let dir = TempDir::new().unwrap();
+        let path = tmp_path(&dir);
+        let mut p = Progress::default();
+        p.mark_complete("lesson-1", "ex_01");
+        save(&path, &p).unwrap();
+        let raw = std::fs::read_to_string(&path).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&raw).unwrap();
+        // completed is a map of lesson_id -> [exercise_ids]
+        assert!(parsed["completed"].is_object());
+        assert!(parsed["completed"]["lesson-1"].is_array());
+    }
 }

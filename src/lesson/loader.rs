@@ -75,12 +75,28 @@ pub fn load_all_lessons(lessons_dir: &Path) -> anyhow::Result<Vec<Lesson>> {
 mod tests {
     use super::*;
     use std::io::Write;
-    use tempfile::NamedTempFile;
+    use tempfile::{NamedTempFile, TempDir};
 
     fn write_toml(content: &str) -> NamedTempFile {
         let mut f = NamedTempFile::new().unwrap();
         write!(f, "{content}").unwrap();
         f
+    }
+
+    fn write_lesson_file(dir: &Path, filename: &str, id: &str, title: &str) {
+        let content = format!(
+            r#"id = "{id}"
+title = "{title}"
+description = "A test lesson."
+
+[[exercises]]
+id = "ex_01"
+title = "Ex"
+prompt = "Do it."
+expected_output = "ok"
+"#
+        );
+        std::fs::write(dir.join(filename), content).unwrap();
     }
 
     #[test]
@@ -155,5 +171,49 @@ mod tests {
         let f = write_toml("not valid toml }{");
         let err = load_lesson(f.path()).unwrap_err();
         assert!(matches!(err, LessonLoadError::ParseError { .. }));
+    }
+
+    #[test]
+    fn load_all_returns_lessons_sorted_by_filename() {
+        let dir = TempDir::new().unwrap();
+        write_lesson_file(dir.path(), "02-second.toml", "02-second", "Second");
+        write_lesson_file(dir.path(), "01-first.toml", "01-first", "First");
+        let lessons = load_all_lessons(dir.path()).unwrap();
+        assert_eq!(lessons.len(), 2);
+        assert_eq!(lessons[0].id, "01-first");
+        assert_eq!(lessons[1].id, "02-second");
+    }
+
+    #[test]
+    fn load_all_skips_non_toml_files() {
+        let dir = TempDir::new().unwrap();
+        write_lesson_file(dir.path(), "01-lesson.toml", "01-lesson", "Lesson");
+        std::fs::write(dir.path().join("notes.txt"), "ignore me").unwrap();
+        let lessons = load_all_lessons(dir.path()).unwrap();
+        assert_eq!(lessons.len(), 1);
+    }
+
+    #[test]
+    fn load_all_errors_on_missing_directory() {
+        let result = load_all_lessons(Path::new("/nonexistent/dir/for/test"));
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn error_messages_are_descriptive() {
+        let err = LessonLoadError::FileNotFound {
+            path: "foo.toml".into(),
+        };
+        assert!(err.to_string().contains("foo.toml"));
+
+        let err = LessonLoadError::EmptyLesson { id: "01-x".into() };
+        assert!(err.to_string().contains("01-x"));
+
+        let err = LessonLoadError::DuplicateExerciseId {
+            lesson_id: "01-x".into(),
+            ex_id: "ex_01".into(),
+        };
+        assert!(err.to_string().contains("ex_01"));
+        assert!(err.to_string().contains("01-x"));
     }
 }

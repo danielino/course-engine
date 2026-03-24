@@ -70,3 +70,42 @@ impl LanguageConfig {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn rust_preset_has_compile_step() {
+        let lang = LanguageConfig::rust();
+        assert!(lang.compile.is_some());
+        let (prog, args) = lang.compile.unwrap();
+        assert_eq!(prog, "rustc");
+        assert!(args.contains(&"{src}".to_string()));
+        assert!(args.contains(&"{out}".to_string()));
+        assert_eq!(lang.source_file, "main.rs");
+        assert_eq!(lang.monaco_language, "rust");
+    }
+
+    #[test]
+    fn python_preset_has_no_compile_step() {
+        let lang = LanguageConfig::python();
+        assert!(lang.compile.is_none());
+        assert_eq!(lang.source_file, "main.py");
+        assert_eq!(lang.monaco_language, "python");
+        let (prog, args) = lang.run;
+        assert_eq!(prog, "python3");
+        assert!(args.contains(&"{src}".to_string()));
+    }
+
+    #[test]
+    fn javascript_preset_has_no_compile_step() {
+        let lang = LanguageConfig::javascript();
+        assert!(lang.compile.is_none());
+        assert_eq!(lang.source_file, "main.js");
+        assert_eq!(lang.monaco_language, "javascript");
+        let (prog, args) = lang.run;
+        assert_eq!(prog, "node");
+        assert!(args.contains(&"{src}".to_string()));
+    }
+}

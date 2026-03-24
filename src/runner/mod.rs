@@ -254,4 +254,19 @@ mod tests {
         assert!(diff.contains("- Hello"));
         assert!(diff.contains("+ World"));
     }
+
+    #[test]
+    #[cfg(unix)]
+    fn run_returns_timeout_when_program_exceeds_limit() {
+        let lang = LanguageConfig {
+            monaco_language: "sh".to_string(),
+            source_file: "script.sh".to_string(),
+            compile: None,
+            run: ("sh".to_string(), vec!["{src}".to_string()]),
+            compile_timeout_secs: 0,
+            run_timeout_secs: 1,
+        };
+        let result = run("sleep 10", "", &ValidationMode::ExactStdout, &lang);
+        assert!(matches!(result, RunResult::Timeout));
+    }
 }

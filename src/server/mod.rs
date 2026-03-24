@@ -195,3 +195,200 @@ pub async fn serve(
     axum::serve(listener, app).await?;
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::body::Body;
+    use axum::http::{Method, Request, StatusCode};
+    use tempfile::TempDir;
+    use tower::ServiceExt;
+
+    use crate::exercise::model::{Exercise, ValidationMode};
+
+    fn test_lesson() -> Lesson {
+        Lesson {
+            id: "01-test".to_string(),
+            title: "Test Lesson".to_string(),
+            description: "A test lesson.".to_string(),
+            exercises: vec![Exercise {
+                id: "ex_01".to_string(),
+                title: "Print hello".to_string(),
+                prompt: "Print Hello, world!".to_string(),
+                expected_output: "Hello, world!".to_string(),
+                starter_code: None,
+                hints: vec![],
+                validation_mode: ValidationMode::ExactStdout,
+            }],
+        }
+    }
+
+    fn build_router(dir: &TempDir) -> Router {
+        let state = AppState {
+            lessons: Arc::new(vec![test_lesson()]),
+            progress: Arc::new(Mutex::new(Progress::default())),
+            progress_path: Arc::new(dir.path().join("progress.json")),
+            language: Arc::new(LanguageConfig::python()),
+        };
+        Router::new()
+            .route("/", get(index_html))
+            .route("/style.css", get(style_css))
+            .route("/app.js", get(app_js))
+            .route("/api/config", get(get_config))
+            .route("/api/lessons", get(get_lessons))
+            .route("/api/lessons/{id}", get(get_lesson))
+            .route("/api/progress", get(get_progress))
+            .route("/api/progress/reset", post(reset_progress))
+            .route("/api/run", post(run_code))
+            .with_state(state)
+    }
+
+    async fn body_json(res: axum::response::Response) -> serde_json::Value {
+        let bytes = axum::body::to_bytes(res.into_body(), usize::MAX)
+            .await
+            .unwrap();
+        serde_json::from_slice(&bytes).unwrap()
+    }
+
+    #[tokio::test]
+    async fn config_returns_language() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(Request::get("/api/config").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        let body = body_json(res).await;
+        assert_eq!(body["language"], "python");
+    }
+
+    #[tokio::test]
+    async fn lessons_returns_summary_list() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(Request::get("/api/lessons").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        let body = body_json(res).await;
+        assert_eq!(body[0]["id"], "01-test");
+        assert_eq!(body[0]["exercise_count"], 1);
+        assert_eq!(body[0]["completed"], 0);
+    }
+
+    #[tokio::test]
+    async fn lesson_by_id_returns_full_lesson() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(
+                Request::get("/api/lessons/01-test")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        let body = body_json(res).await;
+        assert_eq!(body["title"], "Test Lesson");
+        assert_eq!(body["exercises"][0]["id"], "ex_01");
+    }
+
+    #[tokio::test]
+    async fn lesson_by_id_returns_404_when_not_found() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(
+                Request::get("/api/lessons/nonexistent")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::NOT_FOUND);
+    }
+
+    #[tokio::test]
+    async fn progress_returns_empty_on_fresh_state() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(Request::get("/api/progress").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        let body = body_json(res).await;
+        // completed is a map of lesson_id -> [exercise_ids], empty when no progress
+        assert_eq!(body["completed"], serde_json::json!({}));
+    }
+
+    #[tokio::test]
+    async fn reset_progress_returns_ok() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(
+                Request::builder()
+                    .method(Method::POST)
+                    .uri("/api/progress/reset")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn run_returns_404_for_unknown_lesson() {
+        let dir = TempDir::new().unwrap();
+        let payload = serde_json::json!({
+            "lesson_id": "nonexistent",
+            "exercise_id": "ex_01",
+            "code": "print('hi')"
+        });
+        let res = build_router(&dir)
+            .oneshot(
+                Request::builder()
+                    .method(Method::POST)
+                    .uri("/api/run")
+                    .header("content-type", "application/json")
+                    .body(Body::from(serde_json::to_vec(&payload).unwrap()))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::NOT_FOUND);
+    }
+
+    #[tokio::test]
+    async fn static_index_returns_html() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(Request::get("/").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn static_css_returns_css_content_type() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(Request::get("/style.css").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        let ct = res.headers()["content-type"].to_str().unwrap();
+        assert!(ct.contains("text/css"));
+    }
+
+    #[tokio::test]
+    async fn static_js_returns_js_content_type() {
+        let dir = TempDir::new().unwrap();
+        let res = build_router(&dir)
+            .oneshot(Request::get("/app.js").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        let ct = res.headers()["content-type"].to_str().unwrap();
+        assert!(ct.contains("javascript"));
+    }
+}
