@@ -1,0 +1,223 @@
+id          = "26-capstone"
+title       = "Capstone Project"
+description = "Combine structs, interfaces, error handling, and file I/O into complete end-to-end mini-programs that demonstrate idiomatic Go."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Struct with interface and stringer"
+prompt          = """Define a Shape interface with Area() float64. Implement it for Rectangle{Width, Height float64} and Circle{Radius float64}. Print each shape's area formatted to 2 decimal places."""
+expected_output = "Rectangle area: 15.00\nCircle area: 28.27\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type Shape interface {
+	Area() float64
+}
+
+type Rectangle struct{ Width, Height float64 }
+type Circle struct{ Radius float64 }
+
+func (r Rectangle) Area() float64 { return r.Width * r.Height }
+func (c Circle) Area() float64    { return math.Pi * c.Radius * c.Radius }
+
+func printArea(name string, s Shape) {
+	fmt.Printf("%s area: %.2f\n", name, s.Area())
+}
+
+func main() {
+	printArea("Rectangle", Rectangle{Width: 3, Height: 5})
+	printArea("Circle", Circle{Radius: 3})
+}
+"""
+hints           = [
+  "math.Pi is the constant pi; import \"math\" to use it.",
+  "%.2f in Printf rounds to 2 decimal places.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Write and read a temp file"
+prompt          = """Write the string \"capstone\n\" to a temp file using os.WriteFile, then read it back with os.ReadFile and print the contents. Use defer os.Remove to clean up."""
+expected_output = "capstone\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	path := os.TempDir() + "/capstone_test.txt"
+	defer os.Remove(path)
+
+	err := os.WriteFile(path, []byte("capstone\n"), 0644)
+	if err != nil {
+		fmt.Println("write error:", err)
+		return
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		fmt.Println("read error:", err)
+		return
+	}
+
+	fmt.Print(string(data))
+}
+"""
+hints           = [
+  "os.WriteFile(path, data, perm) creates or truncates a file in one call.",
+  "defer os.Remove(path) ensures the file is deleted even if the function returns early.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Error wrapping and unwrapping"
+prompt          = """Define a NotFoundError{Name string} that implements error. Define lookup(name string) error that returns NotFoundError when name is \"missing\". Call lookup twice: once with \"missing\" (print \"not found: missing\") and once with \"ok\" (print \"found: ok\")."""
+expected_output = "not found: missing\nfound: ok\n"
+starter_code    = """package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+type NotFoundError struct{ Name string }
+
+func (e NotFoundError) Error() string { return "not found: " + e.Name }
+
+func lookup(name string) error {
+	if name == "missing" {
+		return NotFoundError{Name: name}
+	}
+	return nil
+}
+
+func main() {
+	for _, name := range []string{"missing", "ok"} {
+		err := lookup(name)
+		var nfe NotFoundError
+		if errors.As(err, &nfe) {
+			fmt.Println(nfe.Error())
+		} else {
+			fmt.Printf("found: %s\n", name)
+		}
+	}
+}
+"""
+hints           = [
+  "Implement the error interface by defining Error() string on your type.",
+  "errors.As(err, &target) checks whether err (or any wrapped error) matches the target type.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Capstone: in-memory student records"
+prompt          = """Define Student{Name string, Score int} and a Gradebook that stores students in a slice. Add a method Add and a method Report that prints each student sorted by name with grade: A(>=90), B(>=80), C otherwise. Add Alice(95), Bob(82), Carol(71) then call Report."""
+expected_output = "Alice: A\nBob: B\nCarol: C\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sort"
+)
+
+type Student struct {
+	Name  string
+	Score int
+}
+
+type Gradebook struct {
+	students []Student
+}
+
+func (g *Gradebook) Add(s Student) {
+	g.students = append(g.students, s)
+}
+
+func grade(score int) string {
+	switch {
+	case score >= 90:
+		return "A"
+	case score >= 80:
+		return "B"
+	default:
+		return "C"
+	}
+}
+
+func (g *Gradebook) Report() {
+	sorted := make([]Student, len(g.students))
+	copy(sorted, g.students)
+	sort.Slice(sorted, func(i, j int) bool {
+		return sorted[i].Name < sorted[j].Name
+	})
+	for _, s := range sorted {
+		fmt.Printf("%s: %s\n", s.Name, grade(s.Score))
+	}
+}
+
+func main() {
+	gb := &Gradebook{}
+	gb.Add(Student{"Alice", 95})
+	gb.Add(Student{"Bob", 82})
+	gb.Add(Student{"Carol", 71})
+	gb.Report()
+}
+"""
+hints           = [
+  "sort.Slice(slice, less func) sorts in place; copy first to avoid mutating the original.",
+  "A switch with no condition evaluates each case as a boolean, like an if-else chain.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Full mini-project: word frequency counter"
+prompt          = """Count word frequencies in the string \"the quick brown fox jumps over the lazy dog the fox\". Print each word that appears more than once, sorted alphabetically, with its count."""
+expected_output = "fox: 2\nthe: 3\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"sort"
+	"strings"
+)
+
+func wordFrequency(text string) map[string]int {
+	freq := make(map[string]int)
+	for _, w := range strings.Fields(text) {
+		freq[w]++
+	}
+	return freq
+}
+
+func main() {
+	text := "the quick brown fox jumps over the lazy dog the fox"
+	freq := wordFrequency(text)
+
+	var words []string
+	for w, count := range freq {
+		if count > 1 {
+			words = append(words, w)
+		}
+	}
+	sort.Strings(words)
+
+	for _, w := range words {
+		fmt.Printf("%s: %d\n", w, freq[w])
+	}
+}
+"""
+hints           = [
+  "strings.Fields splits on any whitespace and returns a []string.",
+  "Collect keys with count > 1 into a slice, sort it, then print to get deterministic output.",
+]
+validation_mode = "exact_stdout"

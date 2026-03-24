@@ -1,0 +1,145 @@
+id          = "25-cli-project"
+title       = "CLI Project"
+description = "Build small CLI tools using os.Args, the flag package, and structured output. Since the runner provides no arguments, use defaults or set os.Args in code."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Parse flags with defaults"
+prompt          = """Use the flag package with a -name flag defaulting to \"World\". Print \"Hello, World!\" using the default."""
+expected_output = "Hello, World!\n"
+starter_code    = """package main
+
+import (
+	"flag"
+	"fmt"
+)
+
+func main() {
+	name := flag.String("name", "World", "name to greet")
+	flag.Parse()
+	fmt.Printf("Hello, %s!\n", *name)
+}
+"""
+hints           = [
+  "flag.String(\"name\", \"World\", \"usage\") registers a string flag with a default.",
+  "flag.Parse() must be called before reading flag values; *name dereferences the pointer.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Integer flag"
+prompt          = """Register a -count flag defaulting to 3. Print \"Go\" that many times."""
+expected_output = "Go\nGo\nGo\n"
+starter_code    = """package main
+
+import (
+	"flag"
+	"fmt"
+)
+
+func main() {
+	count := flag.Int("count", 3, "how many times")
+	flag.Parse()
+	for i := 0; i < *count; i++ {
+		fmt.Println("Go")
+	}
+}
+"""
+hints           = [
+  "flag.Int returns *int; dereference with *count.",
+  "Loop *count times and print \"Go\" each iteration.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Simulate os.Args"
+prompt          = """Set os.Args to []string{\"prog\", \"foo\", \"bar\"} then print the number of arguments (excluding the program name) and each argument."""
+expected_output = "2\nfoo\nbar\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	os.Args = []string{"prog", "foo", "bar"}
+	args := os.Args[1:]
+	fmt.Println(len(args))
+	for _, a := range args {
+		fmt.Println(a)
+	}
+}
+"""
+hints           = [
+  "os.Args[0] is the program name; os.Args[1:] are the actual arguments.",
+  "len(args) gives the count; range over args to print each.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Sub-command dispatcher"
+prompt          = """Implement a dispatcher: set os.Args to [\"prog\", \"greet\"] and dispatch to a greet command that prints \"Hello from greet!\"."""
+expected_output = "Hello from greet!\n"
+starter_code    = """package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func cmdGreet() {
+	fmt.Println("Hello from greet!")
+}
+
+func main() {
+	os.Args = []string{"prog", "greet"}
+	if len(os.Args) < 2 {
+		fmt.Println("usage: prog <command>")
+		return
+	}
+	switch os.Args[1] {
+	case "greet":
+		cmdGreet()
+	default:
+		fmt.Println("unknown command")
+	}
+}
+"""
+hints           = [
+  "os.Args[1] is the sub-command name after setting os.Args.",
+  "Use a switch on os.Args[1] to dispatch to the right function.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Flag with sub-command"
+prompt          = """Use a FlagSet for a \"calc\" sub-command with a -n flag defaulting to 10. Print the doubled value of n."""
+expected_output = "20\n"
+starter_code    = """package main
+
+import (
+	"flag"
+	"fmt"
+	"os"
+)
+
+func main() {
+	os.Args = []string{"prog", "calc"}
+	calcCmd := flag.NewFlagSet("calc", flag.ExitOnError)
+	n := calcCmd.Int("n", 10, "input number")
+	if len(os.Args) >= 2 && os.Args[1] == "calc" {
+		calcCmd.Parse(os.Args[2:])
+	}
+	fmt.Println(*n * 2)
+}
+"""
+hints           = [
+  "flag.NewFlagSet creates an independent flag set for a sub-command.",
+  "calcCmd.Parse(os.Args[2:]) parses flags after the sub-command name.",
+]
+validation_mode = "exact_stdout"

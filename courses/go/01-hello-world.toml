@@ -1,0 +1,87 @@
+id          = "01-hello-world"
+title       = "Hello, World!"
+description = "Your first Go programs. Learn the basic structure of a Go source file: package declaration, imports, and the main function."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Print Hello, World!"
+prompt          = """Write a Go program that prints exactly:
+Hello, World!"""
+expected_output = "Hello, World!\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// your code here
+}
+"""
+hints           = [
+  "Use fmt.Println to print a line with a newline at the end.",
+  "fmt.Println(\"Hello, World!\") will print the text and add a newline automatically.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Print multiple lines"
+prompt          = """Print these three lines exactly:
+Go is fun
+Go is fast
+Go is simple"""
+expected_output = "Go is fun\nGo is fast\nGo is simple\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// print three lines
+}
+"""
+hints           = [
+  "Call fmt.Println three times, once for each line.",
+  "Each fmt.Println call appends a newline, so three calls produce three lines.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Print without newline then with"
+prompt          = """Print the following on a single line using two separate print calls:
+Hello Go"""
+expected_output = "Hello Go\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// use fmt.Print for the first word, then fmt.Println for the second
+}
+"""
+hints           = [
+  "fmt.Print does NOT add a newline; fmt.Println does.",
+  "fmt.Print(\"Hello \") followed by fmt.Println(\"Go\") produces 'Hello Go' on one line.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Formatted output with Printf"
+prompt          = """Use fmt.Printf to print:
+My name is Go and I am 10 years old"""
+expected_output = "My name is Go and I am 10 years old\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	name := "Go"
+	age  := 10
+	// use fmt.Printf with name and age
+}
+"""
+hints           = [
+  "fmt.Printf uses format verbs: %s for strings, %d for integers.",
+  "Remember to end the format string with \\n to get a newline: fmt.Printf(\"...%s...%d...\\n\", name, age).",
+]
+validation_mode = "exact_stdout"

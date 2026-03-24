@@ -1,0 +1,105 @@
+id          = "09-slices"
+title       = "Slices"
+description = "Learn Go slices: creation with make and literals, append, slicing expressions, copy, and range."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Slice literal and indexing"
+prompt          = """Create a slice fruits := []string{"apple", "banana", "cherry"}. Print the second element."""
+expected_output = "banana\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	fruits := []string{"apple", "banana", "cherry"}
+	// print the second element
+}
+"""
+hints           = [
+  "Slice indices start at 0, so the second element is at index 1.",
+  "fmt.Println(fruits[1]) prints \"banana\".",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Append to a slice"
+prompt          = """Start with nums := []int{1, 2, 3}. Append 4 and 5, then print the slice."""
+expected_output = "[1 2 3 4 5]\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	nums := []int{1, 2, 3}
+	// append 4 and 5, then print
+}
+"""
+hints           = [
+  "append returns a new slice; you must reassign: nums = append(nums, 4, 5).",
+  "fmt.Println(nums) prints the slice as [1 2 3 4 5] including brackets.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Slicing a slice"
+prompt          = """Given s := []int{0, 1, 2, 3, 4, 5}, print the sub-slice from index 2 up to (not including) index 5."""
+expected_output = "[2 3 4]\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	s := []int{0, 1, 2, 3, 4, 5}
+	// print s[2:5]
+}
+"""
+hints           = [
+  "s[2:5] creates a slice from index 2 to 4 (the upper bound is exclusive).",
+  "fmt.Println(s[2:5]) prints [2 3 4].",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "make and len/cap"
+prompt          = """Create a slice of ints with make, length 3 and capacity 5. Print its length and capacity on one line."""
+expected_output = "3 5\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// use make([]int, 3, 5)
+}
+"""
+hints           = [
+  "make([]int, length, capacity) allocates a slice with a given length and capacity.",
+  "fmt.Println(len(s), cap(s)) prints both values separated by a space.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Copy a slice"
+prompt          = """Copy []int{1, 2, 3} into a new slice, modify the new slice's first element to 99, and print both the original and the copy on separate lines."""
+expected_output = "[1 2 3]\n[99 2 3]\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	original := []int{1, 2, 3}
+	copied := make([]int, len(original))
+	// copy and modify
+	fmt.Println(original)
+	fmt.Println(copied)
+}
+"""
+hints           = [
+  "copy(copied, original) copies elements; the two slices do not share backing memory.",
+  "After copy, set copied[0] = 99 and print both.",
+]
+validation_mode = "exact_stdout"

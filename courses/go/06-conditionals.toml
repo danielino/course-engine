@@ -1,0 +1,102 @@
+id          = "06-conditionals"
+title       = "Conditionals"
+description = "Master Go's if/else and switch statements, including the init statement and type switches."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Simple if/else"
+prompt          = """Given x := 15, print \"positive\" if x > 0, \"negative\" if x < 0, or \"zero\" otherwise."""
+expected_output = "positive\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	x := 15
+	// if/else chain
+}
+"""
+hints           = [
+  "Use if x > 0 { ... } else if x < 0 { ... } else { ... }.",
+  "For x = 15 the first condition is true, so print \"positive\".",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "If with init statement"
+prompt          = """Use an if statement with an init statement that sets v := 42. Print \"big\" if v > 40, otherwise \"small\"."""
+expected_output = "big\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// if v := 42; v > 40 { ... }
+}
+"""
+hints           = [
+  "Go allows an initialisation statement before the condition: if v := 42; v > 40 { ... }.",
+  "v is scoped to the if block only.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Switch statement"
+prompt          = """Use a switch on day := \"Wednesday\" and print the corresponding result: Monday→\"Start\", Wednesday→\"Midweek\", Friday→\"End\", default→\"Other\"."""
+expected_output = "Midweek\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	day := "Wednesday"
+	// switch on day
+}
+"""
+hints           = [
+  "switch day { case \"Monday\": ... case \"Wednesday\": ... }",
+  "No need for break in Go; each case stops automatically.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Switch with multiple values per case"
+prompt          = """Given n := 3, use a switch to print \"odd\" for 1, 3, 5 and \"even\" for 2, 4, 6."""
+expected_output = "odd\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	n := 3
+	// switch with comma-separated case values
+}
+"""
+hints           = [
+  "A case can list multiple values: case 1, 3, 5:",
+  "Put the even numbers in a second case and a default for anything outside the range.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Expressionless switch (like if-else chain)"
+prompt          = """Use a switch with no expression to classify score := 75: print \"A\" for >=90, \"B\" for >=80, \"C\" for >=70, \"D\" otherwise."""
+expected_output = "C\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	score := 75
+	// expressionless switch
+}
+"""
+hints           = [
+  "switch { case score >= 90: ... } works without an expression after switch.",
+  "Cases are evaluated top to bottom; the first matching case runs.",
+]
+validation_mode = "exact_stdout"

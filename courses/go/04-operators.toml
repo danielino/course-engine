@@ -1,0 +1,102 @@
+id          = "04-operators"
+title       = "Operators"
+description = "Practice arithmetic, comparison, logical, and bitwise operators in Go."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Arithmetic operators"
+prompt          = """Given a = 17 and b = 5, print the results of a+b, a-b, a*b, a/b, and a%b each on its own line."""
+expected_output = "22\n12\n85\n3\n2\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	a := 17
+	b := 5
+	// print five arithmetic results
+}
+"""
+hints           = [
+  "Integer division truncates: 17/5 = 3 (not 3.4).",
+  "Use five separate fmt.Println calls, one for each operator.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Comparison operators"
+prompt          = """Print whether 7 >= 7 and whether 7 != 8 on separate lines."""
+expected_output = "true\ntrue\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// print two comparison results
+}
+"""
+hints           = [
+  "fmt.Println(7 >= 7) evaluates to true.",
+  "fmt.Println(7 != 8) also evaluates to true.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Logical operators"
+prompt          = """Print the result of (true && false) and (true || false) on separate lines."""
+expected_output = "false\ntrue\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// print logical AND and OR results
+}
+"""
+hints           = [
+  "&& is logical AND; both sides must be true for the result to be true.",
+  "|| is logical OR; at least one side must be true.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Bitwise operators"
+prompt          = """Print the result of 12 & 10 (bitwise AND) and 12 | 10 (bitwise OR) on separate lines."""
+expected_output = "8\n14\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// print bitwise AND and OR
+}
+"""
+hints           = [
+  "12 in binary is 1100, 10 is 1010. AND gives 1000 = 8.",
+  "OR gives 1110 = 14.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Increment and compound assignment"
+prompt          = """Start with x := 5. Increment x by 1, then multiply x by 3. Print x."""
+expected_output = "18\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	x := 5
+	// increment and multiply x
+	fmt.Println(x)
+}
+"""
+hints           = [
+  "x++ increments x by 1 (Go has no prefix ++ operator).",
+  "x *= 3 multiplies x in place.",
+]
+validation_mode = "exact_stdout"

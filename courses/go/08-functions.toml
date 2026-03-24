@@ -1,0 +1,132 @@
+id          = "08-functions"
+title       = "Functions"
+description = "Define and call Go functions: single and multiple return values, named returns, and variadic functions."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Simple function"
+prompt          = """Define a function greet(name string) string that returns \"Hello, \" + name + \"!\". Call it with \"Gopher\" and print the result."""
+expected_output = "Hello, Gopher!\n"
+starter_code    = """package main
+
+import "fmt"
+
+func greet(name string) string {
+	// return greeting
+}
+
+func main() {
+	fmt.Println(greet("Gopher"))
+}
+"""
+hints           = [
+  "return \"Hello, \" + name + \"!\" is the body of greet.",
+  "String concatenation with + works directly in Go.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Multiple return values"
+prompt          = """Define divide(a, b float64) (float64, error) that returns an error when b == 0. Call divide(10, 2) and print the result, then call divide(5, 0) and print the error message."""
+expected_output = "5\ndivision by zero\n"
+starter_code    = """package main
+
+import (
+	"errors"
+	"fmt"
+)
+
+func divide(a, b float64) (float64, error) {
+	// implement
+}
+
+func main() {
+	result, err := divide(10, 2)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(result)
+	}
+	_, err = divide(5, 0)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+"""
+hints           = [
+  "Use errors.New(\"division by zero\") to create the error.",
+  "Return 0, errors.New(\"division by zero\") when b == 0, and a/b, nil otherwise.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Named return values"
+prompt          = """Write minMax(nums []int) (min, max int) with named returns. Test it with []int{3, 1, 4, 1, 5} and print min and max on one line."""
+expected_output = "1 5\n"
+starter_code    = """package main
+
+import "fmt"
+
+func minMax(nums []int) (min, max int) {
+	min, max = nums[0], nums[0]
+	// fill in the loop
+	return
+}
+
+func main() {
+	min, max := minMax([]int{3, 1, 4, 1, 5})
+	fmt.Println(min, max)
+}
+"""
+hints           = [
+  "Loop through nums and update min and max as you go.",
+  "Named return values allow a bare return at the end.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Variadic function"
+prompt          = """Write sum(nums ...int) int that returns the sum of all arguments. Print sum(1, 2, 3, 4, 5)."""
+expected_output = "15\n"
+starter_code    = """package main
+
+import "fmt"
+
+func sum(nums ...int) int {
+	// sum all nums
+}
+
+func main() {
+	fmt.Println(sum(1, 2, 3, 4, 5))
+}
+"""
+hints           = [
+  "Inside sum, nums is a []int slice; loop over it with range.",
+  "Accumulate into a total variable and return it.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Functions as values"
+prompt          = """Assign an anonymous function that doubles its int argument to a variable double. Print double(7)."""
+expected_output = "14\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	double := func(n int) int {
+		// return doubled value
+	}
+	fmt.Println(double(7))
+}
+"""
+hints           = [
+  "func(n int) int { return n * 2 } is an anonymous function literal.",
+  "Assign it to double and call double(7).",
+]
+validation_mode = "exact_stdout"

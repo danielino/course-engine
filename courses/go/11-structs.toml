@@ -1,0 +1,131 @@
+id          = "11-structs"
+title       = "Structs"
+description = "Define and use Go structs: literals, field access, pointers to structs, and anonymous structs."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Define and print a struct"
+prompt          = """Define a struct Point with fields X and Y (both int). Create a Point{3, 4} and print its X and Y fields on one line."""
+expected_output = "3 4\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Point struct {
+	X int
+	Y int
+}
+
+func main() {
+	p := Point{3, 4}
+	// print X and Y
+}
+"""
+hints           = [
+  "Access fields with p.X and p.Y.",
+  "fmt.Println(p.X, p.Y) prints them separated by a space.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Named field literals"
+prompt          = """Create a Person struct with Name (string) and Age (int). Construct one using named fields (Name: \"Alice\", Age: 30) and print \"Alice is 30\"."""
+expected_output = "Alice is 30\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Person struct {
+	Name string
+	Age  int
+}
+
+func main() {
+	p := Person{Name: "Alice", Age: 30}
+	fmt.Printf("%s is %d\n", p.Name, p.Age)
+}
+"""
+hints           = [
+  "Named field syntax: Person{Name: \"Alice\", Age: 30}.",
+  "Access fields with p.Name and p.Age in the Printf format string.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Pointer to struct"
+prompt          = """Create a Rectangle with Width=5 and Height=3. Use a pointer to double its Width, then print the Width."""
+expected_output = "10\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Rectangle struct {
+	Width  int
+	Height int
+}
+
+func main() {
+	r := Rectangle{Width: 5, Height: 3}
+	p := &r
+	// double p.Width
+	fmt.Println(r.Width)
+}
+"""
+hints           = [
+  "p is a pointer to r; p.Width is shorthand for (*p).Width.",
+  "p.Width *= 2 doubles the width through the pointer.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Struct with a method preview"
+prompt          = """Define a Circle struct with Radius float64. Add a method Area() float64 that returns 3.14159 * r.Radius * r.Radius. Print the area of a Circle with radius 2, formatted to 5 decimal places."""
+expected_output = "12.56636\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Circle struct {
+	Radius float64
+}
+
+func (c Circle) Area() float64 {
+	// return area
+}
+
+func main() {
+	c := Circle{Radius: 2}
+	fmt.Printf("%.5f\n", c.Area())
+}
+"""
+hints           = [
+  "return 3.14159 * c.Radius * c.Radius inside the Area method.",
+  "%.5f in fmt.Printf formats to 5 decimal places.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Anonymous struct"
+prompt          = """Use an anonymous struct to store name \"Go\" and version 1. Print them in the format \"Go v1\"."""
+expected_output = "Go v1\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	info := struct {
+		Name    string
+		Version int
+	}{Name: "Go", Version: 1}
+	fmt.Printf("%s v%d\n", info.Name, info.Version)
+}
+"""
+hints           = [
+  "Anonymous structs are defined and initialised inline without a type name.",
+  "Access fields the same way as named structs: info.Name, info.Version.",
+]
+validation_mode = "exact_stdout"

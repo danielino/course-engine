@@ -1,0 +1,160 @@
+id          = "20-generics"
+title       = "Generics"
+description = "Write type-parameterised functions and types using Go generics (type parameters, constraints, comparable)."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Generic Min function"
+prompt          = """Write a generic Min[T constraints.Ordered](a, b T) T function. Print Min(3, 7) and Min(\"apple\", \"banana\") on separate lines."""
+expected_output = "3\napple\n"
+starter_code    = """package main
+
+import (
+	"cmp"
+	"fmt"
+)
+
+func Min[T cmp.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func main() {
+	fmt.Println(Min(3, 7))
+	fmt.Println(Min("apple", "banana"))
+}
+"""
+hints           = [
+  "cmp.Ordered is a constraint that includes all ordered types (int, float64, string, etc.).",
+  "The same function works for both int and string without code duplication.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Generic Map function"
+prompt          = """Write Map[T, U any](s []T, f func(T) U) []U that applies f to every element. Use it to double []int{1,2,3} and print the result."""
+expected_output = "[2 4 6]\n"
+starter_code    = """package main
+
+import "fmt"
+
+func Map[T, U any](s []T, f func(T) U) []U {
+	out := make([]U, len(s))
+	for i, v := range s {
+		out[i] = f(v)
+	}
+	return out
+}
+
+func main() {
+	doubled := Map([]int{1, 2, 3}, func(x int) int { return x * 2 })
+	fmt.Println(doubled)
+}
+"""
+hints           = [
+  "Type parameters T and U are inferred from the arguments; no need to specify them explicitly.",
+  "make([]U, len(s)) creates an output slice of the correct type and length.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Generic Filter function"
+prompt          = """Write Filter[T any](s []T, keep func(T) bool) []T. Use it to keep only even numbers from []int{1,2,3,4,5,6} and print the result."""
+expected_output = "[2 4 6]\n"
+starter_code    = """package main
+
+import "fmt"
+
+func Filter[T any](s []T, keep func(T) bool) []T {
+	var out []T
+	for _, v := range s {
+		if keep(v) {
+			out = append(out, v)
+		}
+	}
+	return out
+}
+
+func main() {
+	evens := Filter([]int{1, 2, 3, 4, 5, 6}, func(x int) bool { return x%2 == 0 })
+	fmt.Println(evens)
+}
+"""
+hints           = [
+  "Append to out only when keep(v) returns true.",
+  "The type parameter T is inferred from the []int argument.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Generic Stack"
+prompt          = """Implement a generic Stack[T any] with Push and Pop methods. Push 1, 2, 3, then Pop twice and print the popped values."""
+expected_output = "3\n2\n"
+starter_code    = """package main
+
+import "fmt"
+
+type Stack[T any] struct {
+	data []T
+}
+
+func (s *Stack[T]) Push(v T) {
+	s.data = append(s.data, v)
+}
+
+func (s *Stack[T]) Pop() T {
+	n := len(s.data)
+	v := s.data[n-1]
+	s.data = s.data[:n-1]
+	return v
+}
+
+func main() {
+	var st Stack[int]
+	st.Push(1)
+	st.Push(2)
+	st.Push(3)
+	fmt.Println(st.Pop())
+	fmt.Println(st.Pop())
+}
+"""
+hints           = [
+  "Stack is a generic type; instantiate it as Stack[int] for integers.",
+  "Pop removes the last element; stacks are LIFO so 3 comes out first.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Generic Contains with comparable"
+prompt          = """Write Contains[T comparable](s []T, target T) bool. Test it with []string{\"a\",\"b\",\"c\"} and target \"b\", then target \"z\". Print the two results."""
+expected_output = "true\nfalse\n"
+starter_code    = """package main
+
+import "fmt"
+
+func Contains[T comparable](s []T, target T) bool {
+	for _, v := range s {
+		if v == target {
+			return true
+		}
+	}
+	return false
+}
+
+func main() {
+	words := []string{"a", "b", "c"}
+	fmt.Println(Contains(words, "b"))
+	fmt.Println(Contains(words, "z"))
+}
+"""
+hints           = [
+  "comparable is a built-in constraint allowing == comparisons.",
+  "Return true as soon as v == target is found; return false after the loop.",
+]
+validation_mode = "exact_stdout"

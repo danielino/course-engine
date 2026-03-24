@@ -1,0 +1,106 @@
+id          = "02-variables"
+title       = "Variables"
+description = "Explore Go's ways to declare variables: var, short declaration :=, const, and zero values."
+
+[[exercises]]
+id              = "ex_01"
+title           = "var declaration"
+prompt          = """Declare a variable named city using var, assign it the value \"Gopher City\", then print it."""
+expected_output = "Gopher City\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	var city string
+	// assign and print city
+}
+"""
+hints           = [
+  "Assign with city = \"Gopher City\" after the var declaration.",
+  "Then call fmt.Println(city) to print it.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Short variable declaration"
+prompt          = """Use := to declare a variable score with value 42, then print it."""
+expected_output = "42\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	// declare score with :=
+}
+"""
+hints           = [
+  "The short declaration looks like: score := 42",
+  "Then use fmt.Println(score) to print the value.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Constants"
+prompt          = """Declare a constant Pi with value 3.14 and a constant Language with value \"Go\". Print them on one line separated by a space."""
+expected_output = "3.14 Go\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	const Pi = 3.14
+	// declare Language constant and print both
+}
+"""
+hints           = [
+  "const Language = \"Go\" declares the string constant.",
+  "fmt.Println(Pi, Language) prints both values separated by a space.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Zero values"
+prompt          = """Declare three variables using var without assigning them: an int named n, a bool named b, and a string named s. Print them on one line."""
+expected_output = "0 false \n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	var n int
+	var b bool
+	var s string
+	// print n, b, s
+}
+"""
+hints           = [
+  "Go initialises every variable to its zero value: 0 for int, false for bool, \"\" for string.",
+  "fmt.Println(n, b, s) will print all three separated by spaces.",
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Multiple assignment"
+prompt          = """Assign x = 10 and y = 20, swap their values, then print x and y on one line."""
+expected_output = "20 10\n"
+starter_code    = """package main
+
+import "fmt"
+
+func main() {
+	x := 10
+	y := 20
+	// swap x and y
+	fmt.Println(x, y)
+}
+"""
+hints           = [
+  "Go supports multiple assignment: x, y = y, x swaps both in one statement.",
+  "No temporary variable needed — just write x, y = y, x before the Println.",
+]
+validation_mode = "exact_stdout"
