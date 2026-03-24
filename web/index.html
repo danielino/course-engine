@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rust-course</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <!-- ── Sidebar ── -->
+  <aside id="sidebar">
+    <div id="sidebar-header">
+      <span class="logo">🦀 rust-course</span>
+      <button id="reset-btn" title="Reset all progress">↺</button>
+    </div>
+    <ul id="lesson-list"></ul>
+  </aside>
+
+  <!-- ── Main panel ── -->
+  <main id="main">
+
+    <!-- Left: exercise description -->
+    <section id="description-panel">
+      <div id="description-content">
+        <p class="placeholder">← Select a lesson to begin</p>
+      </div>
+    </section>
+
+    <!-- Right: editor + output -->
+    <section id="editor-panel">
+      <div id="editor-toolbar">
+        <span id="exercise-nav">
+          <button id="prev-btn" disabled>‹ Prev</button>
+          <span id="exercise-counter"></span>
+          <button id="next-btn" disabled>Next ›</button>
+        </span>
+        <button id="run-btn" disabled>▶ Run</button>
+      </div>
+      <div id="editor-container"></div>
+      <div id="output-panel">
+        <div id="output-label">Output</div>
+        <pre id="output-content"><span class="muted">Your output will appear here…</span></pre>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Monaco Editor (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

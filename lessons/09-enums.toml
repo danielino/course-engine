@@ -1,0 +1,134 @@
+id          = "09-enums"
+title       = "Enums and Pattern Matching"
+description = "Define enums with and without data, use match exhaustively, and handle variants with if let."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic enum"
+prompt          = """
+Define:
+    enum Direction { North, South, East, West }
+
+Create a value `Direction::North`, match on it, and print:
+    Going north
+"""
+expected_output = "Going north"
+starter_code    = """
+enum Direction {
+    North,
+    South,
+    East,
+    West,
+}
+
+fn main() {
+    let dir = Direction::North;
+    match dir {
+        // handle each variant
+    }
+}
+"""
+hints = [
+    "match dir { Direction::North => println!(\"Going north\"), _ => {} }",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Enum with data"
+prompt          = """
+Define:
+    enum Shape { Circle(f64), Rectangle(f64, f64) }
+
+Match on `Shape::Circle(5.0)` and print:
+    circle r=5
+"""
+expected_output = "circle r=5"
+starter_code    = """
+enum Shape {
+    Circle(f64),
+    Rectangle(f64, f64),
+}
+
+fn main() {
+    let s = Shape::Circle(5.0);
+    match s {
+        // extract the radius and print
+        _ => {}
+    }
+}
+"""
+hints = [
+    "Shape::Circle(r) => println!(\"circle r={:.0}\", r),",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Match with guards"
+prompt          = """
+Match on integer values using guards.
+For `3` print \"small\" (1..=5), for `99` print \"other\".
+Do this for both values in sequence — one per line.
+
+Expected output:
+    small
+    other
+"""
+expected_output = "small\nother"
+starter_code    = """
+fn classify(n: u32) -> &'static str {
+    match n {
+        // 1..=5 => "small"
+        // _ => "other"
+    }
+}
+
+fn main() {
+    println!("{}", classify(3));
+    println!("{}", classify(99));
+}
+"""
+hints = [
+    "1..=5 is a range pattern in match arms.",
+    "match n { 1..=5 => \"small\", _ => \"other\" }",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Binding in catch-all"
+prompt          = """
+Match on `7u32`. Have arms for `1`, `2`, and a catch-all that binds the value to `n`.
+In the catch-all arm print:
+    got 7
+"""
+expected_output = "got 7"
+starter_code    = """
+fn main() {
+    let x: u32 = 7;
+    match x {
+        1 => println!("one"),
+        2 => println!("two"),
+        // catch-all binding
+    }
+}
+"""
+hints = [
+    "n => println!(\"got {}\", n),",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "if let"
+prompt          = """
+Use `if let` to extract the value from `Some(42)` and print:
+    found 42
+"""
+expected_output = "found 42"
+starter_code    = """
+fn main() {
+    let maybe: Option<i32> = Some(42);
+    // use if let to unwrap and print
+}
+"""
+hints = [
+    "if let Some(v) = maybe { println!(\"found {}\", v); }",
+]

@@ -1,0 +1,13 @@
+# Rust build artefacts
+/target/
+
+# Progress data — user-specific, not part of the course
+.rust-course/
+progress.json
+
+# Editor and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo

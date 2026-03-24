@@ -1,0 +1,179 @@
+id          = "15-traits"
+title       = "Traits"
+description = "Define shared behavior with traits, implement them on your types, and use trait bounds."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Define and implement a trait"
+prompt          = """
+Define `trait Area { fn area(&self) -> f64; }`.
+Implement it for `struct Rectangle { w: f64, h: f64 }` where `area = w * h`.
+
+Create `Rectangle { w: 4.0, h: 5.0 }` and print the area as a whole number.
+
+Expected output:
+    20
+"""
+expected_output = "20"
+starter_code    = """
+trait Area {
+    fn area(&self) -> f64;
+}
+
+struct Rectangle {
+    w: f64,
+    h: f64,
+}
+
+impl Area for Rectangle {
+    // implement area()
+    fn area(&self) -> f64 {
+        todo!()
+    }
+}
+
+fn main() {
+    let r = Rectangle { w: 4.0, h: 5.0 };
+    println!("{:.0}", r.area());
+}
+"""
+hints = [
+    "self.w * self.h",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Default method"
+prompt          = """
+Add a default method to `Area`:
+    fn describe(&self) -> String { format!(\"area = {:.0}\", self.area()) }
+
+Call `.describe()` on the rectangle and print.
+
+Expected output:
+    area = 20
+"""
+expected_output = "area = 20"
+starter_code    = """
+trait Area {
+    fn area(&self) -> f64;
+    // add default describe() here
+}
+
+struct Rectangle { w: f64, h: f64 }
+
+impl Area for Rectangle {
+    fn area(&self) -> f64 { self.w * self.h }
+}
+
+fn main() {
+    let r = Rectangle { w: 4.0, h: 5.0 };
+    println!("{}", r.describe());
+}
+"""
+hints = [
+    "Default methods are defined in the trait body with an implementation.",
+    "fn describe(&self) -> String { format!(\"area = {:.0}\", self.area()) }",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "impl Trait in function parameters"
+prompt          = """
+Write `fn print_area(shape: &impl Area)` that prints the area.
+Call it with the rectangle from before.
+
+Expected output:
+    20
+"""
+expected_output = "20"
+starter_code    = """
+trait Area {
+    fn area(&self) -> f64;
+}
+
+struct Rectangle { w: f64, h: f64 }
+impl Area for Rectangle {
+    fn area(&self) -> f64 { self.w * self.h }
+}
+
+fn print_area(shape: &impl Area) {
+    // print the area
+    todo!()
+}
+
+fn main() {
+    let r = Rectangle { w: 4.0, h: 5.0 };
+    print_area(&r);
+}
+"""
+hints = [
+    "println!(\"{:.0}\", shape.area());",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Derive traits"
+prompt          = """
+Derive `Debug` and `Clone` on `struct Color { r: u8, g: u8, b: u8 }`.
+Create `Color { r: 255, g: 0, b: 0 }`, clone it, and print the clone with `{:?}`.
+
+Expected output:
+    Color { r: 255, g: 0, b: 0 }
+"""
+expected_output = "Color { r: 255, g: 0, b: 0 }"
+starter_code    = """
+// add derive here
+struct Color {
+    r: u8,
+    g: u8,
+    b: u8,
+}
+
+fn main() {
+    let c = Color { r: 255, g: 0, b: 0 };
+    let c2 = c.clone();
+    println!("{:?}", c2);
+}
+"""
+hints = [
+    "#[derive(Debug, Clone)]  — place this attribute directly above the struct.",
+    "{:?} uses the Debug formatter.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Implementing Display"
+prompt          = """
+Implement `std::fmt::Display` for `struct Point { x: i32, y: i32 }` so that
+`println!(\"{}\", p)` prints `(3, 7)`.
+
+Test with `Point { x: 3, y: 7 }`.
+
+Expected output:
+    (3, 7)
+"""
+expected_output = "(3, 7)"
+starter_code    = """
+use std::fmt;
+
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // write "(x, y)"
+        todo!()
+    }
+}
+
+fn main() {
+    let p = Point { x: 3, y: 7 };
+    println!("{}", p);
+}
+"""
+hints = [
+    "write!(f, \"({}, {})\", self.x, self.y)",
+]

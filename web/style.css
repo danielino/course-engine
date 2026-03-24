@@ -1,0 +1,295 @@
+/* ── Reset & variables ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #1e1e2e;
+  --surface:   #181825;
+  --sidebar:   #11111b;
+  --border:    #313244;
+  --text:      #cdd6f4;
+  --muted:     #6c7086;
+  --accent:    #89b4fa;
+  --green:     #a6e3a1;
+  --red:       #f38ba8;
+  --yellow:    #f9e2af;
+  --orange:    #fab387;
+  --sidebar-w: 260px;
+  --toolbar-h: 42px;
+  --output-h:  180px;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+  --font-ui:   -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+body {
+  display: flex;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+#sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+#reset-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: color 0.15s, border-color 0.15s;
+}
+#reset-btn:hover { color: var(--red); border-color: var(--red); }
+
+#lesson-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 0;
+}
+
+#lesson-list li {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.1s, border-color 0.1s;
+  line-height: 1.4;
+}
+#lesson-list li:hover    { background: var(--surface); }
+#lesson-list li.active   { background: var(--surface); border-left-color: var(--accent); }
+
+.lesson-title {
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lesson-progress {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.lesson-progress.done { color: var(--green); }
+
+/* ── Main area ───────────────────────────────────────────────────────────── */
+#main {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  height: 100vh;
+}
+
+/* ── Description panel (left) ────────────────────────────────────────────── */
+#description-panel {
+  width: 38%;
+  min-width: 280px;
+  max-width: 480px;
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 24px 20px;
+  background: var(--bg);
+}
+
+#description-content h2 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--accent);
+  line-height: 1.3;
+}
+
+#description-content .section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 18px 0 6px;
+}
+
+#description-content .prompt {
+  white-space: pre-wrap;
+  line-height: 1.65;
+  color: var(--text);
+  font-size: 13.5px;
+}
+
+#description-content .expected {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  white-space: pre-wrap;
+  color: var(--green);
+}
+
+.placeholder { color: var(--muted); font-style: italic; }
+
+/* Hints */
+#hint-section { margin-top: 20px; }
+
+#hint-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--yellow);
+  border-radius: 6px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+#hint-btn:hover { background: var(--surface); }
+
+#hint-text {
+  margin-top: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--yellow);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  display: none;
+}
+
+/* ── Editor panel (right) ────────────────────────────────────────────────── */
+#editor-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--surface);
+}
+
+#editor-toolbar {
+  height: var(--toolbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+#exercise-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+#exercise-nav button {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+#exercise-nav button:disabled { opacity: 0.35; cursor: default; }
+#exercise-nav button:not(:disabled):hover { background: var(--bg); }
+
+#run-btn {
+  background: var(--accent);
+  color: var(--sidebar);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 18px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+#run-btn:disabled { opacity: 0.4; cursor: default; }
+#run-btn:not(:disabled):hover { opacity: 0.85; }
+#run-btn.running { opacity: 0.6; cursor: wait; }
+
+#editor-container {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Output panel ────────────────────────────────────────────────────────── */
+#output-panel {
+  height: var(--output-h);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+#output-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 5px 14px 4px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+#output-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+.muted      { color: var(--muted); }
+.out-success { color: var(--green); }
+.out-error   { color: var(--red); }
+.out-diff    { color: var(--yellow); }
+.out-timeout { color: var(--orange); }
+
+/* Diff coloring */
+.diff-del { color: var(--red); }
+.diff-ins { color: var(--green); }
+.diff-eq  { color: var(--muted); }
+
+/* ── Scrollbars ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

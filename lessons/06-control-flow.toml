@@ -1,0 +1,131 @@
+id          = "06-control-flow"
+title       = "Control Flow"
+description = "if/else, loop, while, for, ranges — the full set of Rust control flow constructs."
+
+[[exercises]]
+id              = "ex_01"
+title           = "if / else"
+prompt          = """
+Use an `if/else` to check whether `42` is even or odd.
+Print \"even\" or \"odd\" accordingly.
+
+Expected output:
+    even
+"""
+expected_output = "even"
+starter_code    = """
+fn main() {
+    let n = 42;
+    // check if n is even or odd
+}
+"""
+hints = [
+    "Use the modulo operator: n % 2 == 0 means even.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "loop with break value"
+prompt          = """
+Use `loop` with a counter variable starting at `0`.
+Increment the counter each iteration.
+When the counter reaches `5`, break and return the counter value from the loop.
+Print that value.
+
+Expected output:
+    5
+"""
+expected_output = "5"
+starter_code    = """
+fn main() {
+    let mut counter = 0;
+    let result = loop {
+        // increment counter
+        // break with the value when counter == 5
+    };
+    println!("{}", result);
+}
+"""
+hints = [
+    "break <value>; returns a value from a loop expression.",
+    "counter += 1; then if counter == 5 { break counter; }",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "while loop"
+prompt          = """
+Count down from `3` to `1` using a `while` loop.
+Print each number on its own line.
+
+Expected output:
+    3
+    2
+    1
+"""
+expected_output = "3\n2\n1"
+starter_code    = """
+fn main() {
+    let mut n = 3;
+    while n >= 1 {
+        // print n
+        // decrement n
+    }
+}
+"""
+hints = [
+    "println!(\"{}\", n); then n -= 1;",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "for with a range"
+prompt          = """
+Use `for i in 1..=5` to print the square of each number, one per line.
+
+Expected output:
+    1
+    4
+    9
+    16
+    25
+"""
+expected_output = "1\n4\n9\n16\n25"
+starter_code    = """
+fn main() {
+    for i in 1..=5 {
+        // print i * i
+    }
+}
+"""
+hints = [
+    "1..=5 is an inclusive range (includes 5). 1..5 would exclude 5.",
+    "println!(\"{}\", i * i);",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Nested loops with continue"
+prompt          = """
+Use nested loops where `i` and `j` each go from `1` to `2`.
+Print only the pairs where `i != j`, one per line (space-separated).
+
+Expected output:
+    1 2
+    2 1
+"""
+expected_output = "1 2\n2 1"
+starter_code    = """
+fn main() {
+    for i in 1..=2 {
+        for j in 1..=2 {
+            // skip when i == j
+            // otherwise print "i j"
+        }
+    }
+}
+"""
+hints = [
+    "Use `if i == j { continue; }` to skip equal pairs.",
+    "println!(\"{} {}\", i, j); prints the pair.",
+]
