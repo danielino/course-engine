@@ -30,6 +30,7 @@ cargo build
 cargo run -- serve                          # web UI on :3000, auto-discovers courses/
 cargo run -- serve --courses-dir my/path    # custom courses directory
 cargo run -- serve --port 8080
+cargo run -- serve --host 0.0.0.0           # bind to all interfaces (Docker)
 cargo run                                   # CLI, default courses/rust
 cargo run -- --lessons-dir courses/python   # CLI for a specific course
 cargo run -- list
@@ -146,13 +147,23 @@ The full specification for generating a new course is in **`course-generator-cla
 
 ---
 
+## Deployment
+
+Docker + Fly.io:
+- `Dockerfile`: multi-stage build (Rust builder + Debian runtime with gcc, python3, nodejs, golang-go)
+- `fly.toml`: Frankfurt region, shared-cpu-1x, auto-stop/start, force HTTPS
+- `--host 0.0.0.0` required inside Docker (default is 127.0.0.1)
+- Deploy: `fly deploy`
+
+---
+
 ## CI/CD
 
 Two GitHub Actions workflows in `.github/workflows/`:
 
 | Workflow | Trigger | Jobs |
 |----------|---------|------|
-| `ci.yml` | push/PR to `main` or `develop` | `fmt` (rustfmt --check) · `clippy` (-D warnings) · `test` (ubuntu, macos, windows) |
+| `ci.yml` | push/PR to `main` or `develop` | `validate-lessons` · `fmt` (rustfmt --check) · `clippy` (-D warnings) · `test` (ubuntu, macos, windows) |
 | `release.yml` | push of a `v*.*.*` tag | cross-compile binaries for Linux/macOS/Windows, publish GitHub Release with artifacts |
 
 Pre-commit hooks (`.pre-commit-config.yaml`) mirror the CI checks locally.
