@@ -54,12 +54,20 @@ body {
   flex-shrink: 0;
 }
 
-.logo {
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.02em;
+#course-select {
+  flex: 1;
+  background: var(--surface);
   color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  margin-right: 8px;
 }
+#course-select:focus { outline: none; border-color: var(--accent); }
 
 #reset-btn {
   background: none;

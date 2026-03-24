@@ -1,6 +1,6 @@
 # course-engine
 
-**course-engine** is a language-agnostic library for building interactive coding courses. It ships with a ready-to-use binary and example lesson starters for Rust, Python, and JavaScript.
+**course-engine** is a language-agnostic library for building interactive coding courses. It ships with a ready-to-use binary and starter lessons for Rust, Python, and JavaScript.
 
 Two interfaces available: a **web UI** (recommended) and a **terminal CLI**.
 
@@ -33,13 +33,16 @@ Then open **http://localhost:3000** in your browser.
 
 ```bash
 cargo run -- serve --port 8080
+cargo run -- serve --courses-dir /path/to/my/courses
 ```
+
+The web UI auto-discovers all course subdirectories inside `courses/` (or the path passed via `--courses-dir`). A dropdown in the top-left lets you switch between courses; progress is tracked separately per course.
 
 ### Layout
 
 | Left panel | Right panel |
 |---|---|
-| Lesson list (sidebar) | Monaco editor with syntax highlighting and autocomplete |
+| Course selector + lesson list (sidebar) | Monaco editor with syntax highlighting and autocomplete |
 | Exercise title and task description | ▶ Run button (or **Ctrl/Cmd+Enter**) |
 | Expected output | Output panel: result, compile errors, or diff |
 | Hints (revealed on demand) | Prev / Next exercise navigation |
@@ -48,7 +51,7 @@ When your output matches the expected output the exercise is marked complete and
 
 ### Autocomplete (Rust)
 
-When using the Rust preset, Monaco provides:
+When using the Rust course, Monaco provides:
 - **Method completions** — type `.` after any expression to get suggestions for `String`, `Vec`, `Option`, `Result`, `Iterator`, `HashMap`, and general traits.
 - **Keyword and snippet completions** — `fn`, `struct`, `impl`, `enum`, `trait`, `match`, `if let`, `for in`, `println!`, `vec!`, `assert_eq!`, `Box::new`, `Arc::new`, `HashMap::new`, and more.
 
@@ -66,36 +69,32 @@ Select a lesson from the arrow-key menu, read the exercise prompt, press **Enter
 
 | Command | Description |
 |---------|-------------|
-| `cargo run` | Start or resume the course (default) |
+| `cargo run` | Start or resume the course (default: `courses/rust`) |
 | `cargo run -- serve` | Launch the web UI |
 | `cargo run -- list` | List all lessons with completion status |
-| `cargo run -- reset` | Clear all saved progress |
-| `cargo run -- --lessons-dir <path>` | Use a custom lessons directory |
+| `cargo run -- reset` | Clear all saved progress for the current course |
+| `cargo run -- --lessons-dir courses/python` | Use a different single-course directory |
+| `cargo run -- serve --courses-dir <path>` | Serve from a custom courses directory |
 
 ---
 
-## Example lessons
+## Courses
 
-The `examples/` directory contains one starter lesson per supported language:
+The `courses/` directory contains one starter lesson per supported language:
 
 | Path | Language |
 |------|----------|
-| `examples/rust/` | Rust |
-| `examples/python/` | Python 3 |
-| `examples/javascript/` | Node.js |
+| `courses/rust/` | Rust |
+| `courses/python/` | Python 3 |
+| `courses/javascript/` | Node.js |
 
-Each example covers Hello World, multi-line output, and variables — enough to verify the runner works end-to-end. Use `--lessons-dir` to select which example to run:
-
-```bash
-cargo run -- serve --lessons-dir examples/python
-cargo run -- serve --lessons-dir examples/javascript
-```
+Each starter covers Hello World, multi-line output, and variables — enough to verify the runner works end-to-end.
 
 ---
 
 ## Writing your own lessons
 
-Lessons are TOML files inside the `lessons/` directory, loaded alphabetically by filename.
+Lessons are TOML files inside a course subdirectory, loaded alphabetically by filename.
 
 **Filename convention:** `NN-slug.toml` — use zero-padded numbers to control order (e.g. `26-async.toml`).
 
@@ -142,13 +141,13 @@ validation_mode = "exact_stdout"
 | `exercises[].hints` | no | Strings revealed one at a time on demand |
 | `exercises[].validation_mode` | no | `"exact_stdout"` (default) or `"contains"` |
 
-**Note:** the Rust preset compiles with bare `rustc` (no Cargo), so solutions must use `std` only. For Python and JavaScript exercises, `starter_code` defaults to an empty file and the `fn main()` placeholder is not added automatically.
+**Note:** the Rust preset compiles with bare `rustc` (no Cargo), so solutions must use `std` only.
 
 ---
 
 ## Progress
 
-Progress is stored at `~/.local/share/.rust-course/progress.json`. To reset it:
+Progress is stored per course at `~/.local/share/course-engine/progress-{course}.json`. To reset:
 
 ```bash
 cargo run -- reset
@@ -167,23 +166,21 @@ course-engine = { path = "../course-engine" }
 tokio = { version = "1", features = ["full"] }
 ```
 
-Launch a course for any language:
+Launch the multi-course web server:
 
 ```rust
-use course_engine::{serve, LanguageConfig};
+use course_engine::serve;
 use std::path::PathBuf;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    // Built-in presets
-    serve(PathBuf::from("lessons"), 3000, LanguageConfig::rust()).await?;
-    // serve(PathBuf::from("lessons"), 3000, LanguageConfig::python()).await?;
-    // serve(PathBuf::from("lessons"), 3000, LanguageConfig::javascript()).await?;
+    // Scans courses/ subdirs, maps dirname → LanguageConfig preset
+    serve(PathBuf::from("courses"), 3000).await?;
     Ok(())
 }
 ```
 
-Or define a custom language:
+Or define a custom language config:
 
 ```rust
 use course_engine::LanguageConfig;

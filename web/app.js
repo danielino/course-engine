@@ -1,5 +1,7 @@
 /* ── State ───────────────────────────────────────────────────────────────── */
 const state = {
+  courses:       [],   // CourseInfo[] from /api/courses
+  currentCourse: null, // slug string, e.g. "rust"
   lessons:       [],   // LessonSummary[]
   currentLesson: null, // full Lesson object
   currentExIdx:  0,
@@ -14,13 +16,9 @@ require.config({
 });
 
 require(["vs/editor/editor.main"], async () => {
-  const cfg = await fetch("/api/config").then((r) => r.json());
-
-  if (cfg.language === "rust") registerRustCompletions();
-
   state.editor = monaco.editor.create(document.getElementById("editor-container"), {
     value:                "// select a lesson to begin",
-    language:             cfg.language,
+    language:             "plaintext",
     theme:                "vs-dark",
     fontSize:             14,
     fontFamily:           '"JetBrains Mono", "Fira Code", monospace',
@@ -40,6 +38,13 @@ require(["vs/editor/editor.main"], async () => {
 });
 
 /* ── Rust completion provider ────────────────────────────────────────────── */
+let rustCompletionsRegistered = false;
+function registerRustCompletionsOnce() {
+  if (rustCompletionsRegistered) return;
+  rustCompletionsRegistered = true;
+  registerRustCompletions();
+}
+
 function registerRustCompletions() {
   const S = monaco.languages.CompletionItemKind;
   const SNIPPET = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
@@ -301,10 +306,6 @@ function registerRustCompletions() {
       // ── Dot-triggered: method completions ──────────────────────────
       const dotMatch = lineText.match(/\.(\w*)$/);
       if (dotMatch) {
-        // typed: what the user has typed after the dot (may be empty).
-        // afterDot: the range that will be replaced by the chosen completion.
-        //   startColumn = dotCol + 1  (first char after the dot, 1-indexed)
-        //   endColumn   = position.column  (cursor)
         const typed    = dotMatch[1];
         const dotCol   = position.column - dotMatch[0].length;
         const afterDot = {
@@ -324,9 +325,6 @@ function registerRustCompletions() {
           ...METHODS.general,
         ];
 
-        // Deduplicate, then prefix-filter.
-        // We do prefix matching ourselves and set filterText = label so
-        // Monaco does NOT re-apply its own fuzzy filter on top of ours.
         const seen   = new Set();
         const prefix = typed.toLowerCase();
         const unique = allMethods.filter(([label]) => {
@@ -338,7 +336,7 @@ function registerRustCompletions() {
         const suggestions = unique
           .map(([label, insert, detail, doc]) => ({
             label,
-            filterText:       label,   // prevent Monaco fuzzy re-filter
+            filterText:       label,
             kind:             S.Method,
             detail,
             documentation:    { value: doc },
@@ -359,7 +357,7 @@ function registerRustCompletions() {
         insertText:      insert,
         insertTextRules: SNIPPET,
         range:           wordRange,
-        sortText:        "z" + label,   // push below method suggestions
+        sortText:        "z" + label,
       }));
 
       return { suggestions };
@@ -369,8 +367,8 @@ function registerRustCompletions() {
 
 /* ── Init ────────────────────────────────────────────────────────────────── */
 async function init() {
-  await loadProgress();
-  await loadLessons();
+  await loadCourses();
+  await selectCourse(state.currentCourse);
   bindUI();
 }
 
@@ -385,21 +383,66 @@ async function api(path, opts = {}) {
   return text ? JSON.parse(text) : null;
 }
 
+function courseApi(path, opts) {
+  return api(`/api/courses/${state.currentCourse}${path}`, opts);
+}
+
+/* ── Course selector ─────────────────────────────────────────────────────── */
+async function loadCourses() {
+  state.courses = await api("/api/courses");
+  const sel = document.getElementById("course-select");
+  sel.innerHTML = "";
+  state.courses.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.slug;
+    opt.textContent = c.slug;
+    sel.appendChild(opt);
+  });
+  if (state.courses.length > 0) {
+    state.currentCourse = state.courses[0].slug;
+    sel.value = state.currentCourse;
+  }
+}
+
+async function selectCourse(slug) {
+  state.currentCourse = slug;
+  document.getElementById("course-select").value = slug;
+
+  const cfg = await api(`/api/courses/${slug}/config`);
+  if (cfg.language === "rust") registerRustCompletionsOnce();
+  monaco.editor.setModelLanguage(state.editor.getModel(), cfg.language);
+
+  state.currentLesson = null;
+  state.currentExIdx  = 0;
+  state.hintIdx       = 0;
+  state.editor.setValue("// select a lesson to begin");
+  setOutput('<span class="muted">Your output will appear here…</span>');
+  document.getElementById("description-content").innerHTML =
+    '<p class="placeholder">← Select a lesson to begin</p>';
+  document.getElementById("run-btn").disabled  = true;
+  document.getElementById("prev-btn").disabled = true;
+  document.getElementById("next-btn").disabled = true;
+  document.getElementById("exercise-counter").textContent = "";
+
+  await loadProgress();
+  await loadLessons();
+}
+
 /* ── Data loaders ────────────────────────────────────────────────────────── */
 async function loadLessons() {
-  state.lessons = await api("/api/lessons");
+  state.lessons = await courseApi("/lessons");
   renderSidebar();
 }
 
 async function loadLesson(id) {
-  state.currentLesson = await api(`/api/lessons/${id}`);
+  state.currentLesson = await courseApi(`/lessons/${id}`);
   state.currentExIdx  = firstIncomplete();
   state.hintIdx       = 0;
   renderExercise();
 }
 
 async function loadProgress() {
-  state.progress = await api("/api/progress");
+  state.progress = await courseApi("/progress");
 }
 
 /* ── Sidebar ─────────────────────────────────────────────────────────────── */
@@ -485,12 +528,11 @@ function renderExercise() {
     `${state.currentExIdx + 1} / ${total}`;
   document.getElementById("prev-btn").disabled = state.currentExIdx === 0;
   document.getElementById("next-btn").disabled = state.currentExIdx === total - 1;
-  document.getElementById("run-btn").disabled = false;
+  document.getElementById("run-btn").disabled  = false;
 
   // Clear output
   setOutput('<span class="muted">Press ▶ Run to test your code…</span>');
 
-  // Mark completed exercises in counter
   if (pid.includes(ex.id)) {
     setOutput('<span class="out-success">✓ Already completed — you can still run to experiment.</span>');
   }
@@ -515,7 +557,7 @@ async function runCode() {
   setOutput('<span class="muted">Compiling…</span>');
 
   try {
-    const result = await api("/api/run", {
+    const result = await courseApi("/run", {
       method: "POST",
       body: JSON.stringify({ lesson_id: lesson.id, exercise_id: ex.id, code }),
     });
@@ -523,11 +565,9 @@ async function runCode() {
     renderResult(result);
 
     if (result.status === "success") {
-      // Refresh sidebar progress and advance
       await loadProgress();
       await loadLessons();
       setActiveSidebarItem(lesson.id);
-      // Auto-advance to next incomplete after short delay
       const total = lesson.exercises.length;
       if (state.currentExIdx < total - 1) {
         setTimeout(() => {
@@ -614,6 +654,10 @@ function escHtml(str) {
 
 /* ── UI bindings ─────────────────────────────────────────────────────────── */
 function bindUI() {
+  document.getElementById("course-select").addEventListener("change", (e) => {
+    selectCourse(e.target.value);
+  });
+
   document.getElementById("run-btn").addEventListener("click", runCode);
 
   document.getElementById("prev-btn").addEventListener("click", () => {
@@ -635,7 +679,7 @@ function bindUI() {
 
   document.getElementById("reset-btn").addEventListener("click", async () => {
     if (!confirm("Reset all progress?")) return;
-    await api("/api/progress/reset", { method: "POST" });
+    await courseApi("/progress/reset", { method: "POST" });
     await loadProgress();
     await loadLessons();
     if (state.currentLesson) renderExercise();

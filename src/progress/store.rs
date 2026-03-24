@@ -5,11 +5,13 @@ use anyhow::Context;
 
 use super::model::Progress;
 
-pub fn progress_file_path() -> anyhow::Result<PathBuf> {
+pub fn progress_file_path_for(course_slug: &str) -> anyhow::Result<PathBuf> {
     let base = dirs::data_local_dir()
         .or_else(dirs::home_dir)
         .ok_or_else(|| anyhow::anyhow!("cannot determine home directory"))?;
-    Ok(base.join(".rust-course").join("progress.json"))
+    Ok(base
+        .join("course-engine")
+        .join(format!("progress-{course_slug}.json")))
 }
 
 pub fn load(path: &Path) -> anyhow::Result<Progress> {

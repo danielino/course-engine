@@ -7,19 +7,19 @@ use console::Style;
 use course_engine::lesson::loader::load_all_lessons;
 use course_engine::progress::model::Progress;
 use course_engine::progress::store::{
-    load as load_progress, progress_file_path, save as save_progress,
+    load as load_progress, progress_file_path_for, save as save_progress,
 };
 use course_engine::runner::{RunResult, run};
 use course_engine::ui::LessonEntry;
 use course_engine::{LanguageConfig, serve};
 
 #[derive(Parser)]
-#[command(name = "rust-course", about = "Learn Rust by doing.")]
+#[command(name = "course-engine", about = "Learn programming by doing.")]
 struct Cli {
     #[command(subcommand)]
     command: Option<Cmd>,
 
-    /// Path to lessons directory (default: ./lessons)
+    /// Path to a single course's lessons directory (CLI mode; default: ./courses/rust)
     #[arg(long, global = true)]
     lessons_dir: Option<PathBuf>,
 }
@@ -28,8 +28,11 @@ struct Cli {
 enum Cmd {
     /// Start or resume the course (default)
     Run,
-    /// Launch the web UI in your browser
+    /// Launch the web UI with all courses
     Serve {
+        /// Directory containing course subdirectories (default: ./courses)
+        #[arg(long, default_value = "courses")]
+        courses_dir: PathBuf,
         /// Port to listen on (default: 3000)
         #[arg(long, default_value = "3000")]
         port: u16,
@@ -46,15 +49,24 @@ async fn main() -> anyhow::Result<()> {
 
     let lessons_dir = cli
         .lessons_dir
-        .unwrap_or_else(|| PathBuf::from("examples/rust"));
+        .unwrap_or_else(|| PathBuf::from("courses/rust"));
 
     match cli.command.unwrap_or(Cmd::Run) {
-        Cmd::Serve { port } => {
-            serve(lessons_dir, port, LanguageConfig::rust()).await?;
+        Cmd::Serve { courses_dir, port } => {
+            serve(courses_dir, port).await?;
             return Ok(());
         }
         other => {
-            let progress_path = progress_file_path()?;
+            let course_slug = lessons_dir
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or("default")
+                .to_string();
+
+            let lang = LanguageConfig::from_name(&course_slug)
+                .with_context(|| format!("no language preset for course {course_slug:?}"))?;
+
+            let progress_path = progress_file_path_for(&course_slug)?;
             let mut progress = load_progress(&progress_path)?;
 
             let lessons = load_all_lessons(&lessons_dir)
@@ -65,7 +77,7 @@ async fn main() -> anyhow::Result<()> {
             }
 
             match other {
-                Cmd::Run => run_course(&lessons, &mut progress, &progress_path)?,
+                Cmd::Run => run_course(&lessons, &mut progress, &progress_path, &lang)?,
                 Cmd::List => list_lessons(&lessons, &progress),
                 Cmd::Reset => {
                     progress = Progress::default();
@@ -84,10 +96,9 @@ fn run_course(
     lessons: &[course_engine::lesson::model::Lesson],
     progress: &mut Progress,
     progress_path: &std::path::Path,
+    lang: &LanguageConfig,
 ) -> anyhow::Result<()> {
     course_engine::ui::print_welcome();
-
-    let lang = LanguageConfig::rust();
 
     loop {
         let entries: Vec<LessonEntry> = lessons
@@ -143,7 +154,7 @@ fn run_course(
                     &code,
                     &exercise.expected_output,
                     &exercise.validation_mode,
-                    &lang,
+                    lang,
                 );
                 spinner.finish_and_clear();
 
