@@ -1,0 +1,117 @@
+id          = "02-variables"
+title       = "Variables"
+description = "Declare and reassign variables using let, const, and var; understand naming rules."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Declare with const"
+prompt          = """
+Declare a constant called `language` with the value "JavaScript" and print it.
+
+Expected output:
+    JavaScript
+
+Use `const` when a variable's value will not change.
+"""
+expected_output = "JavaScript"
+starter_code    = """
+const language = "JavaScript";
+console.log(language);
+"""
+hints = [
+    "const language = \"JavaScript\"; then console.log(language);",
+    "const declares a variable that cannot be reassigned.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Reassign with let"
+prompt          = """
+Declare a variable `score` with `let` and set it to 10.
+Then reassign it to 20 and print it.
+
+Expected output:
+    20
+
+`let` allows reassignment; `const` does not.
+"""
+expected_output = "20"
+starter_code    = """
+let score = 10;
+// reassign score here
+console.log(score);
+"""
+hints = [
+    "After `let score = 10;`, write `score = 20;`.",
+    "let score = 10;\nscore = 20;\nconsole.log(score);",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Multiple variables"
+prompt          = """
+Declare three variables:
+  - `firstName` = "Ada"
+  - `lastName`  = "Lovelace"
+  - `year`      = 1815
+
+Print them on one line separated by spaces:
+    Ada Lovelace 1815
+"""
+expected_output = "Ada Lovelace 1815"
+starter_code    = """
+const firstName = "Ada";
+const lastName  = "Lovelace";
+const year      = 1815;
+console.log(firstName, lastName, year);
+"""
+hints = [
+    "console.log() with multiple arguments separates them with spaces automatically.",
+    "console.log(firstName, lastName, year);",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "const vs reassignment error"
+prompt          = """
+Demonstrate that `let` allows reassignment by doing the following:
+  1. Declare `counter` with `let` and set it to 0.
+  2. Increment it three times (counter = counter + 1 each time).
+  3. Print the final value.
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+let counter = 0;
+// increment three times
+console.log(counter);
+"""
+hints = [
+    "Write `counter = counter + 1;` three times, or use `counter += 1;`.",
+    "let counter = 0;\ncounter += 1;\ncounter += 1;\ncounter += 1;\nconsole.log(counter);",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Swap two variables"
+prompt          = """
+Given:
+    let a = "hello";
+    let b = "world";
+
+Swap their values using a temporary variable, then print:
+    world hello
+"""
+expected_output = "world hello"
+starter_code    = """
+let a = "hello";
+let b = "world";
+// swap using a temp variable
+console.log(a, b);
+"""
+hints = [
+    "Use a third variable: let temp = a; a = b; b = temp;",
+    "let temp = a;\na = b;\nb = temp;\nconsole.log(a, b);",
+]

@@ -11,6 +11,17 @@ repos:
       - id: check-case-conflict
       - id: check-toml          # validates Cargo.toml and all lesson TOML files
 
+  # ── Lesson TOML validation ───────────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: validate-lessons
+        name: validate lesson TOML files
+        entry: python3 scripts/validate_lessons.py
+        language: python
+        additional_dependencies: ["tomli; python_version < '3.11'"]
+        files: ^courses/.*\.toml$
+        types: [toml]
+
   # ── Rust formatting, linting, tests ────────────────────────────────────────
   - repo: local
     hooks:

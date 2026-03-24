@@ -1,0 +1,172 @@
+id          = "20-generics-typing"
+title       = "Type Hints and Generics"
+description = "typing module: List, Dict, Optional, Union, TypeVar, and generic functions."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic type annotations"
+prompt          = """
+Type hints make code self-documenting and enable static analysis tools.
+They are ignored at runtime but help IDEs and type checkers.
+
+Annotate these functions and verify they work correctly:
+
+  def double(n: int) -> int
+  def greet(name: str) -> str   (returns "Hello, <name>!")
+
+Print double(5) and greet("Alice").
+
+Expected output:
+    10
+    Hello, Alice!
+"""
+expected_output = """10
+Hello, Alice!"""
+starter_code    = """
+def double(n: int) -> int:
+    return n * 2
+
+def greet(name: str) -> str:
+    return f"Hello, {name}!"
+
+print(double(5))
+print(greet("Alice"))
+"""
+hints = [
+    "Annotations use a colon after the parameter name and -> before the return type.",
+    "Python does NOT enforce type hints at runtime — they're documentation only.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Optional and Union"
+prompt          = """
+Optional[X] means the value is either X or None (equivalent to Union[X, None]).
+Union[X, Y] means the value can be X or Y.
+
+Write format_value(v: Union[int, str]) -> str that:
+  - If v is an int, returns "int:<v>"
+  - If v is a str, returns "str:<v>"
+
+Print format_value(42) and format_value("hello").
+
+Expected output:
+    int:42
+    str:hello
+"""
+expected_output = """int:42
+str:hello"""
+starter_code    = """
+from typing import Union
+
+def format_value(v: Union[int, str]) -> str:
+    if isinstance(v, int):
+        return f"int:{v}"
+    return f"str:{v}"
+
+print(format_value(42))
+print(format_value("hello"))
+"""
+hints = [
+    "isinstance(v, int) returns True if v is an integer.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "List and Dict type hints"
+prompt          = """
+Use List[T] and Dict[K, V] to annotate collections.
+(In Python 3.9+ you can use list[T] and dict[K,V] directly.)
+
+Write sum_scores(scores: List[int]) -> int that returns the total.
+Write lookup(d: Dict[str, int], key: str) -> int that returns d.get(key, -1).
+
+Print sum_scores([10, 20, 30]) and lookup({"a": 5}, "a") and lookup({"a": 5}, "b").
+
+Expected output:
+    60
+    5
+    -1
+"""
+expected_output = """60
+5
+-1"""
+starter_code    = """
+from typing import List, Dict
+
+def sum_scores(scores: List[int]) -> int:
+    return sum(scores)
+
+def lookup(d: Dict[str, int], key: str) -> int:
+    return d.get(key, -1)
+
+print(sum_scores([10, 20, 30]))
+print(lookup({"a": 5}, "a"))
+print(lookup({"a": 5}, "b"))
+"""
+hints = [
+    "List[int] means a list where every element should be an int.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "TypeVar — generic functions"
+prompt          = """
+TypeVar lets you write generic functions that work with any type
+while still expressing that types must be consistent.
+
+Write first(items: List[T]) -> Optional[T] that returns the first item
+or None if the list is empty.
+
+Print first([10, 20, 30]) and first([]).
+
+Expected output:
+    10
+    None
+"""
+expected_output = """10
+None"""
+starter_code    = """
+from typing import TypeVar, List, Optional
+
+T = TypeVar("T")
+
+def first(items: List[T]) -> Optional[T]:
+    return items[0] if items else None
+
+print(first([10, 20, 30]))
+print(first([]))
+"""
+hints = [
+    "TypeVar(\"T\") creates a placeholder for any type.",
+    "Optional[T] means either T or None.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Putting it together"
+prompt          = """
+Combine several typing features in one utility function.
+
+Write flatten(nested: List[List[int]]) -> List[int] that flattens one level.
+
+Print flatten([[1, 2], [3, 4], [5]]).
+
+Expected output:
+    [1, 2, 3, 4, 5]
+"""
+expected_output = "[1, 2, 3, 4, 5]"
+starter_code    = """
+from typing import List
+
+def flatten(nested: List[List[int]]) -> List[int]:
+    return [item for sublist in nested for item in sublist]
+
+print(flatten([[1, 2], [3, 4], [5]]))
+"""
+hints = [
+    "A nested list comprehension: [item for sublist in nested for item in sublist].",
+    "Run the starter code as-is.",
+]

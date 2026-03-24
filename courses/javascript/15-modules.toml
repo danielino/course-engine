@@ -1,0 +1,125 @@
+id          = "15-modules"
+title       = "Modules"
+description = "Load built-in Node.js modules with require(): path, os, and fs."
+
+[[exercises]]
+id              = "ex_01"
+title           = "path.join"
+prompt          = """
+Use the `path` module to join three segments into a cross-platform path:
+  "home", "user", "documents"
+
+Print the result (on Unix-like systems it will be "home/user/documents").
+
+Expected output:
+    home/user/documents
+"""
+expected_output = "home/user/documents"
+starter_code    = """
+const path = require("path");
+console.log(path.join("home", "user", "documents"));
+"""
+hints = [
+    "require(\"path\") loads Node's path utility. path.join() inserts the correct separator.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "path.basename and path.extname"
+prompt          = """
+Given the path string "/usr/local/bin/node.exe", print:
+  - The base filename: "node.exe"
+  - The file extension: ".exe"
+
+Expected output:
+    node.exe
+    .exe
+"""
+expected_output = """node.exe
+.exe"""
+starter_code    = """
+const path = require("path");
+const p = "/usr/local/bin/node.exe";
+console.log(path.basename(p));
+console.log(path.extname(p));
+"""
+hints = [
+    "path.basename(p) → last segment. path.extname(p) → the extension including the dot.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "os.platform and os.cpus"
+prompt          = """
+Use the `os` module to print:
+  - Whether the platform string includes "linux", "darwin", or "win32" — or "other".
+  - The number of logical CPU cores.
+
+Because the platform and CPU count vary by machine, use `"contains"` validation:
+just ensure your output contains "platform:" and "cpus:".
+
+Your program should print lines like:
+    platform: linux
+    cpus: 8
+"""
+expected_output = "platform:"
+starter_code    = """
+const os = require("os");
+console.log("platform: " + os.platform());
+console.log("cpus: " + os.cpus().length);
+"""
+hints = [
+    "os.platform() returns a string like \"linux\", \"darwin\", or \"win32\".",
+    "os.cpus() returns an array; .length gives the core count.",
+]
+validation_mode = "contains"
+
+[[exercises]]
+id              = "ex_04"
+title           = "path.resolve and path.dirname"
+prompt          = """
+Use path.resolve to turn the relative path "a/b/c.txt" into an absolute path,
+then print only the directory part using path.dirname.
+
+Your output will differ per machine, so we use "contains" validation and check
+it contains "a/b" in the result.
+
+Expected output (example):
+    /home/user/a/b
+"""
+expected_output = "a/b"
+starter_code    = """
+const path = require("path");
+const abs  = path.resolve("a/b/c.txt");
+console.log(path.dirname(abs));
+"""
+hints = [
+    "path.resolve(rel) converts a relative path to absolute using the cwd.",
+    "path.dirname(p) strips the last path segment (the filename).",
+]
+validation_mode = "contains"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Combining modules"
+prompt          = """
+Use `path` and `fs` together:
+  1. Build the path "tmp_modules.txt" using path.join(__dirname, "tmp_modules.txt").
+  2. Write "modules work!" to it.
+  3. Read it back and print the contents.
+
+Expected output:
+    modules work!
+"""
+expected_output = "modules work!"
+starter_code    = """
+const path = require("path");
+const fs   = require("fs");
+const file = path.join(__dirname, "tmp_modules.txt");
+fs.writeFileSync(file, "modules work!");
+console.log(fs.readFileSync(file, "utf8"));
+"""
+hints = [
+    "__dirname is the directory of the currently running script.",
+    "path.join(__dirname, filename) gives a safe absolute path.",
+]

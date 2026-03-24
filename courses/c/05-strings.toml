@@ -1,0 +1,104 @@
+id          = "05-strings"
+title       = "Strings"
+description = "Work with C strings: char arrays, string length, copying, concatenation, and comparison."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Declaring and Printing a String"
+prompt          = """In C, strings are arrays of characters terminated by a null byte ('\\0'). You declare them as char arrays. Unlike higher-level languages, C has no built-in string type — understanding this is fundamental. Declare a char array containing "Hello, Alice!" and print it."""
+expected_output = "Hello, Alice!"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    char greeting[] = "Hello, Alice!";
+    // Print the string
+    return 0;
+}"""
+hints = [
+    "Use %s in printf() to print a string (char array).",
+    "printf(\"%s\\n\", greeting);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "String Length with strlen"
+prompt          = """The strlen() function from <string.h> returns the number of characters in a string, NOT counting the null terminator. Knowing the length is often needed for loops, bounds checking, and buffer management. Find the length of "hello" and print: Length: 5"""
+expected_output = "Length: 5"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char s[] = "hello";
+    // Find and print the length
+    return 0;
+}"""
+hints = [
+    "strlen() returns a size_t (unsigned integer). You can print it with %zu or cast to int and use %d.",
+    "printf(\"Length: %zu\\n\", strlen(s));"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Copying Strings with strcpy"
+prompt          = """You cannot assign strings with = after initialization (it copies the pointer, not the content). Instead, use strcpy() from <string.h> to copy one string into a buffer. Always make sure the destination buffer is large enough! Copy "C language" into a buffer and print: Copied: C language"""
+expected_output = "Copied: C language"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char src[] = "C language";
+    char dest[50];
+    // Copy src into dest using strcpy
+    // Print "Copied: C language"
+    return 0;
+}"""
+hints = [
+    "strcpy(destination, source) copies the source string (including null terminator) into destination.",
+    "strcpy(dest, src);\nprintf(\"Copied: %s\\n\", dest);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Concatenating Strings with strcat"
+prompt          = """strcat() appends one string onto the end of another (modifying the destination in place). This is how you build strings from pieces in C. Concatenate "Hello", " ", and "World" into a single buffer and print: Joined: Hello World"""
+expected_output = "Joined: Hello World"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char result[50] = "Hello";
+    // Append " " and then "World" to result
+    // Print "Joined: Hello World"
+    return 0;
+}"""
+hints = [
+    "Call strcat() twice: first strcat(result, \" \"); then strcat(result, \"World\");",
+    "strcat(result, \" \");\nstrcat(result, \"World\");\nprintf(\"Joined: %s\\n\", result);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Comparing Strings with strcmp"
+prompt          = """You cannot compare strings with == (that compares pointers, not content). Use strcmp() from <string.h>. It returns 0 if strings are equal, a negative number if the first is less, positive if greater. Compare "apple" with "apple" and print the result, then print "yes" if they match:
+Compare: 0
+Match: yes"""
+expected_output = """Compare: 0
+Match: yes"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char a[] = "apple";
+    char b[] = "apple";
+    // Compare and print the result
+    return 0;
+}"""
+hints = [
+    "int result = strcmp(a, b); gives 0 for equal strings. Then use an if statement to print 'yes' or 'no'.",
+    "int result = strcmp(a, b);\nprintf(\"Compare: %d\\n\", result);\nif (result == 0) printf(\"Match: yes\\n\");"
+]
+validation_mode = "exact_stdout"

@@ -1,0 +1,146 @@
+id          = "21-trait-objects"
+title       = "Trait Objects and Dynamic Dispatch"
+description = "Use dyn Trait to store heterogeneous types behind a common interface at runtime."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Vec<Box<dyn Trait>>"
+prompt          = """
+Define `trait Speak { fn speak(&self) -> &str; }`.
+Implement it for `struct Dog` (returns `"woof"`) and `struct Cat` (returns `"meow"`).
+Store both in a `Vec<Box<dyn Speak>>`, iterate, and print each sound on its own line.
+
+Expected output:
+    woof
+    meow
+"""
+expected_output = "woof\nmeow"
+starter_code    = """
+trait Speak {
+    fn speak(&self) -> &str;
+}
+
+struct Dog;
+struct Cat;
+
+impl Speak for Dog {
+    fn speak(&self) -> &str { todo!() }
+}
+impl Speak for Cat {
+    fn speak(&self) -> &str { todo!() }
+}
+
+fn main() {
+    let animals: Vec<Box<dyn Speak>> = vec![
+        Box::new(Dog),
+        Box::new(Cat),
+    ];
+    for a in &animals {
+        println!("{}", a.speak());
+    }
+}
+"""
+hints = [
+    "Dog returns \"woof\", Cat returns \"meow\".",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "dyn Trait as function argument"
+prompt          = """
+Write `fn make_sound(animal: &dyn Speak)` that prints the sound.
+Call it with a `Dog`.
+
+Expected output:
+    woof
+"""
+expected_output = "woof"
+starter_code    = """
+trait Speak { fn speak(&self) -> &str; }
+struct Dog;
+impl Speak for Dog { fn speak(&self) -> &str { "woof" } }
+
+fn make_sound(animal: &dyn Speak) {
+    // print the sound
+    todo!()
+}
+
+fn main() {
+    let d = Dog;
+    make_sound(&d);
+}
+"""
+hints = [
+    "println!(\"{}\", animal.speak());",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Returning Box<dyn Trait>"
+prompt          = """
+Write `fn get_animal(is_dog: bool) -> Box<dyn Speak>`.
+Return a `Box<Dog>` when `true`, a `Box<Cat>` when `false`.
+Call with `true` and print the sound.
+
+Expected output:
+    woof
+"""
+expected_output = "woof"
+starter_code    = """
+trait Speak { fn speak(&self) -> &str; }
+struct Dog;
+struct Cat;
+impl Speak for Dog { fn speak(&self) -> &str { "woof" } }
+impl Speak for Cat { fn speak(&self) -> &str { "meow" } }
+
+fn get_animal(is_dog: bool) -> Box<dyn Speak> {
+    // return Box<Dog> or Box<Cat>
+    todo!()
+}
+
+fn main() {
+    let a = get_animal(true);
+    println!("{}", a.speak());
+}
+"""
+hints = [
+    "if is_dog { Box::new(Dog) } else { Box::new(Cat) }",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Trait object with state"
+prompt          = """
+Implement `trait Greet { fn greet(&self) -> String; }` on `struct Person { name: String }`.
+The greeting should be `"Hello, <name>!"`.
+
+Store the person in a `Box<dyn Greet>`, call `greet()`, and print the result.
+
+Expected output:
+    Hello, Alice!
+"""
+expected_output = "Hello, Alice!"
+starter_code    = """
+trait Greet {
+    fn greet(&self) -> String;
+}
+
+struct Person {
+    name: String,
+}
+
+impl Greet for Person {
+    fn greet(&self) -> String {
+        // return the greeting
+        todo!()
+    }
+}
+
+fn main() {
+    let p: Box<dyn Greet> = Box::new(Person { name: String::from("Alice") });
+    println!("{}", p.greet());
+}
+"""
+hints = [
+    "format!(\"Hello, {}!\", self.name)",
+]

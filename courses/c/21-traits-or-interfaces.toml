@@ -1,0 +1,159 @@
+id          = "21-traits-or-interfaces"
+title       = "Interfaces via Vtables"
+description = "Simulate interfaces and polymorphism in C using structs with function pointer fields (vtables)."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Shape Interface — Circle"
+prompt          = """C has no interfaces, but you can simulate them with a struct that holds function pointers. This is exactly how C++ vtables work internally. Define struct Shape with a double (*area)(void*) function pointer. Implement it for a Circle (radius 3.0) and call through the interface. Print: Circle area: 28.27"""
+expected_output = "Circle area: 28.27"
+starter_code    = """#include <stdio.h>
+#include <math.h>
+
+typedef struct {
+    double (*area)(void *self);
+} Shape;
+
+typedef struct {
+    Shape  shape;
+    double radius;
+} Circle;
+
+double circle_area(void *self) {
+    Circle *c = (Circle *)self;
+    return M_PI * c->radius * c->radius;
+}
+
+int main() {
+    Circle c;
+    c.shape.area = circle_area;
+    c.radius = 3.0;
+    printf("Circle area: %.2f\n", c.shape.area(&c));
+    return 0;
+}"""
+hints = [
+    "The starter code is nearly complete. Make sure circle_area casts self to Circle* and uses c->radius.",
+    "double circle_area(void *self) {\n    Circle *c = (Circle *)self;\n    return M_PI * c->radius * c->radius;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Shape Interface — Circle and Rectangle"
+prompt          = """With a common interface, you can call the same function (area) on different types through a Shape pointer. This is runtime polymorphism. Implement area for both a Circle (radius 3.0) and a Rectangle (width 4.0, height 3.0). Print:
+Circle: 28.27
+Rectangle: 12.00"""
+expected_output = """Circle: 28.27
+Rectangle: 12.00"""
+starter_code    = """#include <stdio.h>
+#include <math.h>
+
+typedef struct { double (*area)(void *self); } Shape;
+
+typedef struct { Shape shape; double radius; } Circle;
+typedef struct { Shape shape; double width, height; } Rectangle;
+
+double circle_area(void *self) {
+    Circle *c = (Circle *)self;
+    return M_PI * c->radius * c->radius;
+}
+
+double rect_area(void *self) {
+    // Return width * height
+    return 0.0;
+}
+
+int main() {
+    Circle c; c.shape.area = circle_area; c.radius = 3.0;
+    Rectangle r; r.shape.area = rect_area; r.width = 4.0; r.height = 3.0;
+    printf("Circle: %.2f\n", c.shape.area(&c));
+    printf("Rectangle: %.2f\n", r.shape.area(&r));
+    return 0;
+}"""
+hints = [
+    "In rect_area, cast self to Rectangle* and return r->width * r->height.",
+    "double rect_area(void *self) {\n    Rectangle *r = (Rectangle *)self;\n    return r->width * r->height;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Animal Interface — Multiple Implementations"
+prompt          = """Extending the vtable pattern to more types demonstrates true polymorphism. Define struct Animal with a void (*speak)(char*) function pointer. Implement Dog (prints "Woof"), Cat (prints "Meow"), and Bird (prints "Tweet"). Print:
+Dog: Woof
+Cat: Meow
+Bird: Tweet"""
+expected_output = """Dog: Woof
+Cat: Meow
+Bird: Tweet"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char name[20];
+    void (*speak)(char *out);
+} Animal;
+
+void dog_speak(char *out)  { strcpy(out, "Woof"); }
+void cat_speak(char *out)  { strcpy(out, "Meow"); }
+void bird_speak(char *out) { strcpy(out, "Tweet"); }
+
+int main() {
+    Animal animals[3] = {
+        {"Dog",  dog_speak},
+        {"Cat",  cat_speak},
+        {"Bird", bird_speak}
+    };
+    char sound[20];
+    for (int i = 0; i < 3; i++) {
+        animals[i].speak(sound);
+        printf("%s: %s\n", animals[i].name, sound);
+    }
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. Each speak function writes the sound into the output buffer.",
+    "The loop calls animals[i].speak(sound) then prints the result. No changes needed."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Strategy Pattern: Ascending and Descending Sort"
+prompt          = """The strategy pattern swaps an algorithm at runtime using a function pointer. Here, a Sorter struct holds a compare function. Switching the compare function changes whether qsort sorts ascending or descending. Sort {3, 1, 5} ascending, then {3, 1, 5} descending. Print:
+ASC: 1 3 5
+DESC: 5 3 1"""
+expected_output = """ASC: 1 3 5
+DESC: 5 3 1"""
+starter_code    = """#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int (*compare)(const void *, const void *);
+} Sorter;
+
+int asc(const void *a, const void *b)  { return *(int*)a - *(int*)b; }
+int desc(const void *a, const void *b) { return *(int*)b - *(int*)a; }
+
+void sort_and_print(Sorter s, int *arr, int n, const char *label) {
+    qsort(arr, n, sizeof(int), s.compare);
+    printf("%s:", label);
+    for (int i = 0; i < n; i++) printf(" %d", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int a[] = {3, 1, 5};
+    int b[] = {3, 1, 5};
+    Sorter asc_sorter  = {asc};
+    Sorter desc_sorter = {desc};
+    sort_and_print(asc_sorter,  a, 3, "ASC");
+    sort_and_print(desc_sorter, b, 3, "DESC");
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. The Sorter struct holds the compare function; sort_and_print applies it.",
+    "The code is complete as written — run it to verify."
+]
+validation_mode = "exact_stdout"

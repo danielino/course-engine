@@ -1,0 +1,148 @@
+id          = "04-operators"
+title       = "Operators"
+description = "Arithmetic, comparison (== vs ===), logical operators, and the ternary expression."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Arithmetic operators"
+prompt          = """
+Compute and print each result on its own line:
+  - 10 + 3
+  - 10 - 3
+  - 10 * 3
+  - 10 / 4
+  - 10 % 3
+
+Expected output:
+    13
+    7
+    30
+    2.5
+    1
+"""
+expected_output = """13
+7
+30
+2.5
+1"""
+starter_code    = """
+console.log(10 + 3);
+console.log(10 - 3);
+console.log(10 * 3);
+console.log(10 / 4);
+console.log(10 % 3);
+"""
+hints = [
+    "Each line is a straight arithmetic expression passed to console.log().",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "== vs ==="
+prompt          = """
+Print the result of these comparisons:
+  - 5 == "5"
+  - 5 === "5"
+  - null == undefined
+  - null === undefined
+
+Expected output:
+    true
+    false
+    true
+    false
+
+`==` performs type coercion; `===` (strict equality) does not.
+Always prefer `===` in production code.
+"""
+expected_output = """true
+false
+true
+false"""
+starter_code    = """
+console.log(5 == "5");
+console.log(5 === "5");
+console.log(null == undefined);
+console.log(null === undefined);
+"""
+hints = [
+    "== coerces types before comparing; === requires same type AND same value.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Logical operators"
+prompt          = """
+Print the result of:
+  - true && false
+  - true || false
+  - !true
+
+Expected output:
+    false
+    true
+    false
+"""
+expected_output = """false
+true
+false"""
+starter_code    = """
+console.log(true && false);
+console.log(true || false);
+console.log(!true);
+"""
+hints = [
+    "&& is AND, || is OR, ! is NOT.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Ternary operator"
+prompt          = """
+Use the ternary operator to print whether a number is even or odd.
+
+Given `const n = 7;`, print:
+    7 is odd
+
+The ternary syntax is: condition ? valueIfTrue : valueIfFalse
+"""
+expected_output = "7 is odd"
+starter_code    = """
+const n = 7;
+const result = n % 2 === 0 ? "even" : "odd";
+console.log(n + " is " + result);
+"""
+hints = [
+    "n % 2 === 0 is true when n is even.",
+    "const result = n % 2 === 0 ? \"even\" : \"odd\";\nconsole.log(n + \" is \" + result);",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Short-circuit evaluation"
+prompt          = """
+JavaScript's logical operators short-circuit: they return one of their operands.
+
+Print:
+  - (null || "default")
+  - ("found" || "default")
+  - (0 && "value")
+
+Expected output:
+    default
+    found
+    0
+
+This is commonly used to provide default values.
+"""
+expected_output = """default
+found
+0"""
+starter_code    = """
+console.log(null || "default");
+console.log("found" || "default");
+console.log(0 && "value");
+"""
+hints = [
+    "|| returns the first truthy value (or the last value). && returns the first falsy value (or the last value).",
+]

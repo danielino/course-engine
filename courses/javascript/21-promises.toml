@@ -1,0 +1,130 @@
+id          = "21-promises"
+title       = "Promises and async/await"
+description = "Create Promises, chain .then/.catch, use Promise.all, and simplify with async/await."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Creating a resolved Promise"
+prompt          = """
+Create a Promise that resolves with the value 42.
+Use .then() to print the value.
+
+Expected output:
+    42
+"""
+expected_output = "42"
+starter_code    = """
+const p = Promise.resolve(42);
+p.then(value => console.log(value));
+"""
+hints = [
+    "Promise.resolve(value) creates a Promise that is already fulfilled.",
+    "Chain .then(callback) to handle the resolved value.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "async/await"
+prompt          = """
+Write an async function `main` that awaits a Promise resolving to "hello" and prints it.
+Call main().
+
+Expected output:
+    hello
+"""
+expected_output = "hello"
+starter_code    = """
+async function main() {
+    const result = await Promise.resolve("hello");
+    console.log(result);
+}
+main();
+"""
+hints = [
+    "async functions can use the await keyword to pause until a Promise resolves.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Catching rejections"
+prompt          = """
+Write an async function that awaits a rejected Promise and catches the error.
+Print the error message.
+
+Use: Promise.reject(new Error("something went wrong"))
+
+Expected output:
+    something went wrong
+"""
+expected_output = "something went wrong"
+starter_code    = """
+async function main() {
+    try {
+        await Promise.reject(new Error("something went wrong"));
+    } catch (err) {
+        console.log(err.message);
+    }
+}
+main();
+"""
+hints = [
+    "Wrap your await in try/catch to handle rejected Promises like synchronous errors.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Promise.all"
+prompt          = """
+Use Promise.all to await three Promises simultaneously:
+  - Promise.resolve(1)
+  - Promise.resolve(2)
+  - Promise.resolve(3)
+
+Print the results array as JSON.
+
+Expected output:
+    [1,2,3]
+"""
+expected_output = "[1,2,3]"
+starter_code    = """
+async function main() {
+    const results = await Promise.all([
+        Promise.resolve(1),
+        Promise.resolve(2),
+        Promise.resolve(3),
+    ]);
+    console.log(JSON.stringify(results));
+}
+main();
+"""
+hints = [
+    "Promise.all(arrayOfPromises) resolves when all promises resolve, returning an array of values.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Sequential async steps"
+prompt          = """
+Simulate a two-step async process:
+  1. Await a Promise that resolves to "step1".
+  2. Await a Promise that resolves to "step2".
+  3. Print both results on separate lines.
+
+Expected output:
+    step1
+    step2
+"""
+expected_output = """step1
+step2"""
+starter_code    = """
+async function main() {
+    const r1 = await Promise.resolve("step1");
+    console.log(r1);
+    const r2 = await Promise.resolve("step2");
+    console.log(r2);
+}
+main();
+"""
+hints = [
+    "Each await pauses execution until the Promise settles, making async code read like sync code.",
+]

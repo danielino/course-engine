@@ -1,0 +1,68 @@
+id          = "01-hello-world"
+title       = "Hello, World!"
+description = "Your first Rust program: print text to stdout and understand the basic structure of a Rust program."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Print Hello, world!"
+prompt          = """
+Write a Rust program that prints exactly:
+
+    Hello, world!
+
+In Rust you print to stdout with the `println!` macro.
+The `!` is not a typo — it marks a macro call, not a function call.
+"""
+expected_output = "Hello, world!"
+starter_code    = """
+fn main() {
+    // your code here
+}
+"""
+hints = [
+    "Use println!(\"Hello, world!\"); inside fn main().",
+    "Make sure the capitalisation and punctuation match exactly.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Print a custom message"
+prompt          = """
+Change your program so it prints:
+
+    I am learning Rust!
+
+Same idea as before — just change the string inside println!.
+"""
+expected_output = "I am learning Rust!"
+starter_code    = """
+fn main() {
+    println!("Hello, world!");
+}
+"""
+hints = [
+    "Replace the string literal inside println! with the required text.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Print two lines"
+prompt          = """
+Print exactly these two lines (in this order):
+
+    Hello, world!
+    I am learning Rust!
+
+You will need two println! calls.
+"""
+expected_output = """Hello, world!
+I am learning Rust!"""
+starter_code    = """
+fn main() {
+    // two println! calls here
+}
+"""
+hints = [
+    "Call println! twice, once for each line.",
+    "Each println! call ends with a semicolon.",
+]

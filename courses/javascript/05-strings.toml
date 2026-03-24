@@ -1,0 +1,123 @@
+id          = "05-strings"
+title       = "Strings"
+description = "String methods: length, slice, indexOf, includes, toUpperCase, and template literals."
+
+[[exercises]]
+id              = "ex_01"
+title           = "length and toUpperCase"
+prompt          = """
+Given `const word = "javascript";`, print:
+  1. Its length.
+  2. The word in uppercase.
+
+Expected output:
+    10
+    JAVASCRIPT
+"""
+expected_output = """10
+JAVASCRIPT"""
+starter_code    = """
+const word = "javascript";
+console.log(word.length);
+console.log(word.toUpperCase());
+"""
+hints = [
+    "word.length gives the character count. word.toUpperCase() returns a new uppercase string.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "slice"
+prompt          = """
+Given `const str = "Hello, World!";`, use `slice()` to extract and print:
+  1. The first 5 characters: "Hello"
+  2. The last 6 characters: "orld!"  — wait, let's be precise: slice(7) to end: "World!"
+
+Expected output:
+    Hello
+    World!
+"""
+expected_output = """Hello
+World!"""
+starter_code    = """
+const str = "Hello, World!";
+console.log(str.slice(0, 5));
+console.log(str.slice(7));
+"""
+hints = [
+    "slice(start, end) extracts up to but not including end. slice(start) goes to the end.",
+    "str.slice(0, 5) → \"Hello\"; str.slice(7) → \"World!\"",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "indexOf and includes"
+prompt          = """
+Given `const sentence = "The quick brown fox";`, print:
+  1. The index of "quick"  → 4
+  2. Whether it includes "fox"  → true
+  3. Whether it includes "cat"  → false
+
+Expected output:
+    4
+    true
+    false
+"""
+expected_output = """4
+true
+false"""
+starter_code    = """
+const sentence = "The quick brown fox";
+console.log(sentence.indexOf("quick"));
+console.log(sentence.includes("fox"));
+console.log(sentence.includes("cat"));
+"""
+hints = [
+    "indexOf returns the starting position (0-based) or -1 if not found.",
+    "includes returns a boolean — true if the substring exists, false otherwise.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Template literals"
+prompt          = """
+Given:
+  const name = "Alice";
+  const age  = 30;
+
+Use a template literal to print:
+    Alice is 30 years old.
+"""
+expected_output = "Alice is 30 years old."
+starter_code    = """
+const name = "Alice";
+const age  = 30;
+console.log(`${name} is ${age} years old.`);
+"""
+hints = [
+    "Template literals use backticks (`). Embed expressions with ${expression}.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "String manipulation"
+prompt          = """
+Given `const raw = "  Hello, World!  ";`:
+  1. Trim the whitespace.
+  2. Replace "World" with "JavaScript".
+  3. Print the result.
+
+Expected output:
+    Hello, JavaScript!
+"""
+expected_output = "Hello, JavaScript!"
+starter_code    = """
+const raw = "  Hello, World!  ";
+const trimmed  = raw.trim();
+const replaced = trimmed.replace("World", "JavaScript");
+console.log(replaced);
+"""
+hints = [
+    "trim() removes leading and trailing whitespace.",
+    "replace(searchValue, replaceValue) returns a new string with the first match replaced.",
+]

@@ -1,0 +1,314 @@
+id          = "26-capstone"
+title       = "Capstone: Task Manager"
+description = "End-to-end project combining classes, file I/O, error handling, and argparse."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Task model"
+prompt          = """
+Build a Task class that forms the backbone of a small task manager.
+
+Task(title, done=False) should:
+  - Store title and done attributes.
+  - Have a complete() method that sets done = True.
+  - Have __str__ returning "[x] title" if done, "[ ] title" if not.
+
+Create a task, mark it complete, and print it.
+Then create another and print it undone.
+
+Expected output:
+    [x] Buy groceries
+    [ ] Write report
+"""
+expected_output = """[x] Buy groceries
+[ ] Write report"""
+starter_code    = """
+class Task:
+    def __init__(self, title, done=False):
+        self.title = title
+        self.done  = done
+
+    def complete(self):
+        self.done = True
+
+    def __str__(self):
+        mark = "x" if self.done else " "
+        return f"[{mark}] {self.title}"
+
+t1 = Task("Buy groceries")
+t1.complete()
+print(t1)
+
+t2 = Task("Write report")
+print(t2)
+"""
+hints = [
+    "Use a ternary expression to pick \"x\" or \" \" based on self.done.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "TaskList with error handling"
+prompt          = """
+A TaskList manages a collection of Task objects.
+
+Implement TaskList:
+  - add(task)       — append a Task
+  - complete(title) — mark the task with that title done;
+                       raise ValueError("task not found") if missing
+  - __str__         — each task on its own line, sorted by title
+
+Create a TaskList, add "Alpha" and "Beta", complete "Alpha", print it.
+
+Expected output:
+    [x] Alpha
+    [ ] Beta
+"""
+expected_output = """[x] Alpha
+[ ] Beta"""
+starter_code    = """
+class Task:
+    def __init__(self, title, done=False):
+        self.title = title
+        self.done  = done
+    def complete(self):
+        self.done = True
+    def __str__(self):
+        return f"[{'x' if self.done else ' '}] {self.title}"
+
+class TaskList:
+    def __init__(self):
+        self._tasks = []
+
+    def add(self, task):
+        self._tasks.append(task)
+
+    def complete(self, title):
+        for task in self._tasks:
+            if task.title == title:
+                task.complete()
+                return
+        raise ValueError("task not found")
+
+    def __str__(self):
+        return "\n".join(str(t) for t in sorted(self._tasks, key=lambda t: t.title))
+
+tl = TaskList()
+tl.add(Task("Alpha"))
+tl.add(Task("Beta"))
+tl.complete("Alpha")
+print(tl)
+"""
+hints = [
+    "sorted(..., key=lambda t: t.title) sorts tasks alphabetically.",
+    "Raise ValueError when the title is not found after the loop.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Persist tasks to JSON"
+prompt          = """
+Save and load tasks as JSON using the json stdlib module.
+
+save(task_list, path) — write [{\"title\": ..., \"done\": ...}, ...] to path.
+load(path) -> TaskList — read back and reconstruct.
+
+Save a list with two tasks to /tmp/tasks.json, reload it, and print.
+
+Expected output:
+    [ ] Cook dinner
+    [x] Read book
+"""
+expected_output = """[ ] Cook dinner
+[x] Read book"""
+starter_code    = """
+import json
+from pathlib import Path
+
+class Task:
+    def __init__(self, title, done=False):
+        self.title = title
+        self.done  = done
+    def complete(self):
+        self.done = True
+    def __str__(self):
+        return f"[{'x' if self.done else ' '}] {self.title}"
+
+class TaskList:
+    def __init__(self):
+        self._tasks = []
+    def add(self, task):
+        self._tasks.append(task)
+    def complete(self, title):
+        for t in self._tasks:
+            if t.title == title:
+                t.complete()
+                return
+        raise ValueError("task not found")
+    def __str__(self):
+        return "\n".join(str(t) for t in sorted(self._tasks, key=lambda t: t.title))
+
+def save(task_list, path):
+    data = [{"title": t.title, "done": t.done} for t in task_list._tasks]
+    Path(path).write_text(json.dumps(data))
+
+def load(path):
+    tl = TaskList()
+    for item in json.loads(Path(path).read_text()):
+        tl.add(Task(item["title"], item["done"]))
+    return tl
+
+tl = TaskList()
+tl.add(Task("Cook dinner"))
+t = Task("Read book")
+t.complete()
+tl.add(t)
+save(tl, "/tmp/tasks.json")
+
+loaded = load("/tmp/tasks.json")
+print(loaded)
+"""
+hints = [
+    "json.dumps(list_of_dicts) serialises to a JSON string.",
+    "json.loads(string) deserialises back to Python objects.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Simulated CLI — putting it all together"
+prompt          = """
+Combine argparse, the TaskList, and file persistence into a mini CLI.
+Since the runner passes no arguments, inject sys.argv manually to simulate a run.
+
+Simulate running:  prog add "Deploy app"
+Then:              prog add "Write tests"
+Then:              prog done "Write tests"
+Then:              prog list
+
+Expected output:
+    [ ] Deploy app
+    [x] Write tests
+"""
+expected_output = """[ ] Deploy app
+[x] Write tests"""
+starter_code    = """
+import argparse
+import json
+import sys
+from pathlib import Path
+
+TASKS_FILE = "/tmp/capstone_tasks.json"
+
+class Task:
+    def __init__(self, title, done=False):
+        self.title = title
+        self.done  = done
+    def complete(self):
+        self.done = True
+    def __str__(self):
+        return f"[{'x' if self.done else ' '}] {self.title}"
+
+class TaskList:
+    def __init__(self):
+        self._tasks = []
+    def add(self, task):
+        self._tasks.append(task)
+    def complete(self, title):
+        for t in self._tasks:
+            if t.title == title:
+                t.complete()
+                return
+        raise ValueError("task not found")
+    def __str__(self):
+        return "\n".join(str(t) for t in sorted(self._tasks, key=lambda t: t.title))
+
+def save(tl):
+    Path(TASKS_FILE).write_text(json.dumps([{"title": t.title, "done": t.done} for t in tl._tasks]))
+
+def load():
+    p = Path(TASKS_FILE)
+    if not p.exists():
+        return TaskList()
+    tl = TaskList()
+    for item in json.loads(p.read_text()):
+        tl.add(Task(item["title"], item["done"]))
+    return tl
+
+def run(argv):
+    parser = argparse.ArgumentParser()
+    subs   = parser.add_subparsers(dest="cmd")
+    ap = subs.add_parser("add");  ap.add_argument("title")
+    dp = subs.add_parser("done"); dp.add_argument("title")
+    subs.add_parser("list")
+    args = parser.parse_args(argv)
+    tl = load()
+    if args.cmd == "add":
+        tl.add(Task(args.title))
+        save(tl)
+    elif args.cmd == "done":
+        tl.complete(args.title)
+        save(tl)
+    elif args.cmd == "list":
+        print(tl)
+
+# Start fresh
+Path(TASKS_FILE).unlink(missing_ok=True)
+
+run(["add", "Deploy app"])
+run(["add", "Write tests"])
+run(["done", "Write tests"])
+run(["list"])
+"""
+hints = [
+    "Each run() call loads the file, mutates, and saves — simulating separate CLI invocations.",
+    "Path.unlink(missing_ok=True) deletes the file if it exists, starting fresh.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Statistics summary"
+prompt          = """
+Add a stats subcommand that prints a summary of the task list.
+
+After loading a known task list (2 done, 3 pending), print:
+    Total: 5
+    Done: 2
+    Pending: 3
+
+Implement this directly (no file I/O needed — build the list in code).
+
+Expected output:
+    Total: 5
+    Done: 2
+    Pending: 3
+"""
+expected_output = """Total: 5
+Done: 2
+Pending: 3"""
+starter_code    = """
+class Task:
+    def __init__(self, title, done=False):
+        self.title = title
+        self.done  = done
+
+tasks = [
+    Task("A", done=True),
+    Task("B", done=False),
+    Task("C", done=True),
+    Task("D", done=False),
+    Task("E", done=False),
+]
+
+total   = len(tasks)
+done    = sum(1 for t in tasks if t.done)
+pending = total - done
+
+print(f"Total: {total}")
+print(f"Done: {done}")
+print(f"Pending: {pending}")
+"""
+hints = [
+    "sum(1 for t in tasks if t.done) counts truthy conditions.",
+    "pending = total - done avoids iterating twice.",
+]

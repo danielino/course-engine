@@ -1,0 +1,169 @@
+id          = "12-error-handling"
+title       = "Error Handling"
+description = "try/except/finally, raise, custom exception classes, and common Exception types."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic try/except"
+prompt          = """
+Wrap risky code in a try block; handle errors in except.
+
+The code below tries to divide by zero.
+Catch the ZeroDivisionError and print "cannot divide by zero".
+
+Expected output:
+    cannot divide by zero
+"""
+expected_output = "cannot divide by zero"
+starter_code    = """
+try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("cannot divide by zero")
+"""
+hints = [
+    "The except clause names the exception type you want to catch.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Catching multiple exceptions"
+prompt          = """
+You can catch different exception types separately.
+
+Try to:
+  1. Convert "abc" to int  → ValueError
+  2. Access index 10 of [] → IndexError
+
+Catch each and print the exception type name using type(e).__name__.
+
+Expected output:
+    ValueError
+    IndexError
+"""
+expected_output = """ValueError
+IndexError"""
+starter_code    = """
+for action in ["convert", "index"]:
+    try:
+        if action == "convert":
+            int("abc")
+        else:
+            [][10]
+    except (ValueError, IndexError) as e:
+        print(type(e).__name__)
+"""
+hints = [
+    "type(e).__name__ gives the class name of the exception as a string.",
+    "You can catch multiple types with except (TypeError, ValueError) as e.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "finally block"
+prompt          = """
+The finally block always runs — even if an exception was raised.
+It's commonly used for cleanup (closing files, releasing locks).
+
+Print "trying", raise a RuntimeError, catch it (print "caught error"),
+then print "always runs" in the finally block.
+
+Expected output:
+    trying
+    caught error
+    always runs
+"""
+expected_output = """trying
+caught error
+always runs"""
+starter_code    = """
+try:
+    print("trying")
+    raise RuntimeError("oops")
+except RuntimeError:
+    print("caught error")
+finally:
+    print("always runs")
+"""
+hints = [
+    "finally runs regardless of whether an exception occurred.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "raise — signal errors"
+prompt          = """
+Use `raise` to signal that something went wrong in your own code.
+
+Write a function check_age(age) that:
+  - raises ValueError("age must be positive") if age <= 0
+  - returns the string "age is valid" otherwise
+
+Call it with -1 (catch and print the error message),
+then call it with 25 (print the return value).
+
+Expected output:
+    age must be positive
+    age is valid
+"""
+expected_output = """age must be positive
+age is valid"""
+starter_code    = """
+def check_age(age):
+    if age <= 0:
+        raise ValueError("age must be positive")
+    return "age is valid"
+
+try:
+    check_age(-1)
+except ValueError as e:
+    print(e)
+
+print(check_age(25))
+"""
+hints = [
+    "raise ValueError(\"message\") creates and immediately raises the exception.",
+    "str(e) or print(e) prints the exception's message.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Custom exception class"
+prompt          = """
+You can define your own exception by subclassing Exception.
+
+Define InsufficientFundsError(Exception).
+Write withdraw(balance, amount) that raises InsufficientFundsError("not enough funds")
+if amount > balance, else returns balance - amount.
+
+Call withdraw(100, 150), catch the error, print its message.
+Then call withdraw(100, 40) and print the result.
+
+Expected output:
+    not enough funds
+    60
+"""
+expected_output = """not enough funds
+60"""
+starter_code    = """
+class InsufficientFundsError(Exception):
+    pass
+
+def withdraw(balance, amount):
+    if amount > balance:
+        raise InsufficientFundsError("not enough funds")
+    return balance - amount
+
+try:
+    withdraw(100, 150)
+except InsufficientFundsError as e:
+    print(e)
+
+print(withdraw(100, 40))
+"""
+hints = [
+    "Subclass Exception with class MyError(Exception): pass.",
+    "Custom exceptions work just like built-in ones.",
+]

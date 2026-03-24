@@ -1,0 +1,139 @@
+id          = "09-collections-list"
+title       = "Lists"
+description = "List literals, append/pop/insert, indexing, slicing, len, and list()."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Create and access a list"
+prompt          = """
+A list is an ordered, mutable sequence. Create one with square brackets.
+
+Given fruits = ["apple", "banana", "cherry"]:
+  1. Print the first element.   → apple
+  2. Print the last element.    → cherry
+  3. Print the length.          → 3
+"""
+expected_output = """apple
+cherry
+3"""
+starter_code    = """
+fruits = ["apple", "banana", "cherry"]
+print(fruits[0])
+print(fruits[-1])
+print(len(fruits))
+"""
+hints = [
+    "Indexing starts at 0. fruits[0] is the first element.",
+    "fruits[-1] is the last element (negative indexing counts from the end).",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "append(), insert(), pop()"
+prompt          = """
+append(x) adds x to the end.
+insert(i, x) adds x at index i.
+pop() removes and returns the last element.
+
+Start with nums = [1, 2, 3]:
+  1. Append 4.
+  2. Insert 0 at index 0.
+  3. Pop the last element.
+  4. Print the resulting list.
+
+Expected output:
+    [0, 1, 2, 3]
+"""
+expected_output = "[0, 1, 2, 3]"
+starter_code    = """
+nums = [1, 2, 3]
+nums.append(4)
+nums.insert(0, 0)
+nums.pop()
+print(nums)
+"""
+hints = [
+    "After append: [1, 2, 3, 4]. After insert(0, 0): [0, 1, 2, 3, 4]. After pop(): [0, 1, 2, 3].",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "List slicing"
+prompt          = """
+List slicing works the same as string slicing: lst[start:stop:step].
+
+Given data = [10, 20, 30, 40, 50]:
+  1. Print first three elements.          → [10, 20, 30]
+  2. Print every other element.           → [10, 30, 50]
+  3. Print the list reversed.             → [50, 40, 30, 20, 10]
+"""
+expected_output = """[10, 20, 30]
+[10, 30, 50]
+[50, 40, 30, 20, 10]"""
+starter_code    = """
+data = [10, 20, 30, 40, 50]
+print(data[:3])
+print(data[::2])
+print(data[::-1])
+"""
+hints = [
+    "data[:3] means indices 0, 1, 2.",
+    "data[::2] steps by 2: indices 0, 2, 4.",
+    "data[::-1] reverses the list.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Iterating and searching"
+prompt          = """
+Iterate a list with for. Check membership with `in`. Find an index with .index().
+
+Given colors = ["red", "green", "blue"]:
+  1. Print each color on its own line.
+  2. Print the index of "green".
+
+Expected output:
+    red
+    green
+    blue
+    1
+"""
+expected_output = """red
+green
+blue
+1"""
+starter_code    = """
+colors = ["red", "green", "blue"]
+for color in colors:
+    print(color)
+print(colors.index("green"))
+"""
+hints = [
+    ".index(x) returns the position of the first occurrence of x.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "list() and sorting"
+prompt          = """
+list() converts any iterable to a list. sorted() returns a new sorted list.
+
+  1. Convert the string "hello" to a list of characters and print it.
+  2. Print a sorted version of [3, 1, 4, 1, 5, 9, 2, 6].
+
+Expected output:
+    ['h', 'e', 'l', 'l', 'o']
+    [1, 1, 2, 3, 4, 5, 6, 9]
+"""
+expected_output = """['h', 'e', 'l', 'l', 'o']
+[1, 1, 2, 3, 4, 5, 6, 9]"""
+starter_code    = """
+print(list("hello"))
+print(sorted([3, 1, 4, 1, 5, 9, 2, 6]))
+"""
+hints = [
+    "list(\"hello\") iterates over the string and collects each character.",
+    "sorted() does not modify the original list; it returns a new one.",
+]

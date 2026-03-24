@@ -1,0 +1,133 @@
+id          = "11-collections-set-tuple"
+title       = "Sets and Tuples"
+description = "set (add, in, union, intersection), tuple (immutable), and unpacking."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Sets — unique elements"
+prompt          = """
+A set is an unordered collection of unique elements.
+Duplicate values are automatically removed.
+
+Given nums = {3, 1, 4, 1, 5, 9, 2, 6, 5}:
+  1. Print len(nums)   → 7  (duplicates removed)
+  2. Print (4 in nums) → True
+  3. Print (7 in nums) → False
+"""
+expected_output = """7
+True
+False"""
+starter_code    = """
+nums = {3, 1, 4, 1, 5, 9, 2, 6, 5}
+print(len(nums))
+print(4 in nums)
+print(7 in nums)
+"""
+hints = [
+    "Sets automatically deduplicate: {1, 1, 2} becomes {1, 2}.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "add(), union, intersection"
+prompt          = """
+Set operations mirror mathematical sets.
+  add(x)        — adds x to the set
+  s1 | s2       — union (all elements from both)
+  s1 & s2       — intersection (elements in both)
+
+Given:
+  a = {1, 2, 3}
+  b = {3, 4, 5}
+
+Print sorted versions of:
+  1. a | b      → [1, 2, 3, 4, 5]
+  2. a & b      → [3]
+"""
+expected_output = """[1, 2, 3, 4, 5]
+[3]"""
+starter_code    = """
+a = {1, 2, 3}
+b = {3, 4, 5}
+print(sorted(a | b))
+print(sorted(a & b))
+"""
+hints = [
+    "| is the union operator for sets.",
+    "& is the intersection operator.",
+    "sorted() converts the set to a sorted list for deterministic output.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Tuples — immutable sequences"
+prompt          = """
+Tuples are like lists but immutable (cannot be changed after creation).
+They're often used for fixed collections: coordinates, RGB values, etc.
+
+Given point = (3, 4):
+  1. Print point[0]         → 3
+  2. Print point[1]         → 4
+  3. Print len(point)       → 2
+"""
+expected_output = """3
+4
+2"""
+starter_code    = """
+point = (3, 4)
+print(point[0])
+print(point[1])
+print(len(point))
+"""
+hints = [
+    "Tuples use parentheses; you access elements the same way as lists.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Tuple unpacking"
+prompt          = """
+You can unpack a tuple's values directly into variables.
+
+Given rgb = (255, 128, 0):
+Unpack it into r, g, b and print:
+    R=255 G=128 B=0
+"""
+expected_output = "R=255 G=128 B=0"
+starter_code    = """
+rgb = (255, 128, 0)
+r, g, b = rgb
+print(f"R={r} G={g} B={b}")
+"""
+hints = [
+    "r, g, b = rgb unpacks each element into its own variable.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Remove duplicates from a list"
+prompt          = """
+A practical use of sets: remove duplicates from a list while preserving
+no particular order — then sort to get a deterministic result.
+
+Given:
+  items = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+
+Print the unique items sorted in ascending order.
+
+Expected output:
+    [1, 2, 3, 4, 5, 6, 9]
+"""
+expected_output = "[1, 2, 3, 4, 5, 6, 9]"
+starter_code    = """
+items = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+unique = sorted(set(items))
+print(unique)
+"""
+hints = [
+    "set(items) removes duplicates.",
+    "sorted() turns the set back into a sorted list.",
+]

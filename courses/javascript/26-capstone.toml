@@ -1,0 +1,168 @@
+id          = "26-capstone"
+title       = "Capstone: Student Grade Tracker"
+description = "End-to-end CLI tool combining arrays, objects, file I/O, error handling, and reporting."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Model the data"
+prompt          = """
+Design the data structure for a grade tracker.
+
+Create an array of student objects with the following fields:
+  { name: string, grades: number[] }
+
+Use this dataset:
+  Alice  → [88, 92, 75]
+  Bob    → [70, 65, 80]
+  Carol  → [95, 98, 100]
+
+Print the number of students.
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+const students = [
+    { name: "Alice", grades: [88, 92, 75] },
+    { name: "Bob",   grades: [70, 65, 80] },
+    { name: "Carol", grades: [95, 98, 100] },
+];
+console.log(students.length);
+"""
+hints = [
+    "An array of objects is the natural representation. students.length gives the count.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Compute averages"
+prompt          = """
+Using the student dataset from the previous exercise, compute each student's average
+grade (rounded to 1 decimal place) and print "<name>: <avg>".
+
+Expected output:
+    Alice: 85.0
+    Bob: 71.7
+    Carol: 97.7
+"""
+expected_output = """Alice: 85.0
+Bob: 71.7
+Carol: 97.7"""
+starter_code    = """
+const students = [
+    { name: "Alice", grades: [88, 92, 75] },
+    { name: "Bob",   grades: [70, 65, 80] },
+    { name: "Carol", grades: [95, 98, 100] },
+];
+students.forEach(s => {
+    const avg = s.grades.reduce((a, g) => a + g, 0) / s.grades.length;
+    console.log(s.name + ": " + avg.toFixed(1));
+});
+"""
+hints = [
+    "Sum with reduce(), divide by grades.length, then use .toFixed(1) for 1 decimal place.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Find the top student"
+prompt          = """
+Using the same dataset, find and print the name of the student with the highest average.
+
+Expected output:
+    Top student: Carol
+"""
+expected_output = "Top student: Carol"
+starter_code    = """
+const students = [
+    { name: "Alice", grades: [88, 92, 75] },
+    { name: "Bob",   grades: [70, 65, 80] },
+    { name: "Carol", grades: [95, 98, 100] },
+];
+function avg(grades) {
+    return grades.reduce((a, g) => a + g, 0) / grades.length;
+}
+const top = students.reduce((best, s) => avg(s.grades) > avg(best.grades) ? s : best);
+console.log("Top student: " + top.name);
+"""
+hints = [
+    "Use reduce to compare students pairwise, keeping the one with the higher average.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Persist to JSON"
+prompt          = """
+Serialize the student dataset (with averages added) to a JSON file called
+"tmp_grades.json", then read it back and print the number of entries.
+
+Add an `avg` field to each student before serialising (rounded to 1 decimal).
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+const fs = require("fs");
+const students = [
+    { name: "Alice", grades: [88, 92, 75] },
+    { name: "Bob",   grades: [70, 65, 80] },
+    { name: "Carol", grades: [95, 98, 100] },
+];
+const withAvg = students.map(s => ({
+    ...s,
+    avg: parseFloat((s.grades.reduce((a, g) => a + g, 0) / s.grades.length).toFixed(1)),
+}));
+fs.writeFileSync("tmp_grades.json", JSON.stringify(withAvg));
+const loaded = JSON.parse(fs.readFileSync("tmp_grades.json", "utf8"));
+console.log(loaded.length);
+"""
+hints = [
+    "Use JSON.stringify to write and JSON.parse to read. Spread the object to add the avg field.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Full report"
+prompt          = """
+Produce a complete grade report:
+  1. Print each student's name and average (1 decimal).
+  2. Print a separator line: "---".
+  3. Print "Top student: <name>".
+  4. Print "Class average: <avg>" (average of all individual grades, 1 decimal).
+
+Expected output:
+    Alice: 85.0
+    Bob: 71.7
+    Carol: 97.7
+    ---
+    Top student: Carol
+    Class average: 84.8
+"""
+expected_output = """Alice: 85.0
+Bob: 71.7
+Carol: 97.7
+---
+Top student: Carol
+Class average: 84.8"""
+starter_code    = """
+const students = [
+    { name: "Alice", grades: [88, 92, 75] },
+    { name: "Bob",   grades: [70, 65, 80] },
+    { name: "Carol", grades: [95, 98, 100] },
+];
+function avg(grades) {
+    return grades.reduce((a, g) => a + g, 0) / grades.length;
+}
+students.forEach(s => console.log(s.name + ": " + avg(s.grades).toFixed(1)));
+console.log("---");
+const top = students.reduce((best, s) => avg(s.grades) > avg(best.grades) ? s : best);
+console.log("Top student: " + top.name);
+const allGrades = students.flatMap(s => s.grades);
+console.log("Class average: " + avg(allGrades).toFixed(1));
+"""
+hints = [
+    "flatMap(s => s.grades) flattens all grade arrays into one. Then take the average of that.",
+    "All grades: [88,92,75,70,65,80,95,98,100] — sum=763, count=9, avg=84.777... → 84.8",
+]

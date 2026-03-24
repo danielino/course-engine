@@ -1,0 +1,135 @@
+id          = "03-data-types"
+title       = "Data Types"
+description = "Explore number, string, boolean, null, undefined, and the typeof operator."
+
+[[exercises]]
+id              = "ex_01"
+title           = "typeof basics"
+prompt          = """
+Print the type of each value using `typeof`:
+  - typeof 42
+  - typeof "hello"
+  - typeof true
+
+Expected output:
+    number
+    string
+    boolean
+"""
+expected_output = """number
+string
+boolean"""
+starter_code    = """
+console.log(typeof 42);
+console.log(typeof "hello");
+console.log(typeof true);
+"""
+hints = [
+    "typeof returns a string describing the type. Just call console.log(typeof value).",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "null and undefined"
+prompt          = """
+Print the typeof both special values:
+  - typeof null
+  - typeof undefined
+
+Expected output:
+    object
+    undefined
+
+Note: `typeof null` returning "object" is a famous JavaScript quirk.
+"""
+expected_output = """object
+undefined"""
+starter_code    = """
+console.log(typeof null);
+console.log(typeof undefined);
+"""
+hints = [
+    "typeof null is \"object\" (a historical JS bug). typeof undefined is \"undefined\".",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Number arithmetic"
+prompt          = """
+Declare:
+  const x = 7;
+  const y = 2;
+
+Print the result of integer division (Math.floor) and the remainder:
+    3
+    1
+"""
+expected_output = """3
+1"""
+starter_code    = """
+const x = 7;
+const y = 2;
+console.log(Math.floor(x / y));
+console.log(x % y);
+"""
+hints = [
+    "Integer division: Math.floor(x / y). Remainder: x % y.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "String coercion"
+prompt          = """
+JavaScript converts types automatically in some operations.
+
+Print the result of:
+  - "5" + 3    (string + number)
+  - "5" - 3    (string - number)
+
+Expected output:
+    53
+    2
+
+Observe how + triggers string concatenation while - triggers numeric conversion.
+"""
+expected_output = """53
+2"""
+starter_code    = """
+console.log("5" + 3);
+console.log("5" - 3);
+"""
+hints = [
+    "The + operator concatenates when one side is a string. - always coerces to number.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Boolean conversions"
+prompt          = """
+Use Boolean() to convert the following values and print each result:
+  - Boolean(0)
+  - Boolean("")
+  - Boolean("hello")
+  - Boolean(null)
+
+Expected output:
+    false
+    false
+    true
+    false
+
+Falsy values in JavaScript: 0, "", null, undefined, NaN, false.
+"""
+expected_output = """false
+false
+true
+false"""
+starter_code    = """
+console.log(Boolean(0));
+console.log(Boolean(""));
+console.log(Boolean("hello"));
+console.log(Boolean(null));
+"""
+hints = [
+    "Boolean() converts any value to true or false following JavaScript's truthy/falsy rules.",
+]

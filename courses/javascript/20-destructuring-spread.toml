@@ -1,0 +1,120 @@
+id          = "20-destructuring-spread"
+title       = "Destructuring and Spread"
+description = "Unpack arrays and objects with destructuring; gather remaining elements with rest."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Array destructuring"
+prompt          = """
+Destructure the array [10, 20, 30] into three variables `a`, `b`, `c` and print them.
+
+Expected output:
+    10
+    20
+    30
+"""
+expected_output = """10
+20
+30"""
+starter_code    = """
+const [a, b, c] = [10, 20, 30];
+console.log(a);
+console.log(b);
+console.log(c);
+"""
+hints = [
+    "const [a, b, c] = array; unpacks by position.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Object destructuring"
+prompt          = """
+Destructure the object `{ name: "Bob", age: 25, city: "Paris" }` to extract
+`name` and `city`, then print:
+    Bob lives in Paris
+
+Expected output:
+    Bob lives in Paris
+"""
+expected_output = "Bob lives in Paris"
+starter_code    = """
+const { name, city } = { name: "Bob", age: 25, city: "Paris" };
+console.log(name + " lives in " + city);
+"""
+hints = [
+    "const { name, city } = obj; extracts properties by key name.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Default values in destructuring"
+prompt          = """
+Destructure `{ x: 5 }` into `x` and `y` where `y` defaults to 10 if missing.
+Print x and y.
+
+Expected output:
+    5
+    10
+"""
+expected_output = """5
+10"""
+starter_code    = """
+const { x, y = 10 } = { x: 5 };
+console.log(x);
+console.log(y);
+"""
+hints = [
+    "Default values: const { key = defaultVal } = obj;",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Rest in destructuring"
+prompt          = """
+Given `const [first, second, ...rest] = [1, 2, 3, 4, 5];`, print:
+  - first
+  - second
+  - rest as JSON
+
+Expected output:
+    1
+    2
+    [3,4,5]
+"""
+expected_output = """1
+2
+[3,4,5]"""
+starter_code    = """
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+console.log(first);
+console.log(second);
+console.log(JSON.stringify(rest));
+"""
+hints = [
+    "The rest element (...rest) collects all remaining items into a new array.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Spread to clone and merge objects"
+prompt          = """
+Given:
+  const defaults = { color: "blue", size: "M", visible: true };
+  const overrides = { size: "L", opacity: 0.8 };
+
+Merge them (overrides win on conflict) and print the result as JSON.
+
+Expected output:
+    {"color":"blue","size":"L","visible":true,"opacity":0.8}
+"""
+expected_output = """{"color":"blue","size":"L","visible":true,"opacity":0.8}"""
+starter_code    = """
+const defaults  = { color: "blue", size: "M", visible: true };
+const overrides = { size: "L", opacity: 0.8 };
+const merged    = { ...defaults, ...overrides };
+console.log(JSON.stringify(merged));
+"""
+hints = [
+    "{ ...a, ...b } creates a new object with all keys from both; later keys overwrite earlier ones.",
+]

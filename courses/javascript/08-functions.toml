@@ -1,0 +1,116 @@
+id          = "08-functions"
+title       = "Functions"
+description = "Function declarations, expressions, arrow functions, parameters, and return values."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Function declaration"
+prompt          = """
+Declare a function `greet` that accepts a `name` parameter and returns the string
+"Hello, <name>!". Call it with "World" and print the result.
+
+Expected output:
+    Hello, World!
+"""
+expected_output = "Hello, World!"
+starter_code    = """
+function greet(name) {
+    return "Hello, " + name + "!";
+}
+console.log(greet("World"));
+"""
+hints = [
+    "function greet(name) { return \"Hello, \" + name + \"!\"; }",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Function expression"
+prompt          = """
+Assign a function to the variable `square` that returns the square of its argument.
+Print square(9).
+
+Expected output:
+    81
+"""
+expected_output = "81"
+starter_code    = """
+const square = function(n) {
+    return n * n;
+};
+console.log(square(9));
+"""
+hints = [
+    "A function expression: const square = function(n) { return n * n; };",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Arrow function"
+prompt          = """
+Rewrite the `square` function as an arrow function and print square(12).
+
+Expected output:
+    144
+"""
+expected_output = "144"
+starter_code    = """
+const square = (n) => n * n;
+console.log(square(12));
+"""
+hints = [
+    "Arrow syntax: const square = (n) => n * n;  (no braces needed for a single expression)",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Default parameters"
+prompt          = """
+Write a function `power(base, exp = 2)` that returns base raised to exp.
+Print:
+  - power(3)    → 9  (uses default exp)
+  - power(2, 8) → 256
+
+Expected output:
+    9
+    256
+"""
+expected_output = """9
+256"""
+starter_code    = """
+function power(base, exp = 2) {
+    return Math.pow(base, exp);
+}
+console.log(power(3));
+console.log(power(2, 8));
+"""
+hints = [
+    "Default parameters are set with = in the parameter list: function power(base, exp = 2).",
+    "Use Math.pow(base, exp) or the ** operator.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Higher-order function"
+prompt          = """
+Write a function `applyTwice(fn, value)` that applies fn to value twice and returns the result.
+
+Use it with a function that adds 3:
+    applyTwice(n => n + 3, 7)  →  13
+
+Print the result.
+
+Expected output:
+    13
+"""
+expected_output = "13"
+starter_code    = """
+function applyTwice(fn, value) {
+    return fn(fn(value));
+}
+console.log(applyTwice(n => n + 3, 7));
+"""
+hints = [
+    "applyTwice calls fn(value) and then passes that result back to fn again.",
+    "function applyTwice(fn, value) { return fn(fn(value)); }",
+]

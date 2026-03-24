@@ -1,0 +1,119 @@
+id          = "04-operators"
+title       = "Operators"
+description = "Master arithmetic, comparison, logical, and increment operators in C."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Arithmetic Operators"
+prompt          = """C supports the standard arithmetic operators: + (add), - (subtract), * (multiply), / (divide), % (modulo). These are the building blocks of any computation. Using the values 10 and 3, print the results of addition, subtraction, and multiplication:
+10 + 3 = 13
+10 - 3 = 7
+10 * 3 = 30"""
+expected_output = """10 + 3 = 13
+10 - 3 = 7
+10 * 3 = 30"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int a = 10, b = 3;
+    // Print addition, subtraction, multiplication
+    return 0;
+}"""
+hints = [
+    "Calculate each result into a variable or inline it in printf(). Use %d for integers.",
+    "printf(\"10 + 3 = %d\\n\", a + b);\nprintf(\"10 - 3 = %d\\n\", a - b);\nprintf(\"10 * 3 = %d\\n\", a * b);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Integer Division and Modulo"
+prompt          = """In C, dividing two integers with / performs integer division — the fractional part is discarded. The % operator gives the remainder. This is essential for tasks like checking if a number is even (n % 2 == 0). Compute 17 / 5 and 17 % 5 and print:
+17 / 5 = 3
+17 % 5 = 2"""
+expected_output = """17 / 5 = 3
+17 % 5 = 2"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int a = 17, b = 5;
+    // Print integer division and modulo results
+    return 0;
+}"""
+hints = [
+    "Integer division: 17 / 5 gives 3 (the .4 is dropped). Modulo: 17 % 5 gives 2 (the remainder).",
+    "printf(\"17 / 5 = %d\\n\", a / b);\nprintf(\"17 %% 5 = %d\\n\", a % b);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Comparison Operators"
+prompt          = """Comparison operators return 1 (true) or 0 (false) in C. They are: > (greater than), < (less than), == (equal), != (not equal), >= (greater or equal), <= (less or equal). Print the results of comparing 5 and 3:
+5 > 3: 1
+5 < 3: 0
+5 == 5: 1"""
+expected_output = """5 > 3: 1
+5 < 3: 0
+5 == 5: 1"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int a = 5, b = 3;
+    // Print comparison results
+    return 0;
+}"""
+hints = [
+    "In C, comparison expressions evaluate to int: 1 for true, 0 for false. Use %d to print them.",
+    "printf(\"5 > 3: %d\\n\", a > b);\nprintf(\"5 < 3: %d\\n\", a < b);\nprintf(\"5 == 5: %d\\n\", a == a);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Logical Operators"
+prompt          = """Logical operators combine boolean (true/false) expressions: && (AND) returns 1 only if both sides are true, || (OR) returns 1 if at least one side is true, ! (NOT) flips the value. These are fundamental to writing conditions. Print:
+1 && 0 = 0
+1 || 0 = 1
+!1 = 0"""
+expected_output = """1 && 0 = 0
+1 || 0 = 1
+!1 = 0"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Print logical operator results
+    return 0;
+}"""
+hints = [
+    "Use literals 1 and 0 as true and false. The expressions 1 && 0, 1 || 0, and !1 each return an int.",
+    "printf(\"1 && 0 = %d\\n\", 1 && 0);\nprintf(\"1 || 0 = %d\\n\", 1 || 0);\nprintf(\"!1 = %d\\n\", !1);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Increment Operators"
+prompt          = """C has two increment operators: a++ (post-increment) returns the current value THEN increments, while ++a (pre-increment) increments FIRST then returns the new value. Understanding this distinction is critical for loops and expressions. Start with a = 5 and print:
+a = 5
+a++ gives: 5
+a is now: 6
+++a gives: 7"""
+expected_output = """a = 5
+a++ gives: 5
+a is now: 6
+++a gives: 7"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int a = 5;
+    printf("a = %d\n", a);
+    // Use a++ and capture its return value, then print a
+    // Use ++a and print its return value
+    return 0;
+}"""
+hints = [
+    "int post = a++; stores the old value (5) and increments a to 6. Then int pre = ++a; increments a to 7 and stores 7.",
+    "int post = a++;\nprintf(\"a++ gives: %d\\n\", post);\nprintf(\"a is now: %d\\n\", a);\nprintf(\"++a gives: %d\\n\", ++a);"
+]
+validation_mode = "exact_stdout"

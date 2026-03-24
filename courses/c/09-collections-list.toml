@@ -1,0 +1,107 @@
+id          = "09-collections-list"
+title       = "Arrays"
+description = "Work with C arrays: declaration, iteration, searching, 2D arrays, and dynamic allocation."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Declaring and Printing an Array"
+prompt          = """An array is a contiguous block of memory holding multiple values of the same type. You access elements by index (starting at 0). Arrays are fundamental to C — almost all data structures are built from them. Declare int arr[] = {10, 20, 30} and print all elements space-separated: 10 20 30"""
+expected_output = "10 20 30"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int arr[] = {10, 20, 30};
+    int len = 3;
+    // Print all elements space-separated
+    return 0;
+}"""
+hints = [
+    "Use a for loop with index i from 0 to len-1. Access each element with arr[i].",
+    "for (int i = 0; i < len; i++) {\n    if (i > 0) printf(\" \");\n    printf(\"%d\", arr[i]);\n}\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Summing Array Elements"
+prompt          = """Iterating over an array with a loop is a core pattern. Use it to compute the sum of all elements. This accumulation pattern — initializing to 0 and adding each element — appears constantly in real programs. Sum the array {1, 2, 3, 4, 5} and print: Sum: 15"""
+expected_output = "Sum: 15"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    int len = 5;
+    int sum = 0;
+    // Add each element to sum
+    printf("Sum: %d\n", sum);
+    return 0;
+}"""
+hints = [
+    "Loop from i = 0 to len-1 and add arr[i] to sum each iteration.",
+    "for (int i = 0; i < len; i++) {\n    sum += arr[i];\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Finding the Maximum Value"
+prompt          = """A linear scan to find the maximum element is a fundamental algorithm. Assume the first element is the maximum, then update it whenever you find something larger. Search the array {3, 7, 2, 9, 5} for the maximum value and print: Max: 9"""
+expected_output = "Max: 9"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int arr[] = {3, 7, 2, 9, 5};
+    int len = 5;
+    int max = arr[0];
+    // Find the maximum by scanning the rest of the array
+    printf("Max: %d\n", max);
+    return 0;
+}"""
+hints = [
+    "Loop from i = 1 to len-1. Inside: if (arr[i] > max) max = arr[i];",
+    "for (int i = 1; i < len; i++) {\n    if (arr[i] > max) max = arr[i];\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "2D Arrays"
+prompt          = """A 2D array is an array of arrays — perfect for grids, matrices, and tables. You access elements with two indices: arr[row][col]. Declare a 2x3 int array with values {1,2,3} and {4,5,6}, then print row by row:
+1 2 3
+4 5 6"""
+expected_output = """1 2 3
+4 5 6"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int grid[2][3] = {{1, 2, 3}, {4, 5, 6}};
+    // Print each row
+    return 0;
+}"""
+hints = [
+    "Use nested loops: outer for rows (0 to 1), inner for columns (0 to 2). Print a space between columns and a newline after each row.",
+    "for (int i = 0; i < 2; i++) {\n    for (int j = 0; j < 3; j++) {\n        if (j > 0) printf(\" \");\n        printf(\"%d\", grid[i][j]);\n    }\n    printf(\"\\n\");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Dynamic Arrays with malloc"
+prompt          = """Stack-allocated arrays have fixed size at compile time. For runtime-determined sizes, use malloc() from <stdlib.h> to allocate memory on the heap. You MUST free() the memory when done, or you'll have a memory leak. Allocate an int array of 5 elements, fill them with 1 through 5, print them space-separated, then free. Output: 1 2 3 4 5"""
+expected_output = "1 2 3 4 5"
+starter_code    = """#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n = 5;
+    int *arr = (int *)malloc(n * sizeof(int));
+    // Fill with 1 to 5
+    // Print space-separated
+    free(arr);
+    return 0;
+}"""
+hints = [
+    "malloc(n * sizeof(int)) allocates space for n integers. Access elements with arr[i] just like a regular array.",
+    "for (int i = 0; i < n; i++) arr[i] = i + 1;\nfor (int i = 0; i < n; i++) {\n    if (i > 0) printf(\" \");\n    printf(\"%d\", arr[i]);\n}\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"

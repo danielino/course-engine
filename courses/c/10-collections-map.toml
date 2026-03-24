@@ -1,0 +1,118 @@
+id          = "10-collections-map"
+title       = "Key-Value Maps (Struct Arrays)"
+description = "Simulate hash maps in C using arrays of key-value structs: create, print, search, and update."
+
+[[exercises]]
+id              = "ex_01"
+title           = "A Single Key-Value Pair"
+prompt          = """C's standard library has no built-in hash map, so we simulate one with a struct containing a key and a value. This pattern is widely used in systems programming where you need associative data without external libraries. Define struct KeyValue with a char key[20] and int value. Create one entry {"apple", 150} and print: apple: 150"""
+expected_output = "apple: 150"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char key[20];
+    int  value;
+} KeyValue;
+
+int main() {
+    KeyValue entry;
+    // Set key to "apple" and value to 150
+    // Print "apple: 150"
+    return 0;
+}"""
+hints = [
+    "Use strcpy() to set the key: strcpy(entry.key, \"apple\"); Then entry.value = 150;",
+    "strcpy(entry.key, \"apple\");\nentry.value = 150;\nprintf(\"%s: %d\\n\", entry.key, entry.value);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "An Array of Key-Value Pairs"
+prompt          = """Just as you can have arrays of ints, you can have arrays of structs. This creates a simple lookup table. Add three entries (one=1, two=2, three=3) and print them all:
+one: 1
+two: 2
+three: 3"""
+expected_output = """one: 1
+two: 2
+three: 3"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char key[20];
+    int  value;
+} KeyValue;
+
+int main() {
+    KeyValue map[3];
+    // Initialize three entries
+    // Print each one
+    return 0;
+}"""
+hints = [
+    "Use strcpy() for keys: strcpy(map[0].key, \"one\"); map[0].value = 1; Repeat for indices 1 and 2.",
+    "strcpy(map[0].key, \"one\"); map[0].value = 1;\nstrcpy(map[1].key, \"two\"); map[1].value = 2;\nstrcpy(map[2].key, \"three\"); map[2].value = 3;\nfor (int i = 0; i < 3; i++) printf(\"%s: %d\\n\", map[i].key, map[i].value);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Searching by Key"
+prompt          = """A linear search scans the array from the beginning until it finds a matching key. This is O(n) time — sufficient for small maps. Search the three-entry map (one=1, two=2, three=3) for key "two" and print the result: Found: two = 2"""
+expected_output = "Found: two = 2"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char key[20];
+    int  value;
+} KeyValue;
+
+int main() {
+    KeyValue map[3];
+    strcpy(map[0].key, "one");   map[0].value = 1;
+    strcpy(map[1].key, "two");   map[1].value = 2;
+    strcpy(map[2].key, "three"); map[2].value = 3;
+    int size = 3;
+    char *target = "two";
+    // Loop through map, compare keys with strcmp, print if found
+    return 0;
+}"""
+hints = [
+    "Use strcmp(map[i].key, target) == 0 to check for a match inside a for loop.",
+    "for (int i = 0; i < size; i++) {\n    if (strcmp(map[i].key, target) == 0) {\n        printf(\"Found: %s = %d\\n\", map[i].key, map[i].value);\n        break;\n    }\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Updating a Value by Key"
+prompt          = """Once you find an entry, you can modify its fields directly. This is the 'update' operation of a key-value store. Find key "one" in the map (initially one=1, two=2, three=3), update its value to 10, and print before and after:
+Before: one = 1
+After: one = 10"""
+expected_output = """Before: one = 1
+After: one = 10"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char key[20];
+    int  value;
+} KeyValue;
+
+int main() {
+    KeyValue map[3];
+    strcpy(map[0].key, "one");   map[0].value = 1;
+    strcpy(map[1].key, "two");   map[1].value = 2;
+    strcpy(map[2].key, "three"); map[2].value = 3;
+    int size = 3;
+    // Find "one", print "Before: one = 1", update to 10, print "After: one = 10"
+    return 0;
+}"""
+hints = [
+    "Search for key \"one\" with strcmp. Print its value before changing it, then set map[i].value = 10 and print again.",
+    "for (int i = 0; i < size; i++) {\n    if (strcmp(map[i].key, \"one\") == 0) {\n        printf(\"Before: %s = %d\\n\", map[i].key, map[i].value);\n        map[i].value = 10;\n        printf(\"After: %s = %d\\n\", map[i].key, map[i].value);\n        break;\n    }\n}"
+]
+validation_mode = "exact_stdout"

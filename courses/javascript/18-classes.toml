@@ -1,0 +1,160 @@
+id          = "18-classes"
+title       = "Classes"
+description = "Define classes with constructors and methods; use inheritance with extends and super."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic class"
+prompt          = """
+Define a class `Rectangle` with:
+  - constructor(width, height)
+  - method area() that returns width * height
+  - method perimeter() that returns 2 * (width + height)
+
+Create a Rectangle(4, 6) and print area and perimeter.
+
+Expected output:
+    24
+    20
+"""
+expected_output = """24
+20"""
+starter_code    = """
+class Rectangle {
+    constructor(width, height) {
+        this.width  = width;
+        this.height = height;
+    }
+    area()      { return this.width * this.height; }
+    perimeter() { return 2 * (this.width + this.height); }
+}
+const r = new Rectangle(4, 6);
+console.log(r.area());
+console.log(r.perimeter());
+"""
+hints = [
+    "Use `this` inside methods to access instance properties.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "toString method"
+prompt          = """
+Add a `toString()` method to `Rectangle` that returns a string like:
+  "Rectangle(4x6)"
+
+Create a Rectangle(4, 6) and print it using console.log(r.toString()).
+
+Expected output:
+    Rectangle(4x6)
+"""
+expected_output = "Rectangle(4x6)"
+starter_code    = """
+class Rectangle {
+    constructor(width, height) {
+        this.width  = width;
+        this.height = height;
+    }
+    toString() {
+        return `Rectangle(${this.width}x${this.height})`;
+    }
+}
+const r = new Rectangle(4, 6);
+console.log(r.toString());
+"""
+hints = [
+    "toString() should return a template literal like `Rectangle(${this.width}x${this.height})`.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Static method"
+prompt          = """
+Add a static method `Rectangle.square(size)` that returns a new Rectangle
+where both sides equal `size`.
+
+Use it to create a 5x5 square and print its area.
+
+Expected output:
+    25
+"""
+expected_output = "25"
+starter_code    = """
+class Rectangle {
+    constructor(width, height) {
+        this.width  = width;
+        this.height = height;
+    }
+    area() { return this.width * this.height; }
+    static square(size) { return new Rectangle(size, size); }
+}
+const sq = Rectangle.square(5);
+console.log(sq.area());
+"""
+hints = [
+    "Static methods are called on the class itself, not on instances: Rectangle.square(5).",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Inheritance"
+prompt          = """
+Define a class `Animal` with:
+  - constructor(name)
+  - speak() that prints "<name> makes a sound."
+
+Define a class `Dog extends Animal` with:
+  - speak() that prints "<name> barks."
+
+Create a Dog("Rex") and call speak().
+
+Expected output:
+    Rex barks.
+"""
+expected_output = "Rex barks."
+starter_code    = """
+class Animal {
+    constructor(name) { this.name = name; }
+    speak() { console.log(this.name + " makes a sound."); }
+}
+class Dog extends Animal {
+    speak() { console.log(this.name + " barks."); }
+}
+const d = new Dog("Rex");
+d.speak();
+"""
+hints = [
+    "class Dog extends Animal overrides speak(). Access this.name from the parent constructor.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "super"
+prompt          = """
+Extend the Dog class to call the parent's speak() first, then add its own line.
+
+Dog.speak() should print:
+    Rex makes a sound.
+    Rex barks.
+
+Use super.speak() to call the parent method.
+"""
+expected_output = """Rex makes a sound.
+Rex barks."""
+starter_code    = """
+class Animal {
+    constructor(name) { this.name = name; }
+    speak() { console.log(this.name + " makes a sound."); }
+}
+class Dog extends Animal {
+    speak() {
+        super.speak();
+        console.log(this.name + " barks.");
+    }
+}
+const d = new Dog("Rex");
+d.speak();
+"""
+hints = [
+    "super.speak() calls Animal.speak() with the same `this`, printing the parent's line first.",
+]

@@ -1,0 +1,145 @@
+id          = "15-modules"
+title       = "Modules"
+description = "import, from/import, as alias, and stdlib modules: math, random, datetime."
+
+[[exercises]]
+id              = "ex_01"
+title           = "import math"
+prompt          = """
+The math module provides mathematical functions and constants.
+
+Use math to print:
+  1. math.pi rounded to 4 decimal places.   → 3.1416
+  2. math.sqrt(144)                          → 12.0
+  3. math.floor(3.9)                         → 3
+"""
+expected_output = """3.1416
+12.0
+3"""
+starter_code    = """
+import math
+
+print(round(math.pi, 4))
+print(math.sqrt(144))
+print(math.floor(3.9))
+"""
+hints = [
+    "Access module contents with dot notation: math.pi",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "from … import"
+prompt          = """
+`from module import name` imports a specific name directly into your namespace.
+`import module as alias` lets you use a shorter name.
+
+Import sqrt and ceil from math (no prefix needed).
+Also import math as m and use m.factorial.
+
+Print:
+  1. sqrt(49)        → 7.0
+  2. ceil(2.1)       → 3
+  3. m.factorial(5)  → 120
+"""
+expected_output = """7.0
+3
+120"""
+starter_code    = """
+from math import sqrt, ceil
+import math as m
+
+print(sqrt(49))
+print(ceil(2.1))
+print(m.factorial(5))
+"""
+hints = [
+    "from math import sqrt makes sqrt available without the math. prefix.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "random module"
+prompt          = """
+The random module generates pseudo-random numbers.
+Seeding with random.seed(n) makes it deterministic — perfect for tests.
+
+Seed with 42, then print:
+  1. random.randint(1, 10)   → a random int between 1 and 10
+  2. random.choice(["a","b","c","d"])
+  3. A shuffled version of [1,2,3,4,5]
+
+With seed 42 the output is:
+    2
+    b
+    [2, 4, 5, 1, 3]
+"""
+expected_output = """2
+b
+[2, 4, 5, 1, 3]"""
+starter_code    = """
+import random
+
+random.seed(42)
+print(random.randint(1, 10))
+print(random.choice(["a", "b", "c", "d"]))
+lst = [1, 2, 3, 4, 5]
+random.shuffle(lst)
+print(lst)
+"""
+hints = [
+    "random.seed() makes the sequence reproducible — same seed, same output.",
+    "random.shuffle() mutates the list in place.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "datetime module"
+prompt          = """
+datetime.date and datetime.datetime represent dates and times.
+
+Create a fixed date: date(2024, 1, 15) and print:
+  1. The date itself.                      → 2024-01-15
+  2. Its .year, .month, .day on one line.  → 2024 1 15
+"""
+expected_output = """2024-01-15
+2024 1 15"""
+starter_code    = """
+from datetime import date
+
+d = date(2024, 1, 15)
+print(d)
+print(d.year, d.month, d.day)
+"""
+hints = [
+    "date objects are printed in ISO 8601 format (YYYY-MM-DD) by default.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "os.path basics"
+prompt          = """
+The os.path submodule provides portable path manipulation.
+
+Use os.path to:
+  1. Join "home", "user", "docs" into a path and print it.  → home/user/docs
+  2. Get the basename of "/tmp/report.pdf"                  → report.pdf
+  3. Get the directory of "/tmp/report.pdf"                 → /tmp
+"""
+expected_output = """home/user/docs
+report.pdf
+/tmp"""
+starter_code    = """
+import os.path
+
+print(os.path.join("home", "user", "docs"))
+print(os.path.basename("/tmp/report.pdf"))
+print(os.path.dirname("/tmp/report.pdf"))
+"""
+hints = [
+    "os.path.join() builds a path with the correct OS separator.",
+    "basename returns the file name; dirname returns the directory part.",
+]

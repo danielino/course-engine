@@ -1,0 +1,138 @@
+id          = "03-data-types"
+title       = "Data Types"
+description = "int, float, bool, str, type(), and conversion functions."
+
+[[exercises]]
+id              = "ex_01"
+title           = "type() basics"
+prompt          = """
+Python has several built-in types. The type() function tells you what type a value is.
+Print the type of each value below, one per line:
+  - 42          → <class 'int'>
+  - 3.14        → <class 'float'>
+  - True        → <class 'bool'>
+  - "hello"     → <class 'str'>
+"""
+expected_output = """<class 'int'>
+<class 'float'>
+<class 'bool'>
+<class 'str'>"""
+starter_code    = """
+print(type(42))
+print(type(3.14))
+print(type(True))
+print(type("hello"))
+"""
+hints = [
+    "type() returns the type object; print() displays it as <class 'name'>.",
+    "No changes needed — run the starter code as-is to see the output.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "int and float arithmetic"
+prompt          = """
+Dividing two integers with / always gives a float in Python 3.
+Compute:
+  a = 7 / 2     (float division)
+  b = 7 // 2    (floor division — int result)
+
+Print a, then b, each on its own line.
+
+Expected output:
+    3.5
+    3
+"""
+expected_output = """3.5
+3"""
+starter_code    = """
+a = 7 / 2
+b = 7 // 2
+print(a)
+print(b)
+"""
+hints = [
+    "/ always produces a float; // discards the decimal part.",
+    "Run the starter code — the math is already correct.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Type conversion"
+prompt          = """
+Convert between types using int(), float(), str(), and bool().
+
+Given:
+  s = "42"
+  f = 3.9
+
+  1. Convert s to int and add 8, print the result.     → 50
+  2. Convert f to int (truncates decimal), print it.   → 3
+  3. Convert 0 to bool, print it.                      → False
+"""
+expected_output = """50
+3
+False"""
+starter_code    = """
+s = "42"
+f = 3.9
+print(int(s) + 8)
+print(int(f))
+print(bool(0))
+"""
+hints = [
+    "int(s) converts the string \"42\" to the integer 42.",
+    "int(f) truncates — it does NOT round.",
+    "bool(0) is False; any non-zero number is True.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Boolean logic and types"
+prompt          = """
+In Python, bool is a subclass of int. True == 1 and False == 0.
+This lets you do arithmetic with booleans.
+
+Print:
+  1. True + True          → 2
+  2. True + False         → 1
+  3. bool("hello")        → True
+  4. bool("")             → False
+"""
+expected_output = """2
+1
+True
+False"""
+starter_code    = """
+print(True + True)
+print(True + False)
+print(bool("hello"))
+print(bool(""))
+"""
+hints = [
+    "Non-empty strings are truthy; empty strings are falsy.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Putting it together"
+prompt          = """
+Read the code below mentally and predict the output, then write a program that:
+  1. Creates an integer radius = 5.
+  2. Computes area = 3.14159 * radius ** 2   (** is power)
+  3. Prints "Area: " followed by area rounded to 2 decimal places.
+
+Expected output:
+    Area: 78.54
+"""
+expected_output = "Area: 78.54"
+starter_code    = """
+radius = 5
+area   = 3.14159 * radius ** 2
+print("Area:", round(area, 2))
+"""
+hints = [
+    "round(value, 2) rounds to 2 decimal places.",
+    "** is the exponentiation operator: 5 ** 2 = 25.",
+]

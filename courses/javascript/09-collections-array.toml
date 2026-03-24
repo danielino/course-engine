@@ -1,0 +1,133 @@
+id          = "09-collections-array"
+title       = "Arrays"
+description = "Create arrays, access elements, use push/pop, slice, forEach, and check length."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Create and access"
+prompt          = """
+Create an array `fruits` containing "apple", "banana", "cherry".
+Print:
+  - The first element.
+  - The last element (using the length).
+
+Expected output:
+    apple
+    cherry
+"""
+expected_output = """apple
+cherry"""
+starter_code    = """
+const fruits = ["apple", "banana", "cherry"];
+console.log(fruits[0]);
+console.log(fruits[fruits.length - 1]);
+"""
+hints = [
+    "Arrays are 0-indexed. The last element is at index length - 1.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "push and pop"
+prompt          = """
+Start with `let nums = [1, 2, 3];`.
+  1. Push 4 onto the end.
+  2. Pop the last element and save it.
+  3. Print the popped value, then print the array with JSON.stringify().
+
+Expected output:
+    4
+    [1,2,3]
+"""
+expected_output = """4
+[1,2,3]"""
+starter_code    = """
+let nums = [1, 2, 3];
+nums.push(4);
+const popped = nums.pop();
+console.log(popped);
+console.log(JSON.stringify(nums));
+"""
+hints = [
+    "push() adds to the end; pop() removes and returns the last element.",
+    "JSON.stringify(array) prints the array in [1,2,3] format.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "slice"
+prompt          = """
+Given `const letters = ["a","b","c","d","e"];`, use slice to print:
+  - Elements at index 1 through 3 (exclusive): ["b","c","d"]
+  - The last two elements: ["d","e"]
+
+Expected output:
+    ["b","c","d"]
+    ["d","e"]
+"""
+expected_output = """["b","c","d"]
+["d","e"]"""
+starter_code    = """
+const letters = ["a","b","c","d","e"];
+console.log(JSON.stringify(letters.slice(1, 4)));
+console.log(JSON.stringify(letters.slice(-2)));
+"""
+hints = [
+    "slice(start, end) — end is exclusive. slice(-2) takes the last 2 elements.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "forEach"
+prompt          = """
+Given `const scores = [85, 92, 78, 95, 88];`, use forEach to print each score
+prefixed with "Score: ".
+
+Expected output:
+    Score: 85
+    Score: 92
+    Score: 78
+    Score: 95
+    Score: 88
+"""
+expected_output = """Score: 85
+Score: 92
+Score: 78
+Score: 95
+Score: 88"""
+starter_code    = """
+const scores = [85, 92, 78, 95, 88];
+scores.forEach(score => {
+    console.log("Score: " + score);
+});
+"""
+hints = [
+    "forEach takes a callback function that receives each element in turn.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "indexOf and includes"
+prompt          = """
+Given `const colors = ["red","green","blue","yellow"];`, print:
+  - The index of "blue".
+  - Whether "purple" is in the array.
+  - The length of the array.
+
+Expected output:
+    2
+    false
+    4
+"""
+expected_output = """2
+false
+4"""
+starter_code    = """
+const colors = ["red","green","blue","yellow"];
+console.log(colors.indexOf("blue"));
+console.log(colors.includes("purple"));
+console.log(colors.length);
+"""
+hints = [
+    "Array indexOf and includes work just like their String counterparts.",
+]

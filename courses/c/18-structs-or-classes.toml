@@ -1,0 +1,122 @@
+id          = "18-structs-or-classes"
+title       = "Structs"
+description = "Define custom data types with structs, add behavior via functions, and use function pointer fields."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Defining and Using a Struct"
+prompt          = """A struct groups related data of different types under one name. It's how you build custom types in C — the equivalent of a class with no methods. Define a struct Person with a char name[50] and int age. Create a Person named "Alice" aged 30 and print: Name: Alice, Age: 30"""
+expected_output = "Name: Alice, Age: 30"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char name[50];
+    int  age;
+} Person;
+
+int main() {
+    Person p;
+    // Set p.name to "Alice" and p.age to 30
+    // Print "Name: Alice, Age: 30"
+    return 0;
+}"""
+hints = [
+    "Use strcpy(p.name, \"Alice\"); and p.age = 30; Then printf with %s and %d.",
+    "strcpy(p.name, \"Alice\");\np.age = 30;\nprintf(\"Name: %s, Age: %d\\n\", p.name, p.age);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Struct with a Computed Property Function"
+prompt          = """In C, 'methods' are just regular functions that take the struct as a parameter. This is how the C standard library works — e.g., functions that operate on FILE*. Define struct Circle with a double radius. Write a function double area(Circle c) that returns PI * r * r. Compute area for radius 5.0 and print: Area: 78.54"""
+expected_output = "Area: 78.54"
+starter_code    = """#include <stdio.h>
+#include <math.h>
+
+typedef struct {
+    double radius;
+} Circle;
+
+double area(Circle c) {
+    // Return M_PI * c.radius * c.radius
+    return 0.0;
+}
+
+int main() {
+    Circle c;
+    c.radius = 5.0;
+    printf("Area: %.2f\n", area(c));
+    return 0;
+}"""
+hints = [
+    "M_PI is defined in <math.h>. Return M_PI * c.radius * c.radius;",
+    "double area(Circle c) {\n    return M_PI * c.radius * c.radius;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Array of Structs"
+prompt          = """Arrays of structs let you store collections of structured records — like rows in a table. Define struct Student with char name[50] and int score. Create three students (Alice: 85, Bob: 92, Carol: 78) and print each on its own line:
+Alice: 85
+Bob: 92
+Carol: 78"""
+expected_output = """Alice: 85
+Bob: 92
+Carol: 78"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char name[50];
+    int  score;
+} Student;
+
+int main() {
+    Student students[3];
+    // Initialize students
+    // Print each one
+    return 0;
+}"""
+hints = [
+    "Use strcpy for names: strcpy(students[0].name, \"Alice\"); students[0].score = 85; etc.",
+    "strcpy(students[0].name, \"Alice\"); students[0].score = 85;\nstrcpy(students[1].name, \"Bob\");   students[1].score = 92;\nstrcpy(students[2].name, \"Carol\"); students[2].score = 78;\nfor (int i = 0; i < 3; i++) printf(\"%s: %d\\n\", students[i].name, students[i].score);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Function Pointer Fields in Structs"
+prompt          = """A struct can contain function pointers, giving it behaviour like a method. This is the foundation of object-oriented programming in C and how virtual dispatch works in C-based systems. Define struct Animal with a char name[50] and a void (*speak)(void) function pointer. Create dog and cat instances with different speak functions. Print:
+Dog says: Woof!
+Cat says: Meow!"""
+expected_output = """Dog says: Woof!
+Cat says: Meow!"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    char name[50];
+    void (*speak)(void);
+} Animal;
+
+void dog_speak(void) { printf("Woof!\n"); }
+void cat_speak(void) { printf("Meow!\n"); }
+
+int main() {
+    Animal dog, cat;
+    strcpy(dog.name, "Dog");
+    dog.speak = dog_speak;
+    strcpy(cat.name, "Cat");
+    cat.speak = cat_speak;
+    // Print "Dog says: " then call dog.speak()
+    // Print "Cat says: " then call cat.speak()
+    return 0;
+}"""
+hints = [
+    "Print the prefix first: printf(\"%s says: \", dog.name); then call dog.speak(); to print the sound.",
+    "printf(\"%s says: \", dog.name); dog.speak();\nprintf(\"%s says: \", cat.name); cat.speak();"
+]
+validation_mode = "exact_stdout"

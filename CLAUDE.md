@@ -13,11 +13,11 @@ After every meaningful change, **both `CLAUDE.md` and `README.md` must be update
 
 ## Project overview
 
-**course-engine** is a language-agnostic library (`course_engine`) for building interactive coding courses. The **rust-course** binary is a thin CLI/server wrapper; it defaults to `examples/rust` but any `--lessons-dir` can be passed to use a different language or lesson set.
+**course-engine** is a language-agnostic library (`course_engine`) for building interactive coding courses. The **rust-course** binary is a thin CLI/server wrapper.
 
 Two interfaces:
-- **Web UI** (`cargo run -- serve`) — split-pane browser app with Monaco editor.
-- **CLI** (`cargo run`) — terminal flow using `$EDITOR` and `dialoguer`.
+- **Web UI** (`cargo run -- serve`) — split-pane browser app with Monaco editor; loads all courses from `courses/` with a top-left selector to switch between them.
+- **CLI** (`cargo run`) — terminal flow using `$EDITOR` and `dialoguer` for a single course.
 
 Both share the same runner, lesson loader, and progress store.
 
@@ -27,9 +27,11 @@ Both share the same runner, lesson loader, and progress store.
 
 ```bash
 cargo build
-cargo run -- serve              # web UI on :3000
+cargo run -- serve                          # web UI on :3000, auto-discovers courses/
+cargo run -- serve --courses-dir my/path    # custom courses directory
 cargo run -- serve --port 8080
-cargo run                       # CLI
+cargo run                                   # CLI, default courses/rust
+cargo run -- --lessons-dir courses/python   # CLI for a specific course
 cargo run -- list
 cargo run -- reset
 cargo test
@@ -48,25 +50,25 @@ cargo fmt
 ```
 src/
   lib.rs           — library root; re-exports LanguageConfig, RunResult, run, serve
-  main.rs          — rust-course binary; clap subcommands; defaults to examples/rust with LanguageConfig::rust()
-  language.rs      — LanguageConfig struct; presets: rust(), python(), javascript()
+  main.rs          — rust-course binary; clap subcommands; serve uses --courses-dir (default: courses/)
+  language.rs      — LanguageConfig struct; presets: rust(), python(), javascript(); from_name()
   exercise/model.rs  — Exercise, ValidationMode (exact_stdout | contains)
   lesson/
     model.rs       — Lesson { id, title, description, exercises }
     loader.rs      — load_all_lessons(); TOML → Lesson; validates no empty/duplicate exercises
   progress/
     model.rs       — Progress; mark_complete(), is_complete(), lesson_completion_ratio()
-    store.rs       — load()/save() → ~/.local/share/.rust-course/progress.json
+    store.rs       — load()/save(); progress_file_path_for(slug) → ~/.local/share/course-engine/progress-{slug}.json
   runner/mod.rs    — run(); LanguageConfig drives compile+run via {src}/{out} placeholders;
                      RunResult #[serde(tag = "status", rename_all = "snake_case")]
-  server/mod.rs    — axum router; AppState includes Arc<LanguageConfig>; serve(dir, port, lang)
+  server/mod.rs    — axum router; AppState: HashMap<slug, CourseState>; serve(courses_dir, port)
   ui/mod.rs        — terminal UI: select_lesson, display_exercise, prompt_code_input, hints
 web/
-  index.html       — SPA shell; loads Monaco from CDN
+  index.html       — SPA shell; <select id="course-select"> in sidebar header; loads Monaco from CDN
   style.css        — Catppuccin dark theme; split-pane flex layout
-  app.js           — fetches /api/config for Monaco language; Monaco bootstrap; API calls
-examples/
-  rust/            — starter lesson for the Rust preset (binary default)
+  app.js           — loadCourses() → selectCourse() → courseApi() for all per-course calls
+courses/
+  rust/            — starter lesson for the Rust preset
   python/          — starter lesson for the Python preset
   javascript/      — starter lesson for the JavaScript preset
 ```
@@ -75,12 +77,13 @@ examples/
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/api/config` | `{ "language": "rust" }` — used by frontend to set Monaco language |
-| GET | `/api/lessons` | `Vec<LessonSummary>` with progress counts |
-| GET | `/api/lessons/{id}` | Full `Lesson` with exercises |
-| GET | `/api/progress` | `Progress` JSON |
-| POST | `/api/progress/reset` | 200 OK |
-| POST | `/api/run` | `{ lesson_id, exercise_id, code }` → `RunResult` |
+| GET | `/api/courses` | `Vec<CourseInfo>` — all loaded courses |
+| GET | `/api/courses/{course}/config` | `{ "language": "rust" }` — Monaco language for that course |
+| GET | `/api/courses/{course}/lessons` | `Vec<LessonSummary>` with progress counts |
+| GET | `/api/courses/{course}/lessons/{id}` | Full `Lesson` with exercises |
+| GET | `/api/courses/{course}/progress` | `Progress` JSON |
+| POST | `/api/courses/{course}/progress/reset` | 200 OK |
+| POST | `/api/courses/{course}/run` | `{ lesson_id, exercise_id, code }` → `RunResult` |
 
 ### RunResult JSON shape
 
@@ -100,14 +103,17 @@ examples/
 
 Presets: `LanguageConfig::rust()` (rustc, 15 s compile / 5 s run), `python()` (python3, no compile, 10 s run), `javascript()` (node, no compile, 10 s run).
 
+`from_name(name)` maps directory name → preset (used by `serve()` during course discovery).
+
 ### Key design decisions
 
+- **Multi-course server**: `serve(courses_dir, port)` scans subdirectories of `courses_dir`, maps dirname → `LanguageConfig::from_name()`, loads lessons and progress per course. Unknown dirs are skipped silently.
+- **Per-course progress**: `progress_file_path_for(slug)` → `~/.local/share/course-engine/progress-{slug}.json`. Each course is fully isolated.
+- **AppState**: `HashMap<String, CourseState>` keyed by course slug. Each `CourseState` holds its own `Arc<Mutex<Progress>>`. The map is immutable after startup — no lock needed on it.
 - **Language-agnostic runner**: `LanguageConfig` drives compile/run commands. `compile: None` for interpreted languages.
 - **Rust preset uses bare `rustc`** — exercises must use `std` only (no crate downloads, no Cargo).
 - **Timeout via `mpsc::recv_timeout` + background thread** — no async in the runner.
 - **Web static files embedded** via `include_str!`. **After any change to `web/`, run `cargo build`** — a running server won't pick up changes without a rebuild.
-- **`/api/config`** lets the frontend set Monaco's `language` dynamically — nothing is hardcoded in `app.js`.
-- **Progress** is shared between CLI and web via the same file path.
 
 ### Lesson TOML schema
 
@@ -125,6 +131,16 @@ starter_code    = """..."""   # optional
 hints           = ["..."]     # optional; revealed one at a time
 validation_mode = "exact_stdout"  # or "contains"
 ```
+
+---
+
+## Adding a new course
+
+The full specification for generating a new course is in **`course-generator-claude.md`** at the repo root. Steps in brief:
+
+1. If the language has no preset in `src/language.rs`, add `pub fn {language}() -> Self` to `impl LanguageConfig`, wire it in `from_name()`, add a test, then run `cargo test` and `cargo clippy -- -D warnings`.
+2. Create `courses/{language}/` and populate it with 26 TOML lesson files (`01-hello-world.toml` … `26-capstone.toml`) following the schema above and the curriculum table in `course-generator-claude.md`.
+3. The server auto-discovers the new directory on next startup — no other code changes needed.
 
 ---
 
@@ -151,3 +167,5 @@ Unit tests live inside each module (`#[cfg(test)]`):
 | `progress::model` | mark_complete, dedup, completion_ratio |
 | `progress::store` | missing file returns default, save+reload, creates parent dirs |
 | `runner` | success, wrong output, compile error, contains mode, diff output |
+| `language` | rust/python/javascript presets; from_name() |
+| `server` | all /api/courses/... routes; unknown course 404; static files |

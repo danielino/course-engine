@@ -1,0 +1,129 @@
+id          = "14-file-io"
+title       = "File I/O"
+description = "Read and write files synchronously with fs.readFileSync and fs.writeFileSync."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Write and read a file"
+prompt          = """
+Use the `fs` module to:
+  1. Write the string "Hello, file!" to a temp file called "tmp_ex01.txt".
+  2. Read it back.
+  3. Print the contents.
+
+Expected output:
+    Hello, file!
+"""
+expected_output = "Hello, file!"
+starter_code    = """
+const fs = require("fs");
+fs.writeFileSync("tmp_ex01.txt", "Hello, file!");
+const contents = fs.readFileSync("tmp_ex01.txt", "utf8");
+console.log(contents);
+"""
+hints = [
+    "require(\"fs\") imports Node's built-in file system module.",
+    "fs.writeFileSync(path, data) writes synchronously. fs.readFileSync(path, \"utf8\") reads as a string.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Write multiple lines"
+prompt          = """
+Write three lines to "tmp_ex02.txt" (joined with newlines), read it back,
+and print line count.
+
+The content to write:
+  line one
+  line two
+  line three
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+const fs = require("fs");
+const content = "line one\nline two\nline three";
+fs.writeFileSync("tmp_ex02.txt", content);
+const lines = fs.readFileSync("tmp_ex02.txt", "utf8").split("\n");
+console.log(lines.length);
+"""
+hints = [
+    "Split the file contents by \"\\n\" to get an array of lines, then read .length.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Handle missing file"
+prompt          = """
+Try to read a file that does not exist ("nonexistent.txt").
+Catch the error and print "File not found" if the error code is "ENOENT".
+
+Expected output:
+    File not found
+"""
+expected_output = "File not found"
+starter_code    = """
+const fs = require("fs");
+try {
+    fs.readFileSync("nonexistent.txt", "utf8");
+} catch (err) {
+    if (err.code === "ENOENT") {
+        console.log("File not found");
+    } else {
+        throw err;
+    }
+}
+"""
+hints = [
+    "Node.js file errors have a .code property. A missing file gives code \"ENOENT\".",
+    "Re-throw unexpected errors so they aren't silently swallowed.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Append to a file"
+prompt          = """
+Write "first\n" to "tmp_ex04.txt", then append "second\n" using
+fs.appendFileSync, read it back, and print each line.
+
+Expected output:
+    first
+    second
+"""
+expected_output = """first
+second"""
+starter_code    = """
+const fs = require("fs");
+fs.writeFileSync("tmp_ex04.txt", "first\n");
+fs.appendFileSync("tmp_ex04.txt", "second\n");
+const lines = fs.readFileSync("tmp_ex04.txt", "utf8").trim().split("\n");
+lines.forEach(l => console.log(l));
+"""
+hints = [
+    "fs.appendFileSync(path, data) adds to the end of a file without overwriting it.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "JSON round-trip"
+prompt          = """
+Serialize the object `{ name: "Alice", score: 42 }` to JSON and write it to
+"tmp_ex05.json". Read it back, parse it, and print:
+    Alice scored 42
+
+Expected output:
+    Alice scored 42
+"""
+expected_output = "Alice scored 42"
+starter_code    = """
+const fs = require("fs");
+const data = { name: "Alice", score: 42 };
+fs.writeFileSync("tmp_ex05.json", JSON.stringify(data));
+const parsed = JSON.parse(fs.readFileSync("tmp_ex05.json", "utf8"));
+console.log(parsed.name + " scored " + parsed.score);
+"""
+hints = [
+    "JSON.stringify(obj) converts an object to a JSON string; JSON.parse(str) reverses it.",
+]

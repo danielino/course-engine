@@ -1,0 +1,211 @@
+id          = "21-protocols-abc"
+title       = "ABCs and Protocols"
+description = "ABC, abstractmethod, and Protocol for structural typing."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Abstract Base Class"
+prompt          = """
+An abstract base class (ABC) defines an interface that subclasses must implement.
+Attempting to instantiate it directly raises TypeError.
+
+Define Shape(ABC) with abstract method area() -> float.
+Implement Circle(Shape) with radius, area = pi * r^2 (use 3.14159).
+
+Print round(Circle(5).area(), 2).
+
+Expected output:
+    78.54
+"""
+expected_output = "78.54"
+starter_code    = """
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self) -> float:
+        pass
+
+class Circle(Shape):
+    def __init__(self, radius: float):
+        self.radius = radius
+
+    def area(self) -> float:
+        return 3.14159 * self.radius ** 2
+
+print(round(Circle(5).area(), 2))
+"""
+hints = [
+    "@abstractmethod marks a method that subclasses MUST override.",
+    "If you forget to implement area() in Circle, Python raises TypeError on instantiation.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Multiple concrete classes"
+prompt          = """
+Several classes can implement the same ABC.
+
+Add Rectangle(Shape) with width and height, area = width * height.
+
+Print:
+  round(Circle(3).area(), 2)       → 28.27
+  Rectangle(4, 5).area()            → 20
+"""
+expected_output = """28.27
+20"""
+starter_code    = """
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self) -> float:
+        pass
+
+class Circle(Shape):
+    def __init__(self, radius: float):
+        self.radius = radius
+    def area(self) -> float:
+        return 3.14159 * self.radius ** 2
+
+class Rectangle(Shape):
+    def __init__(self, width: float, height: float):
+        self.width  = width
+        self.height = height
+    def area(self) -> float:
+        return self.width * self.height
+
+print(round(Circle(3).area(), 2))
+print(int(Rectangle(4, 5).area()))
+"""
+hints = [
+    "Both Circle and Rectangle must implement area() to be concrete (non-abstract).",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Protocol — structural typing"
+prompt          = """
+A Protocol defines an interface by structure (duck typing), not inheritance.
+Any class that has the required methods/attributes satisfies the protocol,
+without explicitly inheriting from it.
+
+Define Drawable(Protocol) with draw() -> str.
+Write render(d: Drawable) -> str that returns d.draw().
+
+Define Button (no Protocol inheritance) with draw() -> "button drawn".
+Call render(Button()) and print.
+
+Expected output:
+    button drawn
+"""
+expected_output = "button drawn"
+starter_code    = """
+from typing import Protocol
+
+class Drawable(Protocol):
+    def draw(self) -> str:
+        ...
+
+def render(d: Drawable) -> str:
+    return d.draw()
+
+class Button:
+    def draw(self) -> str:
+        return "button drawn"
+
+print(render(Button()))
+"""
+hints = [
+    "Button doesn't inherit Drawable — it satisfies the protocol structurally.",
+    "Protocol uses ... (Ellipsis) as the body of abstract methods.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "ABC with concrete methods"
+prompt          = """
+ABCs can also provide concrete (non-abstract) methods that subclasses inherit.
+
+Define Vehicle(ABC):
+  - abstract method fuel_type() -> str
+  - concrete method describe() -> "Vehicle runs on <fuel_type()>"
+
+Implement ElectricCar(Vehicle) with fuel_type() returning "electricity".
+Print ElectricCar().describe().
+
+Expected output:
+    Vehicle runs on electricity
+"""
+expected_output = "Vehicle runs on electricity"
+starter_code    = """
+from abc import ABC, abstractmethod
+
+class Vehicle(ABC):
+    @abstractmethod
+    def fuel_type(self) -> str:
+        pass
+
+    def describe(self) -> str:
+        return f"Vehicle runs on {self.fuel_type()}"
+
+class ElectricCar(Vehicle):
+    def fuel_type(self) -> str:
+        return "electricity"
+
+print(ElectricCar().describe())
+"""
+hints = [
+    "describe() in the ABC calls self.fuel_type(), which dispatches to the subclass.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "isinstance() with ABC"
+prompt          = """
+isinstance(obj, ABC) returns True if obj's class is a subclass of the ABC.
+
+Using the Shape ABC from earlier (Circle and Rectangle as subclasses),
+filter a mixed list to keep only Shape instances and print their areas.
+
+shapes = [Circle(2), "not a shape", Rectangle(3, 4), 42]
+Print the floored integer area of each Shape instance in order.
+
+Expected output:
+    12
+    12
+"""
+expected_output = """12
+12"""
+starter_code    = """
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self) -> float:
+        pass
+
+class Circle(Shape):
+    def __init__(self, r):
+        self.r = r
+    def area(self):
+        return 3.14159 * self.r ** 2
+
+class Rectangle(Shape):
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
+    def area(self):
+        return self.w * self.h
+
+shapes = [Circle(2), "not a shape", Rectangle(3, 4), 42]
+for s in shapes:
+    if isinstance(s, Shape):
+        print(int(s.area()))
+"""
+hints = [
+    "isinstance(s, Shape) is True for Circle and Rectangle objects.",
+    "int() truncates the float: int(12.566) = 12.",
+]

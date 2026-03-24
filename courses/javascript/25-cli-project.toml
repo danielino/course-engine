@@ -1,0 +1,131 @@
+id          = "25-cli-project"
+title       = "CLI Project"
+description = "Read command-line arguments with process.argv and build simple CLI tools."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Reading process.argv"
+prompt          = """
+process.argv is an array where:
+  - argv[0] is the node executable path
+  - argv[1] is the script path
+  - argv[2] onwards are the user-supplied arguments
+
+Print the number of user-supplied arguments (argv.length - 2)
+when the script is run with no extra args.
+
+Expected output:
+    0
+"""
+expected_output = "0"
+starter_code    = """
+const args = process.argv.slice(2);
+console.log(args.length);
+"""
+hints = [
+    "Slice the first two elements to get only the user-supplied arguments.",
+    "process.argv.slice(2) removes the node and script paths.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Parsing a flag"
+prompt          = """
+Check whether the argument "--verbose" is present in process.argv.
+Print "verbose mode" if it is, "quiet mode" otherwise.
+
+Since no args are passed in the runner, expect:
+    quiet mode
+"""
+expected_output = "quiet mode"
+starter_code    = """
+const args    = process.argv.slice(2);
+const verbose = args.includes("--verbose");
+console.log(verbose ? "verbose mode" : "quiet mode");
+"""
+hints = [
+    "Array.includes() checks for a value; combine with the ternary operator.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Default argument values"
+prompt          = """
+Read the first argument as a name; default to "World" if not provided.
+Print "Hello, <name>!"
+
+Since no args are passed in the runner, expect:
+    Hello, World!
+"""
+expected_output = "Hello, World!"
+starter_code    = """
+const args = process.argv.slice(2);
+const name = args[0] || "World";
+console.log(`Hello, ${name}!`);
+"""
+hints = [
+    "args[0] is undefined when no argument is given; || provides the fallback.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Argument parsing utility"
+prompt          = """
+Write a function `parseArgs(argv)` that converts an array like
+["--name", "Alice", "--count", "3"] into an object { name: "Alice", count: "3" }.
+
+Test it with that exact input and print the JSON.
+
+Expected output:
+    {"name":"Alice","count":"3"}
+"""
+expected_output = """{"name":"Alice","count":"3"}"""
+starter_code    = """
+function parseArgs(argv) {
+    const result = {};
+    for (let i = 0; i < argv.length; i += 2) {
+        const key   = argv[i].replace(/^--/, "");
+        const value = argv[i + 1];
+        result[key] = value;
+    }
+    return result;
+}
+const parsed = parseArgs(["--name", "Alice", "--count", "3"]);
+console.log(JSON.stringify(parsed));
+"""
+hints = [
+    "Iterate in steps of 2: key at i, value at i+1.",
+    "Strip the -- prefix with .replace(/^--/, \"\").",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Mini calculator CLI"
+prompt          = """
+Write a calculator that reads three hardcoded "args": "10", "+", "5".
+Parse the operands as numbers, apply the operator, and print the result.
+
+Support +, -, *, /.
+
+For input ["10", "+", "5"] expect:
+    15
+"""
+expected_output = "15"
+starter_code    = """
+const args = ["10", "+", "5"];
+const a  = parseFloat(args[0]);
+const op = args[1];
+const b  = parseFloat(args[2]);
+
+let result;
+if      (op === "+") result = a + b;
+else if (op === "-") result = a - b;
+else if (op === "*") result = a * b;
+else if (op === "/") result = a / b;
+else throw new Error("Unknown operator: " + op);
+
+console.log(result);
+"""
+hints = [
+    "parseFloat converts a string to a number. An if/else chain handles each operator.",
+]

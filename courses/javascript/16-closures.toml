@@ -1,0 +1,166 @@
+id          = "16-closures"
+title       = "Closures"
+description = "Understand how functions capture their surrounding scope to create private state."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic closure"
+prompt          = """
+A closure is a function that remembers variables from the scope where it was created.
+
+Write a function `makeGreeter(greeting)` that returns a new function.
+The returned function takes a `name` and prints "<greeting>, <name>!".
+
+Call makeGreeter("Hello") and use the returned function to print:
+    Hello, Alice!
+"""
+expected_output = "Hello, Alice!"
+starter_code    = """
+function makeGreeter(greeting) {
+    return function(name) {
+        console.log(greeting + ", " + name + "!");
+    };
+}
+const greet = makeGreeter("Hello");
+greet("Alice");
+"""
+hints = [
+    "The inner function closes over `greeting` from the outer function's scope.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Counter factory"
+prompt          = """
+Write a function `makeCounter()` that returns an object with two methods:
+  - increment(): increases an internal count by 1.
+  - value(): returns the current count.
+
+Create a counter, increment it 3 times, and print its value.
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+function makeCounter() {
+    let count = 0;
+    return {
+        increment() { count++; },
+        value()     { return count; },
+    };
+}
+const c = makeCounter();
+c.increment();
+c.increment();
+c.increment();
+console.log(c.value());
+"""
+hints = [
+    "The variable `count` is captured by both methods and persists between calls.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Independent closures"
+prompt          = """
+Create two counters using makeCounter(). Increment the first 5 times and the second 2 times.
+Print each value to show they are independent.
+
+Expected output:
+    5
+    2
+"""
+expected_output = """5
+2"""
+starter_code    = """
+function makeCounter() {
+    let count = 0;
+    return {
+        increment() { count++; },
+        value()     { return count; },
+    };
+}
+const c1 = makeCounter();
+const c2 = makeCounter();
+for (let i = 0; i < 5; i++) c1.increment();
+for (let i = 0; i < 2; i++) c2.increment();
+console.log(c1.value());
+console.log(c2.value());
+"""
+hints = [
+    "Each call to makeCounter() creates a brand-new `count` variable — they don't share state.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Adder factory"
+prompt          = """
+Write `makeAdder(x)` that returns a function `(y) => x + y`.
+
+Print:
+  - makeAdder(5)(3)   → 8
+  - makeAdder(10)(7)  → 17
+
+Expected output:
+    8
+    17
+"""
+expected_output = """8
+17"""
+starter_code    = """
+function makeAdder(x) {
+    return (y) => x + y;
+}
+console.log(makeAdder(5)(3));
+console.log(makeAdder(10)(7));
+"""
+hints = [
+    "The returned arrow function captures `x` from makeAdder's parameter.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Memoisation with closure"
+prompt          = """
+Write `memoize(fn)` that wraps a function and caches its results.
+When called with an argument it has seen before, return the cached result.
+
+Use it to memoize a "slow double" function (just n * 2 for this exercise).
+Call it with 4, 7, 4 and print each result. Also print how many times
+the underlying function was actually called.
+
+Expected output:
+    8
+    14
+    8
+    called 2 times
+"""
+expected_output = """8
+14
+8
+called 2 times"""
+starter_code    = """
+function memoize(fn) {
+    const cache = {};
+    let calls = 0;
+    return {
+        call(n) {
+            if (n in cache) return cache[n];
+            calls++;
+            cache[n] = fn(n);
+            return cache[n];
+        },
+        calls() { return calls; },
+    };
+}
+const double = memoize(n => n * 2);
+console.log(double.call(4));
+console.log(double.call(7));
+console.log(double.call(4));
+console.log("called " + double.calls() + " times");
+"""
+hints = [
+    "Use a plain object as the cache: if (n in cache) return cache[n];",
+    "The cache and calls counter are closed over by both methods.",
+]

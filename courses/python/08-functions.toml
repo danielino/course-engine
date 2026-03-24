@@ -1,0 +1,140 @@
+id          = "08-functions"
+title       = "Functions"
+description = "def, parameters, default arguments, return values, *args and **kwargs basics."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Define and call a function"
+prompt          = """
+Functions let you name and reuse a block of code.
+Define a function greet(name) that prints "Hello, <name>!".
+
+Call it with "Alice".
+
+Expected output:
+    Hello, Alice!
+"""
+expected_output = "Hello, Alice!"
+starter_code    = """
+def greet(name):
+    print(f"Hello, {name}!")
+
+greet("Alice")
+"""
+hints = [
+    "Use the def keyword followed by the function name and parentheses containing parameters.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Return values"
+prompt          = """
+Functions can compute a value and return it with the return statement.
+
+Define add(a, b) that returns a + b.
+Print the result of add(3, 4).
+
+Expected output:
+    7
+"""
+expected_output = "7"
+starter_code    = """
+def add(a, b):
+    return a + b
+
+print(add(3, 4))
+"""
+hints = [
+    "Use return a + b inside the function body.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Default arguments"
+prompt          = """
+Default argument values are used when the caller doesn't supply them.
+
+Define power(base, exp=2) that returns base ** exp.
+
+Call it twice and print results:
+  power(3)     → 9    (uses default exp=2)
+  power(2, 10) → 1024
+
+Expected output:
+    9
+    1024
+"""
+expected_output = """9
+1024"""
+starter_code    = """
+def power(base, exp=2):
+    return base ** exp
+
+print(power(3))
+print(power(2, 10))
+"""
+hints = [
+    "Default arguments are specified as param=value in the function signature.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "*args — variable positional arguments"
+prompt          = """
+*args collects any number of positional arguments into a tuple.
+
+Define total(*numbers) that returns the sum of all its arguments.
+Print total(1, 2, 3, 4, 5).
+
+Expected output:
+    15
+"""
+expected_output = "15"
+starter_code    = """
+def total(*numbers):
+    result = 0
+    for n in numbers:
+        result += n
+    return result
+
+print(total(1, 2, 3, 4, 5))
+"""
+hints = [
+    "*numbers collects all positional arguments as a tuple you can iterate over.",
+    "You could also use return sum(numbers) for a one-liner.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "**kwargs — variable keyword arguments"
+prompt          = """
+**kwargs collects keyword arguments as a dictionary.
+
+Define describe(**attrs) that prints each key and value as "key: value",
+sorted by key (use sorted()).
+
+Call:
+  describe(name="Alice", age=30, city="London")
+
+Expected output:
+    age: 30
+    city: London
+    name: Alice
+"""
+expected_output = """age: 30
+city: London
+name: Alice"""
+starter_code    = """
+def describe(**attrs):
+    for key in sorted(attrs):
+        print(f"{key}: {attrs[key]}")
+
+describe(name="Alice", age=30, city="London")
+"""
+hints = [
+    "**attrs gives you a dict inside the function.",
+    "sorted(attrs) sorts the dictionary keys alphabetically.",
+]

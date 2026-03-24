@@ -1,0 +1,139 @@
+id          = "13-hashmaps"
+title       = "HashMap<K, V>"
+description = "Store key-value pairs, look up entries, and update values idiomatically with the entry API."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Insert and get"
+prompt          = """
+Create a `HashMap<&str, i32>`.
+Insert `("one", 1)` and `("two", 2)`.
+Print the value for key `"two"`.
+
+Expected output:
+    2
+"""
+expected_output = "2"
+starter_code    = """
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    // insert and get
+}
+"""
+hints = [
+    "map.insert(\"one\", 1);",
+    "map.get(\"two\") returns Option<&i32> — unwrap or use if let.",
+    "println!(\"{}\", map[\"two\"]);  — index operator also works.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "contains_key"
+prompt          = """
+Create a `HashMap<&str, u32>`.
+Insert `(\"hello\", 1)`.
+Print `\"yes\"` if the map contains key `\"hello\"`.
+
+Expected output:
+    yes
+"""
+expected_output = "yes"
+starter_code    = """
+use std::collections::HashMap;
+
+fn main() {
+    let mut map: HashMap<&str, u32> = HashMap::new();
+    map.insert("hello", 1);
+    // check and print
+}
+"""
+hints = [
+    "if map.contains_key(\"hello\") { println!(\"yes\"); }",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "entry().or_insert() for word count"
+prompt          = """
+Build a word-count map for: `["apple", "banana", "apple"]`
+Use the `entry` API to increment counts.
+Print the count for `"apple"`.
+
+Expected output:
+    2
+"""
+expected_output = "2"
+starter_code    = """
+use std::collections::HashMap;
+
+fn main() {
+    let words = ["apple", "banana", "apple"];
+    let mut counts: HashMap<&str, u32> = HashMap::new();
+    for word in &words {
+        // use entry().or_insert() to count
+    }
+    println!("{}", counts["apple"]);
+}
+"""
+hints = [
+    "let count = counts.entry(word).or_insert(0);",
+    "*count += 1;  — dereference the mutable reference to increment.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Iterate in sorted order"
+prompt          = """
+Build a map with entries `a=1`, `b=2`, `c=3`.
+Collect the keys into a sorted Vec and print them space-separated.
+
+Expected output:
+    a b c
+"""
+expected_output = "a b c"
+starter_code    = """
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert("a", 1);
+    map.insert("b", 2);
+    map.insert("c", 3);
+    // collect keys, sort, and print space-separated
+}
+"""
+hints = [
+    "let mut keys: Vec<&&str> = map.keys().collect(); keys.sort();",
+    "println!(\"{}\", keys.iter().map(|k| **k).collect::<Vec<_>>().join(\" \"));",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "remove"
+prompt          = """
+Insert `(\"x\", 99)` into a map.
+Remove that key.
+Print `\"gone\"` if `map.get(\"x\")` now returns `None`.
+
+Expected output:
+    gone
+"""
+expected_output = "gone"
+starter_code    = """
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert("x", 99);
+    map.remove("x");
+    if map.get("x").is_none() {
+        println!("gone");
+    }
+}
+"""
+hints = [
+    "map.remove(\"x\"); removes the entry.",
+    "map.get(\"x\") returns None after removal.",
+]

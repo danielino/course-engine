@@ -1,0 +1,153 @@
+id          = "25-cli-project"
+title       = "CLI Project: Calculator"
+description = "Build a simulated command-line calculator using string parsing, dispatch tables, and structured output."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Parsing a Command String"
+prompt          = """Real CLI tools parse command strings: split the input into a command name and arguments, then act on them. We simulate this by working with a hardcoded command string (since the exercise runner doesn't provide argv). Parse "add 3 5" to extract the command and two integer arguments, compute the result, and print:
+Command: add
+Args: 3 5
+Result: 8"""
+expected_output = """Command: add
+Args: 3 5
+Result: 8"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main() {
+    char input[] = "add 3 5";
+    char cmd[20];
+    int a, b;
+    // Parse: sscanf(input, ...) to extract cmd, a, b
+    // Compute result and print
+    return 0;
+}"""
+hints = [
+    "sscanf(input, \"%s %d %d\", cmd, &a, &b); parses the string into a command name and two integers.",
+    "sscanf(input, \"%s %d %d\", cmd, &a, &b);\nprintf(\"Command: %s\\n\", cmd);\nprintf(\"Args: %d %d\\n\", a, b);\nprintf(\"Result: %d\\n\", a + b);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Command Dispatch Table"
+prompt          = """A dispatch table maps command names to handler functions. Instead of a long if/else chain, you index into an array of {name, function_pointer} pairs. This is cleaner and easier to extend. Parse "multiply 6 7", find the matching operation in a dispatch table, and print:
+Operation: multiply
+Result: 42"""
+expected_output = """Operation: multiply
+Result: 42"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef int (*BinaryOp)(int, int);
+
+typedef struct {
+    char    name[20];
+    BinaryOp fn;
+} Command;
+
+int add_fn(int a, int b) { return a + b; }
+int sub_fn(int a, int b) { return a - b; }
+int mul_fn(int a, int b) { return a * b; }
+
+int main() {
+    Command table[] = {
+        {"add",      add_fn},
+        {"subtract", sub_fn},
+        {"multiply", mul_fn}
+    };
+    int table_size = 3;
+
+    char input[] = "multiply 6 7";
+    char cmd[20];
+    int a, b;
+    sscanf(input, "%s %d %d", cmd, &a, &b);
+
+    for (int i = 0; i < table_size; i++) {
+        if (strcmp(table[i].name, cmd) == 0) {
+            printf("Operation: %s\n", cmd);
+            printf("Result: %d\n", table[i].fn(a, b));
+            break;
+        }
+    }
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. The loop searches the table by name and calls the matching function.",
+    "The code is correct as written — the dispatch table finds \"multiply\" and calls mul_fn(6, 7)."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Printing Usage/Help Text"
+prompt          = """Every good CLI tool has a help or usage message that tells users what commands and arguments are available. Write a function print_usage() that prints the help text for a calculator tool. Print:
+Usage: calc <op> <a> <b>
+Operations: add, sub, mul, div"""
+expected_output = """Usage: calc <op> <a> <b>
+Operations: add, sub, mul, div"""
+starter_code    = """#include <stdio.h>
+
+void print_usage() {
+    // Print the usage and operations lines
+}
+
+int main() {
+    print_usage();
+    return 0;
+}"""
+hints = [
+    "Use two printf() calls, one for each line.",
+    "void print_usage() {\n    printf(\"Usage: calc <op> <a> <b>\\n\");\n    printf(\"Operations: add, sub, mul, div\\n\");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Full Calculator Simulation"
+prompt          = """Put it all together: a dispatch table with add, sub, mul, div, and a loop that processes multiple commands. Process these four commands in order and print each result:
+add 10 5 = 15
+sub 10 3 = 7
+mul 4 6 = 24
+div 20 4 = 5"""
+expected_output = """add 10 5 = 15
+sub 10 3 = 7
+mul 4 6 = 24
+div 20 4 = 5"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+typedef int (*BinaryOp)(int, int);
+typedef struct { char name[10]; BinaryOp fn; } Cmd;
+
+int do_add(int a, int b) { return a + b; }
+int do_sub(int a, int b) { return a - b; }
+int do_mul(int a, int b) { return a * b; }
+int do_div(int a, int b) { return a / b; }
+
+int main() {
+    Cmd table[] = {{"add", do_add}, {"sub", do_sub}, {"mul", do_mul}, {"div", do_div}};
+    int tsize = 4;
+
+    char *commands[] = {"add 10 5", "sub 10 3", "mul 4 6", "div 20 4"};
+    int ncmds = 4;
+
+    for (int c = 0; c < ncmds; c++) {
+        char op[10]; int a, b;
+        sscanf(commands[c], "%s %d %d", op, &a, &b);
+        for (int i = 0; i < tsize; i++) {
+            if (strcmp(table[i].name, op) == 0) {
+                printf("%s %d %d = %d\n", op, a, b, table[i].fn(a, b));
+                break;
+            }
+        }
+    }
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. The outer loop processes each command string; the inner loop finds and calls the matching function.",
+    "The code is correct as written — four commands are dispatched and their results printed."
+]
+validation_mode = "exact_stdout"

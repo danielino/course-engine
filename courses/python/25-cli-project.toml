@@ -1,0 +1,183 @@
+id          = "25-cli-project"
+title       = "CLI with argparse"
+description = "argparse: add_argument, parse_args, subparsers, and building a small CLI tool."
+
+[[exercises]]
+id              = "ex_01"
+title           = "parse_args basics"
+prompt          = """
+argparse lets you define a CLI interface declaratively.
+Inject sys.argv manually to simulate command-line arguments in the runner.
+
+Create a parser with one positional argument `name`.
+Parse ["prog", "Alice"] and print "Hello, Alice!".
+
+Expected output:
+    Hello, Alice!
+"""
+expected_output = "Hello, Alice!"
+starter_code    = """
+import argparse
+import sys
+
+sys.argv = ["prog", "Alice"]
+
+parser = argparse.ArgumentParser()
+parser.add_argument("name")
+args = parser.parse_args()
+print(f"Hello, {args.name}!")
+"""
+hints = [
+    "add_argument(\"name\") declares a required positional argument.",
+    "After parse_args(), access the value with args.name.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Optional arguments and defaults"
+prompt          = """
+Optional arguments start with -- and can have default values.
+
+Add --count (type=int, default=1) to repeat a greeting.
+Simulate: ["prog", "Bob", "--count", "3"]
+
+Expected output:
+    Hello, Bob!
+    Hello, Bob!
+    Hello, Bob!
+"""
+expected_output = """Hello, Bob!
+Hello, Bob!
+Hello, Bob!"""
+starter_code    = """
+import argparse
+import sys
+
+sys.argv = ["prog", "Bob", "--count", "3"]
+
+parser = argparse.ArgumentParser()
+parser.add_argument("name")
+parser.add_argument("--count", type=int, default=1)
+args = parser.parse_args()
+for _ in range(args.count):
+    print(f"Hello, {args.name}!")
+"""
+hints = [
+    "type=int makes argparse convert the string \"3\" to the integer 3.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Flag arguments (store_true)"
+prompt          = """
+action="store_true" creates a boolean flag: present = True, absent = False.
+
+Add --shout flag that uppercases the greeting.
+Simulate: ["prog", "Carol", "--shout"]
+
+Expected output:
+    HELLO, CAROL!
+"""
+expected_output = "HELLO, CAROL!"
+starter_code    = """
+import argparse
+import sys
+
+sys.argv = ["prog", "Carol", "--shout"]
+
+parser = argparse.ArgumentParser()
+parser.add_argument("name")
+parser.add_argument("--shout", action="store_true")
+args = parser.parse_args()
+msg = f"Hello, {args.name}!"
+print(msg.upper() if args.shout else msg)
+"""
+hints = [
+    "action=\"store_true\" sets the attribute to True when the flag is present.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Subcommands with subparsers"
+prompt          = """
+Subparsers let your CLI have sub-commands like `git commit` or `git push`.
+
+Create a calculator CLI with two subcommands:
+  add  <a> <b>   → prints the sum
+  mul  <a> <b>   → prints the product
+
+Simulate: ["prog", "add", "7", "3"]
+
+Expected output:
+    10
+"""
+expected_output = "10"
+starter_code    = """
+import argparse
+import sys
+
+sys.argv = ["prog", "add", "7", "3"]
+
+parser = argparse.ArgumentParser()
+subs   = parser.add_subparsers(dest="command")
+
+add_p = subs.add_parser("add")
+add_p.add_argument("a", type=int)
+add_p.add_argument("b", type=int)
+
+mul_p = subs.add_parser("mul")
+mul_p.add_argument("a", type=int)
+mul_p.add_argument("b", type=int)
+
+args = parser.parse_args()
+if args.command == "add":
+    print(args.a + args.b)
+elif args.command == "mul":
+    print(args.a * args.b)
+"""
+hints = [
+    "add_subparsers(dest=\"command\") stores the subcommand name in args.command.",
+    "Each sub-parser is configured independently with its own arguments.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "A small unit-converter CLI"
+prompt          = """
+Build a length converter with two subcommands:
+  km2mi <km>   → miles (km * 0.621371), rounded to 2 decimal places
+  mi2km <mi>   → km   (mi * 1.60934),   rounded to 2 decimal places
+
+Simulate: ["prog", "km2mi", "10"]
+
+Expected output:
+    6.21
+"""
+expected_output = "6.21"
+starter_code    = """
+import argparse
+import sys
+
+sys.argv = ["prog", "km2mi", "10"]
+
+parser = argparse.ArgumentParser(description="Length converter")
+subs   = parser.add_subparsers(dest="cmd")
+
+p1 = subs.add_parser("km2mi")
+p1.add_argument("value", type=float)
+
+p2 = subs.add_parser("mi2km")
+p2.add_argument("value", type=float)
+
+args = parser.parse_args()
+if args.cmd == "km2mi":
+    print(round(args.value * 0.621371, 2))
+elif args.cmd == "mi2km":
+    print(round(args.value * 1.60934, 2))
+"""
+hints = [
+    "10 km * 0.621371 = 6.21371, rounded to 2 decimals = 6.21.",
+    "Run the starter code as-is.",
+]

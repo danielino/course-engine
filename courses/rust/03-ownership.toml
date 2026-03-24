@@ -1,0 +1,90 @@
+id          = "03-ownership"
+title       = "Ownership"
+description = "Rust's core rule: each value has one owner. When the owner goes out of scope, the value is dropped."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Move semantics"
+prompt          = """
+In Rust, assigning a heap-allocated value (like a String) to another variable
+*moves* it — the original variable is no longer valid.
+
+The code below won't compile because `s1` is used after it has been moved into `s2`.
+Fix it so the program compiles and prints:
+
+    hello
+
+Hint: you can clone the value so both variables are valid.
+"""
+expected_output = "hello"
+starter_code    = """
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1;
+    println!("{}", s1);
+}
+"""
+hints = [
+    "Use s1.clone() when assigning to s2: `let s2 = s1.clone();`",
+    "After cloning, s1 is still valid because s2 got its own copy.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Borrowing"
+prompt          = """
+Instead of cloning, you can *borrow* a value with `&`.
+A borrow lets you use a value without taking ownership.
+
+Fix the program so it compiles and prints:
+
+    hello
+
+Pass a reference to the function instead of moving the String.
+"""
+expected_output = "hello"
+starter_code    = """
+fn print_it(s: String) {
+    println!("{}", s);
+}
+
+fn main() {
+    let s = String::from("hello");
+    print_it(s);
+    println!("{}", s);
+}
+"""
+hints = [
+    "Change the parameter type to `&String` (or `&str`), and call print_it(&s).",
+    "A `&String` is a reference — it borrows the value without taking ownership.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Mutable references"
+prompt          = """
+You can also borrow *mutably* with `&mut`, which lets you modify the value
+without taking ownership.
+
+Make the program compile and print:
+
+    hello world
+
+Use a mutable reference to append \" world\" to the string inside the function.
+"""
+expected_output = "hello world"
+starter_code    = """
+fn append_world(s: &String) {
+    s.push_str(" world");
+}
+
+fn main() {
+    let s = String::from("hello");
+    append_world(&s);
+    println!("{}", s);
+}
+"""
+hints = [
+    "Change `&String` to `&mut String`, and declare `s` as `let mut s = ...`.",
+    "Call the function with `append_world(&mut s);`.",
+]

@@ -1,0 +1,190 @@
+id          = "18-classes"
+title       = "Classes"
+description = "class, __init__, self, instance methods, __str__, and inheritance."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Define a class"
+prompt          = """
+A class bundles data (attributes) and behaviour (methods).
+__init__ is the constructor; self refers to the instance.
+
+Define a class Dog with:
+  - __init__(self, name, breed)
+  - method bark() that prints "<name> says: Woof!"
+
+Create Dog("Rex", "Labrador") and call bark().
+
+Expected output:
+    Rex says: Woof!
+"""
+expected_output = "Rex says: Woof!"
+starter_code    = """
+class Dog:
+    def __init__(self, name, breed):
+        self.name  = name
+        self.breed = breed
+
+    def bark(self):
+        print(f"{self.name} says: Woof!")
+
+d = Dog("Rex", "Labrador")
+d.bark()
+"""
+hints = [
+    "self is automatically passed as the first argument to every method.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "__str__"
+prompt          = """
+__str__ defines what print() shows for your object.
+
+Add __str__ to Dog so that print(dog) outputs:
+    Dog(name=Rex, breed=Labrador)
+"""
+expected_output = "Dog(name=Rex, breed=Labrador)"
+starter_code    = """
+class Dog:
+    def __init__(self, name, breed):
+        self.name  = name
+        self.breed = breed
+
+    def __str__(self):
+        return f"Dog(name={self.name}, breed={self.breed})"
+
+d = Dog("Rex", "Labrador")
+print(d)
+"""
+hints = [
+    "__str__ must return a string, not print it.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Instance methods and state"
+prompt          = """
+Methods can modify the object's own attributes through self.
+
+Define a BankAccount class with:
+  - __init__(self, owner, balance=0)
+  - deposit(amount)   — adds to balance
+  - withdraw(amount)  — subtracts from balance
+  - __str__           — "owner: $balance"
+
+Create an account for "Alice", deposit 200, withdraw 50, print it.
+
+Expected output:
+    Alice: $150
+"""
+expected_output = "Alice: $150"
+starter_code    = """
+class BankAccount:
+    def __init__(self, owner, balance=0):
+        self.owner   = owner
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+
+    def withdraw(self, amount):
+        self.balance -= amount
+
+    def __str__(self):
+        return f"{self.owner}: ${self.balance}"
+
+acc = BankAccount("Alice")
+acc.deposit(200)
+acc.withdraw(50)
+print(acc)
+"""
+hints = [
+    "self.balance += amount modifies the instance's balance attribute.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Inheritance"
+prompt          = """
+A subclass inherits all attributes and methods of its parent.
+Use super().__init__() to call the parent constructor.
+
+Define Animal(name) with speak() → "<name> makes a sound."
+Define Cat(Animal) that overrides speak() → "<name> says: Meow!"
+
+Create Cat("Whiskers") and call speak().
+
+Expected output:
+    Whiskers says: Meow!
+"""
+expected_output = "Whiskers says: Meow!"
+starter_code    = """
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        print(f"{self.name} makes a sound.")
+
+class Cat(Animal):
+    def speak(self):
+        print(f"{self.name} says: Meow!")
+
+c = Cat("Whiskers")
+c.speak()
+"""
+hints = [
+    "Cat inherits __init__ from Animal, so no need to redefine it.",
+    "Overriding a method means defining it again in the subclass with the same name.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Class attribute vs instance attribute"
+prompt          = """
+Class attributes are shared by all instances; instance attributes are per-object.
+
+Define Counter with:
+  - class attribute: total = 0 (counts all instances created)
+  - __init__ increments Counter.total and sets self.id = Counter.total
+  - __str__ → "Counter #<id>"
+
+Create 3 Counter objects and print them, then print Counter.total.
+
+Expected output:
+    Counter #1
+    Counter #2
+    Counter #3
+    3
+"""
+expected_output = """Counter #1
+Counter #2
+Counter #3
+3"""
+starter_code    = """
+class Counter:
+    total = 0
+
+    def __init__(self):
+        Counter.total += 1
+        self.id = Counter.total
+
+    def __str__(self):
+        return f"Counter #{self.id}"
+
+a = Counter()
+b = Counter()
+c = Counter()
+print(a)
+print(b)
+print(c)
+print(Counter.total)
+"""
+hints = [
+    "Counter.total is accessed via the class name, not self, to modify the shared value.",
+    "Run the starter code as-is.",
+]

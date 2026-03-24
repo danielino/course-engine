@@ -1,0 +1,111 @@
+id          = "13-string-methods"
+title       = "String Methods"
+description = "Use the C standard library for string length, case conversion, searching, tokenizing, and formatting."
+
+[[exercises]]
+id              = "ex_01"
+title           = "String Length"
+prompt          = """strlen() from <string.h> counts the characters in a string up to (but not including) the null terminator. This is essential for bounds checking and manual string processing. Find the length of "Hello World" and print: Length: 11"""
+expected_output = "Length: 11"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char s[] = "Hello World";
+    // Print the length
+    return 0;
+}"""
+hints = [
+    "strlen(s) returns a size_t. Use %zu to print it, or cast to int and use %d.",
+    "printf(\"Length: %zu\\n\", strlen(s));"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Converting to Uppercase"
+prompt          = """The <ctype.h> library provides character classification and conversion functions. toupper(c) converts a character to uppercase. To transform a whole string, loop through each character and apply toupper(). Convert "hello world" to uppercase and print: HELLO WORLD"""
+expected_output = "HELLO WORLD"
+starter_code    = """#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+int main() {
+    char s[] = "hello world";
+    // Convert each character to uppercase in place
+    printf("%s\n", s);
+    return 0;
+}"""
+hints = [
+    "Loop over each character with its index. Assign: s[i] = toupper(s[i]); Use strlen() to know when to stop.",
+    "for (int i = 0; i < (int)strlen(s); i++) {\n    s[i] = toupper(s[i]);\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Searching Within a String"
+prompt          = """strstr(haystack, needle) from <string.h> returns a pointer to the first occurrence of needle in haystack, or NULL if not found. The position can be calculated with pointer arithmetic: ptr - haystack. Search for "World" in "Hello World" and print the result:
+Found: yes
+Position: 6"""
+expected_output = """Found: yes
+Position: 6"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char haystack[] = "Hello World";
+    char needle[] = "World";
+    // Use strstr to find needle in haystack
+    return 0;
+}"""
+hints = [
+    "char *pos = strstr(haystack, needle); If pos != NULL, it was found. The position index is pos - haystack.",
+    "char *pos = strstr(haystack, needle);\nif (pos != NULL) {\n    printf(\"Found: yes\\n\");\n    printf(\"Position: %ld\\n\", pos - haystack);\n} else {\n    printf(\"Found: no\\n\");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Tokenizing Strings with strtok"
+prompt          = """strtok() from <string.h> splits a string into tokens by a delimiter. It modifies the original string by inserting null bytes. On the first call pass the string; for subsequent tokens pass NULL. Split "Hello World C" by spaces and print each token on its own line:
+Hello
+World
+C"""
+expected_output = """Hello
+World
+C"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char s[] = "Hello World C";
+    // Use strtok to split by space and print each token
+    return 0;
+}"""
+hints = [
+    "First call: char *token = strtok(s, \" \"); Then loop: while (token != NULL) { printf(\"%s\\n\", token); token = strtok(NULL, \" \"); }",
+    "char *token = strtok(s, \" \");\nwhile (token != NULL) {\n    printf(\"%s\\n\", token);\n    token = strtok(NULL, \" \");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Formatting Strings with snprintf"
+prompt          = """snprintf() writes a formatted string into a buffer, just like printf() but to memory instead of stdout. This is the safe way to build strings — you specify the buffer size to prevent overflow. Format the value 3.14159 into a string as "Pi = 3.14" and print: Formatted: Pi = 3.14"""
+expected_output = "Formatted: Pi = 3.14"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char buf[50];
+    double pi = 3.14159;
+    // Use snprintf to format pi into buf as "Pi = 3.14"
+    printf("Formatted: %s\n", buf);
+    return 0;
+}"""
+hints = [
+    "snprintf(buf, sizeof(buf), \"Pi = %.2f\", pi); writes the formatted string into buf.",
+    "snprintf(buf, sizeof(buf), \"Pi = %.2f\", pi);"
+]
+validation_mode = "exact_stdout"

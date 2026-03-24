@@ -1,0 +1,140 @@
+id          = "10-collections-dict"
+title       = "Dictionaries"
+description = "Dict literals, get, items/keys/values, update, and del."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Create and access"
+prompt          = """
+A dictionary maps keys to values. Create one with curly braces: {key: value}.
+
+Given person = {"name": "Alice", "age": 30}:
+  1. Print person["name"]       → Alice
+  2. Print person["age"]        → 30
+  3. Print len(person)          → 2
+"""
+expected_output = """Alice
+30
+2"""
+starter_code    = """
+person = {"name": "Alice", "age": 30}
+print(person["name"])
+print(person["age"])
+print(len(person))
+"""
+hints = [
+    "Use square brackets with the key to access a value.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "get() — safe access"
+prompt          = """
+dict[key] raises KeyError if the key doesn't exist.
+dict.get(key, default) returns the default instead.
+
+Given data = {"x": 10}:
+  1. Print data.get("x", 0)      → 10
+  2. Print data.get("y", 0)      → 0   (key missing, returns default)
+"""
+expected_output = """10
+0"""
+starter_code    = """
+data = {"x": 10}
+print(data.get("x", 0))
+print(data.get("y", 0))
+"""
+hints = [
+    "get() never raises KeyError — it returns the second argument when the key is absent.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "keys(), values(), items()"
+prompt          = """
+These methods return views of a dictionary's keys, values, and key-value pairs.
+
+Given scores = {"alice": 95, "bob": 80, "carol": 88}:
+Print each name and score on one line like "alice: 95", sorted by name.
+
+Expected output:
+    alice: 95
+    bob: 80
+    carol: 88
+"""
+expected_output = """alice: 95
+bob: 80
+carol: 88"""
+starter_code    = """
+scores = {"alice": 95, "bob": 80, "carol": 88}
+for name, score in sorted(scores.items()):
+    print(f"{name}: {score}")
+"""
+hints = [
+    ".items() yields (key, value) tuples you can unpack in a for loop.",
+    "sorted(scores.items()) sorts by key alphabetically.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "update() and del"
+prompt          = """
+update(other_dict) merges another dict in.
+del d[key] removes a key.
+
+Start with d = {"a": 1, "b": 2}.
+  1. Update it with {"b": 99, "c": 3}.
+  2. Delete the key "a".
+  3. Print the sorted items.
+
+Expected output:
+    b: 99
+    c: 3
+"""
+expected_output = """b: 99
+c: 3"""
+starter_code    = """
+d = {"a": 1, "b": 2}
+d.update({"b": 99, "c": 3})
+del d["a"]
+for k, v in sorted(d.items()):
+    print(f"{k}: {v}")
+"""
+hints = [
+    "update() overwrites existing keys and adds new ones.",
+    "del d[\"a\"] removes the key \"a\" entirely.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Word frequency counter"
+prompt          = """
+A common dict pattern: count occurrences by using .get() to set a default.
+
+Count how many times each word appears in:
+  words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+
+Print each word and its count, sorted alphabetically.
+
+Expected output:
+    apple: 3
+    banana: 2
+    cherry: 1
+"""
+expected_output = """apple: 3
+banana: 2
+cherry: 1"""
+starter_code    = """
+words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+counts = {}
+for word in words:
+    counts[word] = counts.get(word, 0) + 1
+for word in sorted(counts):
+    print(f"{word}: {counts[word]}")
+"""
+hints = [
+    "counts.get(word, 0) returns 0 if the word isn't in the dict yet.",
+    "Adding 1 each time increments the count.",
+]

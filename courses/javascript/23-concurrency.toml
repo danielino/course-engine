@@ -1,0 +1,142 @@
+id          = "23-concurrency"
+title       = "Concurrency Patterns"
+description = "Sequential vs parallel async execution; combine results with Promise.all and async/await."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Sequential awaits"
+prompt          = """
+Await two Promises one after the other and print their values in order.
+Use Promise.resolve to simulate instant async operations.
+
+Expected output:
+    first
+    second
+"""
+expected_output = """first
+second"""
+starter_code    = """
+async function main() {
+    const a = await Promise.resolve("first");
+    console.log(a);
+    const b = await Promise.resolve("second");
+    console.log(b);
+}
+main();
+"""
+hints = [
+    "Sequential awaits: each await must complete before the next line runs.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Parallel with Promise.all"
+prompt          = """
+Fetch three values "in parallel" using Promise.all and print them as a
+comma-separated string.
+
+Values: Promise.resolve("a"), Promise.resolve("b"), Promise.resolve("c")
+
+Expected output:
+    a,b,c
+"""
+expected_output = "a,b,c"
+starter_code    = """
+async function main() {
+    const [a, b, c] = await Promise.all([
+        Promise.resolve("a"),
+        Promise.resolve("b"),
+        Promise.resolve("c"),
+    ]);
+    console.log([a, b, c].join(","));
+}
+main();
+"""
+hints = [
+    "Promise.all fires all promises simultaneously and waits for all to finish.",
+    "Destructure the result array: const [a, b, c] = await Promise.all([...]);",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Promise.allSettled"
+prompt          = """
+Run two promises — one that resolves and one that rejects — with Promise.allSettled.
+Print each result's status.
+
+Expected output:
+    fulfilled
+    rejected
+"""
+expected_output = """fulfilled
+rejected"""
+starter_code    = """
+async function main() {
+    const results = await Promise.allSettled([
+        Promise.resolve("ok"),
+        Promise.reject(new Error("fail")),
+    ]);
+    results.forEach(r => console.log(r.status));
+}
+main();
+"""
+hints = [
+    "Promise.allSettled never rejects; each result has a .status of \"fulfilled\" or \"rejected\".",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Async error propagation"
+prompt          = """
+Write an async function `fetchData()` that rejects with Error("network error").
+Write another async function `main()` that calls fetchData() and catches the error,
+printing "caught: network error".
+
+Expected output:
+    caught: network error
+"""
+expected_output = "caught: network error"
+starter_code    = """
+async function fetchData() {
+    throw new Error("network error");
+}
+async function main() {
+    try {
+        await fetchData();
+    } catch (err) {
+        console.log("caught: " + err.message);
+    }
+}
+main();
+"""
+hints = [
+    "Throwing inside an async function causes the returned Promise to reject.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Combining results"
+prompt          = """
+Use Promise.all to resolve three numeric promises, sum the results, and print the sum.
+
+Promises: resolve(10), resolve(20), resolve(30)
+
+Expected output:
+    60
+"""
+expected_output = "60"
+starter_code    = """
+async function main() {
+    const values = await Promise.all([
+        Promise.resolve(10),
+        Promise.resolve(20),
+        Promise.resolve(30),
+    ]);
+    const sum = values.reduce((acc, n) => acc + n, 0);
+    console.log(sum);
+}
+main();
+"""
+hints = [
+    "Promise.all collects all values into an array; then use reduce to sum them.",
+]

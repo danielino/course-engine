@@ -1,0 +1,77 @@
+id          = "06-conditionals"
+title       = "Conditionals"
+description = "Control program flow with if/else, else-if chains, nested conditions, and the ternary operator."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic if/else"
+prompt          = """Conditionals let your program make decisions. The simplest form is if/else: if the condition is true, run one block; otherwise run the other. Declare int x = 10. If x is greater than 0, print "Positive", otherwise print "Non-positive"."""
+expected_output = "Positive"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int x = 10;
+    // If x > 0 print "Positive", else print "Non-positive"
+    return 0;
+}"""
+hints = [
+    "The syntax is: if (condition) { ... } else { ... }",
+    "if (x > 0) {\n    printf(\"Positive\\n\");\n} else {\n    printf(\"Non-positive\\n\");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "else-if Chain for Letter Grades"
+prompt          = """An else-if chain lets you choose between multiple outcomes. Only the first matching branch runs. This pattern is common for range checks, menus, and classification. Given score = 85, determine and print the letter grade: A (>=90), B (>=80), C (>=70), D (>=60), F (below 60). Print: Grade: B"""
+expected_output = "Grade: B"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int score = 85;
+    char grade;
+    // Use if/else-if/else to assign grade
+    // Print "Grade: B"
+    return 0;
+}"""
+hints = [
+    "Start with if (score >= 90) and chain else if (score >= 80), etc. The conditions are checked in order.",
+    "if (score >= 90) grade = 'A';\nelse if (score >= 80) grade = 'B';\nelse if (score >= 70) grade = 'C';\nelse if (score >= 60) grade = 'D';\nelse grade = 'F';\nprintf(\"Grade: %c\\n\", grade);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Nested Conditions"
+prompt          = """Conditions can be nested inside each other for multi-level checks. You can also combine conditions with && (AND) and || (OR) to avoid deep nesting. Given x = 5, check if x is greater than 0 AND less than 10. Print: x is between 1 and 9"""
+expected_output = "x is between 1 and 9"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int x = 5;
+    // Check if x > 0 AND x < 10
+    return 0;
+}"""
+hints = [
+    "Use the && operator to combine two conditions in a single if statement.",
+    "if (x > 0 && x < 10) {\n    printf(\"x is between 1 and 9\\n\");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Ternary Operator"
+prompt          = """The ternary operator (?:) is a compact way to express a simple if/else in a single expression. Syntax: condition ? value_if_true : value_if_false. It's ideal for simple assignments or inline decisions. Find the maximum of 3 and 7 using the ternary operator and print: Max: 7"""
+expected_output = "Max: 7"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int a = 3, b = 7;
+    // Use the ternary operator to find max
+    return 0;
+}"""
+hints = [
+    "int max = (a > b) ? a : b; — if a > b is true, max gets a, otherwise max gets b.",
+    "int max = (a > b) ? a : b;\nprintf(\"Max: %d\\n\", max);"
+]
+validation_mode = "exact_stdout"

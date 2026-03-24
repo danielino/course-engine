@@ -1,0 +1,146 @@
+id          = "08-structs"
+title       = "Structs"
+description = "Define named structs, implement methods with impl, and use constructors and struct update syntax."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Define and instantiate a struct"
+prompt          = """
+Define a struct `Point` with fields `x: f64` and `y: f64`.
+Create a `Point` with `x = 3.0` and `y = 4.0`.
+Print its fields as:
+    x=3, y=4
+"""
+expected_output = "x=3, y=4"
+starter_code    = """
+struct Point {
+    // fields here
+}
+
+fn main() {
+    // create and print
+}
+"""
+hints = [
+    "struct Point { x: f64, y: f64 }",
+    "println!(\"x={}, y={}\", p.x, p.y); — use {:.0} if you want no decimal places, or just {} which prints 3 for 3.0.",
+    "Use {:.0} to format 3.0 as \"3\": println!(\"x={:.0}, y={:.0}\", p.x, p.y);",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Methods with impl"
+prompt          = """
+Add an `impl Point` block with a method:
+    fn distance_from_origin(&self) -> f64
+
+It should return `(x*x + y*y).sqrt()`.
+Create `Point { x: 3.0, y: 4.0 }` and print the distance as a whole number.
+
+Expected output:
+    5
+"""
+expected_output = "5"
+starter_code    = """
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+impl Point {
+    // add distance_from_origin here
+}
+
+fn main() {
+    let p = Point { x: 3.0, y: 4.0 };
+    println!("{:.0}", p.distance_from_origin());
+}
+"""
+hints = [
+    "fn distance_from_origin(&self) -> f64 { (self.x * self.x + self.y * self.y).sqrt() }",
+    "f64 has a built-in .sqrt() method.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Associated functions (constructors)"
+prompt          = """
+Add a `Point::new(x: f64, y: f64) -> Point` associated function (no `self` parameter).
+Create a point with it and print \"created\".
+
+Expected output:
+    created
+"""
+expected_output = "created"
+starter_code    = """
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+impl Point {
+    // add Point::new here
+}
+
+fn main() {
+    let _p = Point::new(1.0, 2.0);
+    println!("created");
+}
+"""
+hints = [
+    "Associated functions are called with Point::new(...), not on an instance.",
+    "fn new(x: f64, y: f64) -> Point { Point { x, y } }",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Struct update syntax"
+prompt          = """
+Define `struct Config { debug: bool, verbose: bool, retries: u32 }`.
+Create a default config with `debug: false, verbose: false, retries: 3`.
+Use struct update syntax to create a second config with `debug: true` but the rest unchanged.
+Print the `retries` field of the second config.
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+struct Config {
+    debug: bool,
+    verbose: bool,
+    retries: u32,
+}
+
+fn main() {
+    let default = Config { debug: false, verbose: false, retries: 3 };
+    // create a second config using struct update syntax
+    // print retries
+}
+"""
+hints = [
+    "let custom = Config { debug: true, ..default };",
+    "println!(\"{}\", custom.retries);",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Tuple structs"
+prompt          = """
+Define `struct Meters(f64)`.
+Create `Meters(5.0)` and print:
+    5 meters
+"""
+expected_output = "5 meters"
+starter_code    = """
+struct Meters(f64);
+
+fn main() {
+    let d = Meters(5.0);
+    // print the value with " meters"
+}
+"""
+hints = [
+    "Tuple struct fields are accessed by index: d.0",
+    "println!(\"{:.0} meters\", d.0);",
+]

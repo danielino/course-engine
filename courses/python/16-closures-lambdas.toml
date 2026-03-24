@@ -1,0 +1,160 @@
+id          = "16-closures-lambdas"
+title       = "Closures and Lambdas"
+description = "lambda expressions, closures with nonlocal, and functools.partial."
+
+[[exercises]]
+id              = "ex_01"
+title           = "lambda basics"
+prompt          = """
+A lambda is a small anonymous function: lambda args: expression.
+It's useful when you need a simple function inline.
+
+Use lambdas to:
+  1. Double a number:   double(7)   → 14
+  2. Add two numbers:   add(3, 4)   → 7
+
+Print both results.
+
+Expected output:
+    14
+    7
+"""
+expected_output = """14
+7"""
+starter_code    = """
+double = lambda x: x * 2
+add    = lambda x, y: x + y
+
+print(double(7))
+print(add(3, 4))
+"""
+hints = [
+    "lambda x: x * 2 creates a function that takes x and returns x * 2.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "lambda with sorted()"
+prompt          = """
+sorted() accepts a key= argument — a function applied to each element
+before comparison. Lambdas shine here.
+
+Sort this list of tuples by the second element (the score):
+  players = [("alice", 88), ("bob", 95), ("carol", 72)]
+
+Print the sorted list.
+
+Expected output:
+    [('carol', 72), ('alice', 88), ('bob', 95)]
+"""
+expected_output = "[('carol', 72), ('alice', 88), ('bob', 95)]"
+starter_code    = """
+players = [("alice", 88), ("bob", 95), ("carol", 72)]
+print(sorted(players, key=lambda p: p[1]))
+"""
+hints = [
+    "key=lambda p: p[1] extracts the second element of each tuple for comparison.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Closures"
+prompt          = """
+A closure is a function that captures variables from its enclosing scope.
+The inner function "closes over" those variables.
+
+Write make_multiplier(n) that returns a function multiplying its argument by n.
+
+mul3 = make_multiplier(3)
+print(mul3(5))   → 15
+print(mul3(10))  → 30
+"""
+expected_output = """15
+30"""
+starter_code    = """
+def make_multiplier(n):
+    def multiply(x):
+        return x * n
+    return multiply
+
+mul3 = make_multiplier(3)
+print(mul3(5))
+print(mul3(10))
+"""
+hints = [
+    "The inner function multiply can see n because it's in the enclosing scope.",
+    "make_multiplier returns the function object itself, not the result of calling it.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "nonlocal"
+prompt          = """
+Inside a nested function, `nonlocal` lets you modify a variable from the enclosing scope.
+
+Write make_counter() that returns a function incrementing an internal count.
+
+counter = make_counter()
+print(counter())   → 1
+print(counter())   → 2
+print(counter())   → 3
+"""
+expected_output = """1
+2
+3"""
+starter_code    = """
+def make_counter():
+    count = 0
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+    return increment
+
+counter = make_counter()
+print(counter())
+print(counter())
+print(counter())
+"""
+hints = [
+    "Without nonlocal, count += 1 would create a new local variable and fail.",
+    "nonlocal count tells Python to modify the count in make_counter's scope.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "functools.partial"
+prompt          = """
+functools.partial creates a new function with some arguments pre-filled.
+
+Use partial to create:
+  1. double from mul(x, y) with y=2 pre-filled.
+  2. greet_alice from greet(greeting, name) with name="Alice" pre-filled.
+
+Print:
+  double(5)        → 10
+  greet_alice("Hi") → Hi, Alice!
+"""
+expected_output = """10
+Hi, Alice!"""
+starter_code    = """
+from functools import partial
+
+def mul(x, y):
+    return x * y
+
+def greet(greeting, name):
+    return f"{greeting}, {name}!"
+
+double      = partial(mul, y=2)
+greet_alice = partial(greet, name="Alice")
+
+print(double(5))
+print(greet_alice("Hi"))
+"""
+hints = [
+    "partial(func, keyword=value) freezes that argument in the new function.",
+    "Run the starter code as-is.",
+]
