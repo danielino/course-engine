@@ -1,6 +1,7 @@
 # course-engine
 
-**course-engine** is a language-agnostic library for building interactive coding courses. It ships with a ready-to-use binary and starter lessons for Rust, Python, and JavaScript.
+**course-engine** is a language-agnostic library for building interactive coding courses.
+It ships with a ready-to-use binary and full lesson sets for Rust, C, Python, and JavaScript.
 
 Two interfaces available: a **web UI** (recommended) and a **terminal CLI**.
 
@@ -36,7 +37,8 @@ cargo run -- serve --port 8080
 cargo run -- serve --courses-dir /path/to/my/courses
 ```
 
-The web UI auto-discovers all course subdirectories inside `courses/` (or the path passed via `--courses-dir`). A dropdown in the top-left lets you switch between courses; progress is tracked separately per course.
+The web UI auto-discovers all course subdirectories inside `courses/` (or the path passed via `--courses-dir`).
+A dropdown in the top-left lets you switch between courses; progress is tracked separately per course.
 
 ### Layout
 
@@ -47,7 +49,8 @@ The web UI auto-discovers all course subdirectories inside `courses/` (or the pa
 | Expected output | Output panel: result, compile errors, or diff |
 | Hints (revealed on demand) | Prev / Next exercise navigation |
 
-When your output matches the expected output the exercise is marked complete and the next one opens automatically. Progress is saved after each exercise.
+When your output matches the expected output the exercise is marked complete and the next one opens automatically.
+Progress is saved after each exercise.
 
 ### Autocomplete (Rust)
 
@@ -63,7 +66,8 @@ When using the Rust course, Monaco provides:
 cargo run
 ```
 
-Select a lesson from the arrow-key menu, read the exercise prompt, press **Enter** to open your `$EDITOR`, write your solution, save and close. The tool compiles, runs, and shows the result with a diff if the output is wrong.
+Select a lesson from the arrow-key menu, read the exercise prompt, press **Enter** to open your `$EDITOR`,
+write your solution, save and close. The tool compiles, runs, and shows the result with a diff if the output is wrong.
 
 ### All CLI commands
 
@@ -78,17 +82,17 @@ Select a lesson from the arrow-key menu, read the exercise prompt, press **Enter
 
 ---
 
-## Courses
+## Available courses
 
-The `courses/` directory contains one starter lesson per supported language:
+| Path | Language | Runner | Lessons |
+|------|----------|--------|---------|
+| `courses/rust/` | Rust | `rustc` (no Cargo — `std` only) | 25 |
+| `courses/c/` | C | `cc` (system C compiler) | 26 |
+| `courses/python/` | Python 3 | `python3` | 26 |
+| `courses/javascript/` | JavaScript | `node` | 26 |
 
-| Path | Language |
-|------|----------|
-| `courses/rust/` | Rust |
-| `courses/python/` | Python 3 |
-| `courses/javascript/` | Node.js |
-
-Each starter covers Hello World, multi-line output, and variables — enough to verify the runner works end-to-end.
+Each course covers the full zero-to-hero curriculum: foundation → intermediate → advanced.
+See [`course-generator-claude.md`](course-generator-claude.md) for the complete curriculum structure and instructions for adding a new course.
 
 ---
 
@@ -96,31 +100,24 @@ Each starter covers Hello World, multi-line output, and variables — enough to 
 
 Lessons are TOML files inside a course subdirectory, loaded alphabetically by filename.
 
-**Filename convention:** `NN-slug.toml` — use zero-padded numbers to control order (e.g. `26-async.toml`).
+**Filename convention:** `NN-slug.toml` — use zero-padded numbers to control order (e.g. `26-capstone.toml`).
 
 **Template:**
 
 ```toml
-id          = "26-async"
-title       = "Async / Await"
-description = "Write async functions and run them with tokio."
+id          = "NN-slug"
+title       = "..."
+description = "..."
 
 [[exercises]]
 id              = "ex_01"
-title           = "Your first async function"
-prompt          = """
-Write an async function `greet` that returns the string "hello async".
-Call it with tokio::main and print the result.
-"""
-expected_output = "hello async"
-starter_code    = """
-fn main() {
-    // your code here
-}
-"""
+title           = "..."
+prompt          = """..."""
+expected_output = "..."
+starter_code    = """..."""
 hints = [
-    "async fn greet() -> &'static str { \"hello async\" }",
-    "Use #[tokio::main] on main and .await to call it.",
+    "First hint — directional nudge.",
+    "Second hint — near-complete snippet.",
 ]
 validation_mode = "exact_stdout"
 ```
@@ -132,7 +129,7 @@ validation_mode = "exact_stdout"
 | `id` | yes | Unique slug; used as the progress tracking key |
 | `title` | yes | Display name |
 | `description` | yes | One-line summary shown in the sidebar and list |
-| `exercises` | yes | Array of at least one exercise |
+| `exercises` | yes | Array of 3–6 exercises |
 | `exercises[].id` | yes | Unique within the lesson |
 | `exercises[].title` | yes | Display name |
 | `exercises[].prompt` | yes | Task description shown to the user |
@@ -141,7 +138,13 @@ validation_mode = "exact_stdout"
 | `exercises[].hints` | no | Strings revealed one at a time on demand |
 | `exercises[].validation_mode` | no | `"exact_stdout"` (default) or `"contains"` |
 
-**Note:** the Rust preset compiles with bare `rustc` (no Cargo), so solutions must use `std` only.
+Lesson files are validated automatically on commit (pre-commit hook) and in CI.
+Run the validator manually at any time:
+
+```bash
+python3 scripts/validate_lessons.py                      # all lessons
+python3 scripts/validate_lessons.py courses/rust/*.toml  # specific files
+```
 
 ---
 
