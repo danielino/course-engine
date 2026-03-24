@@ -1,0 +1,109 @@
+id          = "14-file-io"
+title       = "File I/O"
+description = "Read and write files in C using fopen, fprintf, fgets, and fclose."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Write and Read a File"
+prompt          = """File I/O in C uses FILE* handles. fopen() opens a file (modes: "r" read, "w" write, "a" append), fprintf() writes formatted text, fgets() reads a line, and fclose() closes the handle. Write "Hello, File!" to a file named "test.txt", then open and read it back. Print the content: Hello, File!"""
+expected_output = "Hello, File!"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    // Write "Hello, File!" to "test.txt"
+    FILE *f = fopen("test.txt", "w");
+    fprintf(f, "Hello, File!\n");
+    fclose(f);
+
+    // Read it back and print
+    char buf[100];
+    f = fopen("test.txt", "r");
+    // Read the line and print it (without the trailing newline)
+    fclose(f);
+    return 0;
+}"""
+hints = [
+    "Use fgets(buf, sizeof(buf), f) to read a line into buf. It includes the trailing newline, so use buf[strcspn(buf, \"\\n\")] = 0; to strip it.",
+    "fgets(buf, sizeof(buf), f);\nbuf[strcspn(buf, \"\\n\")] = 0;\nprintf(\"%s\\n\", buf);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Reading Multiple Lines"
+prompt          = """fgets() reads one line at a time. Loop until it returns NULL (end of file) to process an entire file. Write three numbered lines to a file, then read and print them line by line:
+Line 1
+Line 2
+Line 3"""
+expected_output = """Line 1
+Line 2
+Line 3"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    // Write 3 lines
+    FILE *f = fopen("lines.txt", "w");
+    fprintf(f, "Line 1\n");
+    fprintf(f, "Line 2\n");
+    fprintf(f, "Line 3\n");
+    fclose(f);
+
+    // Read and print each line
+    char buf[100];
+    f = fopen("lines.txt", "r");
+    // Loop through lines
+    fclose(f);
+    return 0;
+}"""
+hints = [
+    "while (fgets(buf, sizeof(buf), f) != NULL) — each iteration reads the next line into buf. Strip the newline before printing.",
+    "while (fgets(buf, sizeof(buf), f) != NULL) {\n    buf[strcspn(buf, \"\\n\")] = 0;\n    printf(\"%s\\n\", buf);\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Handling a Missing File"
+prompt          = """fopen() returns NULL when the file cannot be opened. Always check before using the FILE*. This prevents crashes from null pointer dereferences. Try to open "nonexistent_xyz.txt" for reading. If it fails, print: Cannot open file"""
+expected_output = "Cannot open file"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    FILE *f = fopen("nonexistent_xyz.txt", "r");
+    // Check if f is NULL and print the error message
+    return 0;
+}"""
+hints = [
+    "if (f == NULL) { printf(\"Cannot open file\\n\"); } else { fclose(f); }",
+    "if (f == NULL) {\n    printf(\"Cannot open file\\n\");\n} else {\n    fclose(f);\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Appending to a File"
+prompt          = """Opening a file with mode \"a\" (append) keeps existing content and adds new data at the end. This is how log files work. Write "First" to a file, close it, then open in append mode and write "Second". Read the whole file and print each line:
+First
+Second"""
+expected_output = """First
+Second"""
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+int main() {
+    // Write "First\n" to "append.txt"
+    FILE *f = fopen("append.txt", "w");
+    fprintf(f, "First\n");
+    fclose(f);
+
+    // Open in append mode and write "Second\n"
+    // Then read the file and print both lines
+    return 0;
+}"""
+hints = [
+    "Open with fopen(\"append.txt\", \"a\") to append. Then open again with \"r\" and use the fgets loop from ex_02.",
+    "f = fopen(\"append.txt\", \"a\");\nfprintf(f, \"Second\\n\");\nfclose(f);\nchar buf[100];\nf = fopen(\"append.txt\", \"r\");\nwhile (fgets(buf, sizeof(buf), f)) {\n    buf[strcspn(buf, \"\\n\")] = 0;\n    printf(\"%s\\n\", buf);\n}\nfclose(f);"
+]
+validation_mode = "exact_stdout"

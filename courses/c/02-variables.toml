@@ -1,0 +1,80 @@
+id          = "02-variables"
+title       = "Variables and Assignment"
+description = "Learn to declare variables, assign values, and use named constants in C."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Declaring and Printing an Integer"
+prompt          = """Variables are named storage locations in memory. In C, you must declare a variable's type before using it. The int type holds whole numbers. Declare an integer variable named x, assign it the value 42, and print: x = 42"""
+expected_output = "x = 42"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Declare int x and assign 42
+    // Print "x = 42"
+    return 0;
+}"""
+hints = [
+    "Declare with: int x = 42; Then use printf() with %d to print it.",
+    "printf(\"x = %d\\n\", x);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Reassigning a Variable"
+prompt          = """Unlike constants, variables can change their value after declaration. Declare an int variable a and set it to 10. Print its value. Then reassign it to 20 and print again. Expected output:\nBefore: 10\nAfter: 20"""
+expected_output = """Before: 10
+After: 20"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int a = 10;
+    // Print "Before: 10"
+    // Reassign a to 20
+    // Print "After: 20"
+    return 0;
+}"""
+hints = [
+    "After printing a, write: a = 20; to reassign it. Then print again.",
+    "printf(\"Before: %d\\n\", a);\na = 20;\nprintf(\"After: %d\\n\", a);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Multiple Variables and Arithmetic"
+prompt          = """Programs often work with several variables at once. Declare x = 5 and y = 3, compute their sum into a third variable, and print: x = 5, y = 3, sum = 8"""
+expected_output = "x = 5, y = 3, sum = 8"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int x = 5;
+    int y = 3;
+    // Compute sum and print all three
+    return 0;
+}"""
+hints = [
+    "Declare: int sum = x + y; Then use printf() with three %d specifiers.",
+    "printf(\"x = %d, y = %d, sum = %d\\n\", x, y, sum);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Named Constants with #define"
+prompt          = """Sometimes a value should never change — like the value of PI. C provides #define to create named constants (also called preprocessor macros). The preprocessor replaces every occurrence of the name with the value before compilation. Define PI as 3.14 and print: PI = 3.14"""
+expected_output = "PI = 3.14"
+starter_code    = """#include <stdio.h>
+
+#define PI 3.14
+
+int main() {
+    // Print "PI = 3.14" using the PI constant
+    return 0;
+}"""
+hints = [
+    "Use %g or %.2f as the format specifier to print a floating-point number with two decimal places.",
+    "printf(\"PI = %.2f\\n\", PI);"
+]
+validation_mode = "exact_stdout"

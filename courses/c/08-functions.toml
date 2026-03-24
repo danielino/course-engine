@@ -1,0 +1,99 @@
+id          = "08-functions"
+title       = "Functions"
+description = "Define and call functions, pass parameters, return values, and write recursive functions."
+
+[[exercises]]
+id              = "ex_01"
+title           = "A Simple void Function"
+prompt          = """Functions let you name and reuse a block of code. A void function performs an action but returns no value. This is the foundation of structured programming — breaking a program into small, named pieces. Define a function greet() that prints "Hello from a function!" and call it from main."""
+expected_output = "Hello from a function!"
+starter_code    = """#include <stdio.h>
+
+// Define greet() here
+
+int main() {
+    greet();
+    return 0;
+}"""
+hints = [
+    "A void function has the signature: void greet() { ... }. Place it before main() or provide a forward declaration.",
+    "void greet() {\n    printf(\"Hello from a function!\\n\");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Function with Return Value"
+prompt          = """Functions can compute a value and return it to the caller. The return type appears before the function name. This separates computation from output and makes code reusable. Write a function int square(int n) that returns n*n. Call it with 5 and print: Square of 5: 25"""
+expected_output = "Square of 5: 25"
+starter_code    = """#include <stdio.h>
+
+// Define square(int n) here
+
+int main() {
+    int result = square(5);
+    printf("Square of 5: %d\n", result);
+    return 0;
+}"""
+hints = [
+    "int square(int n) { return n * n; } — the return statement sends the computed value back to the caller.",
+    "int square(int n) {\n    return n * n;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Function with Multiple Parameters"
+prompt          = """Functions can accept multiple parameters, separated by commas. Each parameter has its own type and name. Write a function int add(int a, int b) that returns a + b. Call it with 3 and 4 and print: 3 + 4 = 7"""
+expected_output = "3 + 4 = 7"
+starter_code    = """#include <stdio.h>
+
+// Define add(int a, int b) here
+
+int main() {
+    printf("3 + 4 = %d\n", add(3, 4));
+    return 0;
+}"""
+hints = [
+    "int add(int a, int b) { return a + b; }",
+    "int add(int a, int b) {\n    return a + b;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Passing Strings to Functions"
+prompt          = """In C, strings (char arrays) are passed to functions as char* (a pointer to the first character). The function receives a reference to the original data, not a copy. Write a function void greet_person(char* name) that prints "Hello, NAME!". Call it with "Alice"."""
+expected_output = "Hello, Alice!"
+starter_code    = """#include <stdio.h>
+
+// Define greet_person(char* name) here
+
+int main() {
+    greet_person("Alice");
+    return 0;
+}"""
+hints = [
+    "void greet_person(char* name) — inside, use printf() with %s to print the name.",
+    "void greet_person(char* name) {\n    printf(\"Hello, %s!\\n\", name);\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Recursive Functions"
+prompt          = """Recursion is when a function calls itself with a simpler input, heading toward a base case where it stops. The classic example is factorial: n! = n * (n-1)! with 0! = 1. Write a recursive function int factorial(int n) and call factorial(5). Print: 5! = 120"""
+expected_output = "5! = 120"
+starter_code    = """#include <stdio.h>
+
+// Define recursive factorial(int n) here
+
+int main() {
+    printf("5! = %d\n", factorial(5));
+    return 0;
+}"""
+hints = [
+    "Base case: if (n == 0) return 1; Recursive case: return n * factorial(n - 1);",
+    "int factorial(int n) {\n    if (n == 0) return 1;\n    return n * factorial(n - 1);\n}"
+]
+validation_mode = "exact_stdout"

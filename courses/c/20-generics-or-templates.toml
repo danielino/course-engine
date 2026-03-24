@@ -1,0 +1,109 @@
+id          = "20-generics-or-templates"
+title       = "Generics via Macros and void Pointers"
+description = "Write type-independent code in C using preprocessor macros and void pointer functions."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Generic MAX Macro"
+prompt          = """C has no templates or generics, but the preprocessor can create type-independent code via macros. A macro is textually substituted before compilation. #define MAX(a,b) works for int, float, double — any type that supports >. Parentheses around arguments are critical to avoid precedence bugs. Define MAX and use it with 3 and 7. Print: MAX(3, 7) = 7"""
+expected_output = "MAX(3, 7) = 7"
+starter_code    = """#include <stdio.h>
+
+#define MAX(a, b) /* your macro here */
+
+int main() {
+    int result = MAX(3, 7);
+    printf("MAX(3, 7) = %d\n", result);
+    return 0;
+}"""
+hints = [
+    "Always wrap macro arguments in parentheses to avoid operator precedence issues: #define MAX(a, b) ((a) > (b) ? (a) : (b))",
+    "#define MAX(a, b) ((a) > (b) ? (a) : (b))"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Generic SWAP Macro"
+prompt          = """A swap macro uses a temporary variable to exchange two values. With a type parameter T and helper variable, it works for any type. Swap a=3 and b=7, then print: After swap: a = 7, b = 3"""
+expected_output = "After swap: a = 7, b = 3"
+starter_code    = """#include <stdio.h>
+
+#define SWAP(T, a, b) do { T _tmp = (a); (a) = (b); (b) = _tmp; } while(0)
+
+int main() {
+    int a = 3, b = 7;
+    SWAP(int, a, b);
+    printf("After swap: a = %d, b = %d\n", a, b);
+    return 0;
+}"""
+hints = [
+    "The SWAP macro is already defined. Call SWAP(int, a, b); to swap two ints.",
+    "SWAP(int, a, b);\nprintf(\"After swap: a = %d, b = %d\\n\", a, b);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Generic MIN Macro"
+prompt          = """Like MAX, a MIN macro returns the smaller of two values and works for any comparable type. Define #define MIN(a, b) and use it to find the minimum of 10 and 5. Print: MIN(10, 5) = 5"""
+expected_output = "MIN(10, 5) = 5"
+starter_code    = """#include <stdio.h>
+
+#define MIN(a, b) /* your macro here */
+
+int main() {
+    int result = MIN(10, 5);
+    printf("MIN(10, 5) = %d\n", result);
+    return 0;
+}"""
+hints = [
+    "Similar to MAX but with < instead of >.",
+    "#define MIN(a, b) ((a) < (b) ? (a) : (b))"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "ARRAY_SIZE Macro"
+prompt          = """A common macro computes the number of elements in a stack-allocated array using sizeof. sizeof(arr) gives the total bytes; sizeof(arr[0]) gives the bytes per element; dividing gives the count. This is safer than hardcoding array sizes. Define ARRAY_SIZE and use it on a 5-element int array. Print: Array size: 5"""
+expected_output = "Array size: 5"
+starter_code    = """#include <stdio.h>
+
+#define ARRAY_SIZE(arr) /* your macro here */
+
+int main() {
+    int arr[] = {10, 20, 30, 40, 50};
+    printf("Array size: %zu\n", ARRAY_SIZE(arr));
+    return 0;
+}"""
+hints = [
+    "sizeof(arr) / sizeof(arr[0]) gives the element count for stack-allocated arrays.",
+    "#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Generic Swap with void Pointer"
+prompt          = """While macros work at the source level, void* allows runtime-generic functions. void* is a pointer to any type; memcpy() copies raw bytes. A generic swap function takes two void* pointers and the element size. Swap two ints using this approach. Print: Swapped: 7 3"""
+expected_output = "Swapped: 7 3"
+starter_code    = """#include <stdio.h>
+#include <string.h>
+
+void swap_generic(void *a, void *b, size_t size) {
+    char tmp[256];
+    // Copy size bytes of a into tmp, b into a, tmp into b
+}
+
+int main() {
+    int x = 3, y = 7;
+    swap_generic(&x, &y, sizeof(int));
+    printf("Swapped: %d %d\n", x, y);
+    return 0;
+}"""
+hints = [
+    "Use memcpy: memcpy(tmp, a, size); memcpy(a, b, size); memcpy(b, tmp, size);",
+    "void swap_generic(void *a, void *b, size_t size) {\n    char tmp[256];\n    memcpy(tmp, a, size);\n    memcpy(a, b, size);\n    memcpy(b, tmp, size);\n}"
+]
+validation_mode = "exact_stdout"

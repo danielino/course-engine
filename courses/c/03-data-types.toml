@@ -1,0 +1,97 @@
+id          = "03-data-types"
+title       = "Data Types"
+description = "Explore C's fundamental data types: integers, floats, characters, and type casting."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Integer Type"
+prompt          = """C's int type stores whole numbers, typically 32 bits on modern systems. Declare an int variable with value 42 and print: Integer: 42"""
+expected_output = "Integer: 42"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int n = 42;
+    // Print "Integer: 42"
+    return 0;
+}"""
+hints = [
+    "Use %d in printf() to format an integer.",
+    "printf(\"Integer: %d\\n\", n);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Floating-Point Type"
+prompt          = """The float (or double) type stores decimal numbers. C uses IEEE 754 floating-point format. Declare a double with the value 3.14159 and print it rounded to 2 decimal places: Float: 3.14. The %.2f format specifier controls the number of decimal digits shown."""
+expected_output = "Float: 3.14"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    double d = 3.14159;
+    // Print "Float: 3.14" using %.2f
+    return 0;
+}"""
+hints = [
+    "The format specifier %.2f means: print a float with exactly 2 digits after the decimal point.",
+    "printf(\"Float: %.2f\\n\", d);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Character Type"
+prompt          = """The char type holds a single character, stored internally as its ASCII code (an integer from 0-127). Characters are written with single quotes: 'A'. Declare a char variable with the value 'A' and print: Character: A"""
+expected_output = "Character: A"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    char c = 'A';
+    // Print "Character: A"
+    return 0;
+}"""
+hints = [
+    "Use %c in printf() to print a char as its character, not its numeric value.",
+    "printf(\"Character: %c\\n\", c);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Type Casting"
+prompt          = """Type casting converts a value from one type to another. Casting a float to int truncates (drops) the decimal part — it does NOT round. This is important to understand for integer arithmetic. Cast the double 3.7 to int and print: Cast: 3"""
+expected_output = "Cast: 3"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    double d = 3.7;
+    // Cast d to int and print "Cast: 3"
+    return 0;
+}"""
+hints = [
+    "Use (int) in front of the variable to cast it: int result = (int)d;",
+    "int result = (int)d;\nprintf(\"Cast: %d\\n\", result);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Integer Size Variants"
+prompt          = """C provides several integer sizes: short (at least 16 bits), int (at least 16 bits, usually 32), and long (at least 32 bits). Choosing the right size can save memory for large arrays. Declare and print: short: 100, int: 10000, long: 1000000."""
+expected_output = """short: 100
+int: 10000
+long: 1000000"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    short s = 100;
+    int   i = 10000;
+    long  l = 1000000;
+    // Print all three
+    return 0;
+}"""
+hints = [
+    "Use %hd for short, %d for int, and %ld for long in printf().",
+    "printf(\"short: %hd\\n\", s);\nprintf(\"int: %d\\n\", i);\nprintf(\"long: %ld\\n\", l);"
+]
+validation_mode = "exact_stdout"

@@ -1,0 +1,75 @@
+id          = "01-hello-world"
+title       = "Hello, World!"
+description = "Write your first C program and learn how to print text to the screen."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Your First Program"
+prompt          = """Every C programmer starts here. The classic 'Hello, World!' program teaches you the basic structure of a C file: the #include directive to bring in the standard I/O library, the main() function which is the entry point of every C program, and printf() to print text to the screen. Write a program that prints exactly: Hello, World!"""
+expected_output = "Hello, World!"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Print "Hello, World!" here
+    return 0;
+}"""
+hints = [
+    "Use printf() from <stdio.h> to print text. The function takes a format string as its first argument.",
+    "The exact call is: printf(\"Hello, World!\\n\"); — the \\n adds a newline at the end."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Print a Custom Message"
+prompt          = """Now that you know the basic structure, practice using printf() with a different message. Print the text: Learning C is fun! This reinforces that printf() can print any string you give it."""
+expected_output = "Learning C is fun!"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Print "Learning C is fun!"
+    return 0;
+}"""
+hints = [
+    "Copy the structure from ex_01 but change the string inside printf().",
+    "printf(\"Learning C is fun!\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Multiple Lines of Output"
+prompt          = """C programs often need to print several lines. You can either call printf() multiple times, or use \\n (newline character) within a single string. Print three lines: Line 1, Line 2, and Line 3, each on its own line."""
+expected_output = """Line 1
+Line 2
+Line 3"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Print three lines
+    return 0;
+}"""
+hints = [
+    "You can call printf() three times, once for each line, each ending with \\n.",
+    "printf(\"Line 1\\n\");\nprintf(\"Line 2\\n\");\nprintf(\"Line 3\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "printf with Format Specifiers"
+prompt          = """One of printf()'s most powerful features is format specifiers — placeholders like %s for strings and %d for integers. This lets you build dynamic output. Use printf() with %s and %d to print: Alice is 30 years old. using separate variables for the name and age."""
+expected_output = "Alice is 30 years old."
+starter_code    = """#include <stdio.h>
+
+int main() {
+    char name[] = "Alice";
+    int age = 30;
+    // Use printf with %s and %d to print the message
+    return 0;
+}"""
+hints = [
+    "printf() format specifiers: %s substitutes a string, %d substitutes an integer. Example: printf(\"%s is %d\", name, age);",
+    "printf(\"%s is %d years old.\\n\", name, age);"
+]
+validation_mode = "exact_stdout"

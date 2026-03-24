@@ -1,0 +1,109 @@
+id          = "14-generics"
+title       = "Generics"
+description = "Write functions and structs that work over many types without duplication."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Generic function"
+prompt          = """
+Write `fn largest<T: PartialOrd>(a: T, b: T) -> T` that returns the larger value.
+
+Call it with integers `4` and `9`, then with floats `2.5` and `1.1`.
+Print both results, one per line.
+
+Expected output:
+    9
+    2.5
+"""
+expected_output = "9\n2.5"
+starter_code    = """
+fn largest<T: PartialOrd>(a: T, b: T) -> T {
+    // return the larger of a and b
+    todo!()
+}
+
+fn main() {
+    println!("{}", largest(4, 9));
+    println!("{}", largest(2.5_f64, 1.1_f64));
+}
+"""
+hints = [
+    "if a > b { a } else { b }",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Generic struct"
+prompt          = """
+Define `struct Pair<T> { first: T, second: T }`.
+Create `Pair { first: \"hello\", second: \"world\" }`.
+Print:
+    hello world
+"""
+expected_output = "hello world"
+starter_code    = """
+struct Pair<T> {
+    first: T,
+    second: T,
+}
+
+fn main() {
+    let p = Pair { first: "hello", second: "world" };
+    println!("{} {}", p.first, p.second);
+}
+"""
+hints = [
+    "Generic structs work just like regular structs — the compiler infers T.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Multiple type parameters"
+prompt          = """
+Write `fn swap<T, U>(a: T, b: U) -> (U, T)` that returns the arguments in reverse order.
+
+Call it with `(1i32, \"hi\")` and print the result as:
+    hi 1
+"""
+expected_output = "hi 1"
+starter_code    = """
+fn swap<T, U>(a: T, b: U) -> (U, T) {
+    // return (b, a)
+    todo!()
+}
+
+fn main() {
+    let (s, n) = swap(1i32, "hi");
+    println!("{} {}", s, n);
+}
+"""
+hints = [
+    "(b, a)  — just reverse the tuple.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "where clause"
+prompt          = """
+Write `fn print_pair<T>(a: T, b: T) where T: std::fmt::Display` that prints:
+    <a> and <b>
+
+Call with `3` and `7`.
+
+Expected output:
+    3 and 7
+"""
+expected_output = "3 and 7"
+starter_code    = """
+fn print_pair<T>(a: T, b: T) where T: std::fmt::Display {
+    // print "a and b"
+    todo!()
+}
+
+fn main() {
+    print_pair(3, 7);
+}
+"""
+hints = [
+    "println!(\"{} and {}\", a, b);",
+]

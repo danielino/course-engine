@@ -1,0 +1,125 @@
+id          = "17-iterators"
+title       = "Iterators (Map, Filter, Reduce)"
+description = "Implement higher-order array operations in C using function pointers: map, filter, and reduce."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Map: Transform Every Element"
+prompt          = """Map applies a function to every element of an array and produces a new array of results. In higher-level languages this is built in; in C you implement it with a loop and a function pointer. Write a map() function that applies double_it() to each element of {1, 2, 3, 4, 5}. Print the result: 2 4 6 8 10"""
+expected_output = "2 4 6 8 10"
+starter_code    = """#include <stdio.h>
+
+int double_it(int x) { return x * 2; }
+
+void map(int *in, int *out, int n, int (*f)(int)) {
+    // Apply f to each element of in, store in out
+}
+
+int main() {
+    int input[]  = {1, 2, 3, 4, 5};
+    int output[5];
+    map(input, output, 5, double_it);
+    for (int i = 0; i < 5; i++) {
+        if (i > 0) printf(" ");
+        printf("%d", output[i]);
+    }
+    printf("\n");
+    return 0;
+}"""
+hints = [
+    "Inside map(), loop from 0 to n-1 and assign: out[i] = f(in[i]);",
+    "void map(int *in, int *out, int n, int (*f)(int)) {\n    for (int i = 0; i < n; i++) out[i] = f(in[i]);\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Filter: Keep Matching Elements"
+prompt          = """Filter keeps only the elements for which a predicate (a test function) returns true. The result array may be shorter than the input. Write a filter() function that keeps even numbers from {1, 2, 3, 4, 5, 6}. Print: 2 4 6"""
+expected_output = "2 4 6"
+starter_code    = """#include <stdio.h>
+
+int is_even(int x) { return x % 2 == 0; }
+
+int filter(int *in, int *out, int n, int (*pred)(int)) {
+    // Copy elements of in to out where pred returns true
+    // Return number of elements copied
+    return 0;
+}
+
+int main() {
+    int input[] = {1, 2, 3, 4, 5, 6};
+    int output[6];
+    int count = filter(input, output, 6, is_even);
+    for (int i = 0; i < count; i++) {
+        if (i > 0) printf(" ");
+        printf("%d", output[i]);
+    }
+    printf("\n");
+    return 0;
+}"""
+hints = [
+    "Use a separate counter for the output index. Only write to out[out_idx++] when pred(in[i]) is true.",
+    "int filter(int *in, int *out, int n, int (*pred)(int)) {\n    int count = 0;\n    for (int i = 0; i < n; i++) {\n        if (pred(in[i])) out[count++] = in[i];\n    }\n    return count;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Reduce: Fold to a Single Value"
+prompt          = """Reduce (also called fold) combines all elements of an array into a single value by repeatedly applying a binary function. Starting from an initial accumulator value, it applies the function to the accumulator and each element in turn. Reduce {1, 2, 3, 4, 5} with addition starting at 0. Print: Sum: 15"""
+expected_output = "Sum: 15"
+starter_code    = """#include <stdio.h>
+
+int add(int a, int b) { return a + b; }
+
+int reduce(int *arr, int n, int initial, int (*f)(int, int)) {
+    // Accumulate: acc = f(acc, arr[i]) for each element
+    return initial;
+}
+
+int main() {
+    int arr[] = {1, 2, 3, 4, 5};
+    int result = reduce(arr, 5, 0, add);
+    printf("Sum: %d\n", result);
+    return 0;
+}"""
+hints = [
+    "int acc = initial; then loop: acc = f(acc, arr[i]); return acc;",
+    "int reduce(int *arr, int n, int initial, int (*f)(int, int)) {\n    int acc = initial;\n    for (int i = 0; i < n; i++) acc = f(acc, arr[i]);\n    return acc;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Chaining Map and Filter"
+prompt          = """Combining map and filter mimics the style of functional programming pipelines. First map, then filter the result. Double each element of {1, 2, 3, 4, 5} to get {2, 4, 6, 8, 10}, then keep only elements greater than 6. Print: 8 10"""
+expected_output = "8 10"
+starter_code    = """#include <stdio.h>
+
+int double_it(int x) { return x * 2; }
+int greater_than_6(int x) { return x > 6; }
+
+void map(int *in, int *out, int n, int (*f)(int)) {
+    for (int i = 0; i < n; i++) out[i] = f(in[i]);
+}
+
+int filter(int *in, int *out, int n, int (*pred)(int)) {
+    int count = 0;
+    for (int i = 0; i < n; i++)
+        if (pred(in[i])) out[count++] = in[i];
+    return count;
+}
+
+int main() {
+    int input[] = {1, 2, 3, 4, 5};
+    int mapped[5];
+    int filtered[5];
+    // Apply map then filter, print result
+    return 0;
+}"""
+hints = [
+    "First call map(input, mapped, 5, double_it); then int count = filter(mapped, filtered, 5, greater_than_6);",
+    "map(input, mapped, 5, double_it);\nint count = filter(mapped, filtered, 5, greater_than_6);\nfor (int i = 0; i < count; i++) {\n    if (i > 0) printf(\" \");\n    printf(\"%d\", filtered[i]);\n}\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"

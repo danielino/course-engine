@@ -1,0 +1,126 @@
+id          = "19-enums-or-sum-types"
+title       = "Enums and Tagged Unions"
+description = "Use enums for named constants and switch dispatch, and tagged unions to hold variant data types."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic Enum"
+prompt          = """An enum (enumeration) assigns human-readable names to integer constants. This makes code self-documenting — NORTH is clearer than 0. C enums start at 0 by default. Define enum Direction {NORTH, SOUTH, EAST, WEST}. Set a variable to NORTH and print its name: Direction: North"""
+expected_output = "Direction: North"
+starter_code    = """#include <stdio.h>
+
+typedef enum {
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST
+} Direction;
+
+int main() {
+    Direction d = NORTH;
+    // Use a switch or if to print the name
+    return 0;
+}"""
+hints = [
+    "Use a switch(d) with a case for each direction, or an array of strings indexed by the enum value.",
+    "char *names[] = {\"North\", \"South\", \"East\", \"West\"};\nprintf(\"Direction: %s\\n\", names[d]);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Enum with Switch Dispatch"
+prompt          = """A switch statement is the natural companion to an enum — each case handles one enum value. This pattern is used for state machines, command dispatch, and classification. Define enum Weekday and check MONDAY and SATURDAY: weekdays (Mon-Fri) print "Weekday", weekends (Sat-Sun) print "Weekend". Print:
+Monday: Weekday
+Saturday: Weekend"""
+expected_output = """Monday: Weekday
+Saturday: Weekend"""
+starter_code    = """#include <stdio.h>
+
+typedef enum {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+} Weekday;
+
+const char *day_type(Weekday d) {
+    switch (d) {
+        // Handle weekday and weekend cases
+        default: return "Unknown";
+    }
+}
+
+int main() {
+    printf("Monday: %s\n",   day_type(MONDAY));
+    printf("Saturday: %s\n", day_type(SATURDAY));
+    return 0;
+}"""
+hints = [
+    "Group the weekday cases: case MONDAY: case TUESDAY: ... case FRIDAY: return \"Weekday\"; Then case SATURDAY: case SUNDAY: return \"Weekend\";",
+    "case MONDAY: case TUESDAY: case WEDNESDAY: case THURSDAY: case FRIDAY: return \"Weekday\";\ncase SATURDAY: case SUNDAY: return \"Weekend\";"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Enum with Custom Values"
+prompt          = """Enum constants can be assigned specific integer values, which is useful when they must match external protocols (like HTTP status codes) or hardware registers. Define enum HttpStatus with OK=200, NOT_FOUND=404, SERVER_ERROR=500. Print:
+Status: 200
+Not Found: 404"""
+expected_output = """Status: 200
+Not Found: 404"""
+starter_code    = """#include <stdio.h>
+
+typedef enum {
+    HTTP_OK           = 200,
+    HTTP_NOT_FOUND    = 404,
+    HTTP_SERVER_ERROR = 500
+} HttpStatus;
+
+int main() {
+    HttpStatus s1 = HTTP_OK;
+    HttpStatus s2 = HTTP_NOT_FOUND;
+    // Print "Status: 200" and "Not Found: 404"
+    return 0;
+}"""
+hints = [
+    "Since enums with custom values are still integers, use %d to print them.",
+    "printf(\"Status: %d\\n\", s1);\nprintf(\"Not Found: %d\\n\", s2);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Tagged Union"
+prompt          = """A tagged union (or discriminated union) pairs an enum 'tag' with a union of data variants. The tag tells you which field of the union is currently valid. This is C's way of expressing 'this value is either an int OR a float'. Create a Value struct with an INT_T/FLOAT_T tag and a union. Store and print an int 42 and a float 3.14:
+Integer: 42
+Float: 3.14"""
+expected_output = """Integer: 42
+Float: 3.14"""
+starter_code    = """#include <stdio.h>
+
+typedef struct {
+    enum { INT_T, FLOAT_T } type;
+    union {
+        int   i;
+        float f;
+    } data;
+} Value;
+
+void print_value(Value v) {
+    // Use v.type to decide which field to print
+}
+
+int main() {
+    Value v1, v2;
+    v1.type   = INT_T;
+    v1.data.i = 42;
+    v2.type   = FLOAT_T;
+    v2.data.f = 3.14f;
+    print_value(v1);
+    print_value(v2);
+    return 0;
+}"""
+hints = [
+    "switch (v.type) { case INT_T: printf(\"Integer: %d\\n\", v.data.i); break; case FLOAT_T: printf(\"Float: %.2f\\n\", v.data.f); break; }",
+    "void print_value(Value v) {\n    switch (v.type) {\n        case INT_T:   printf(\"Integer: %d\\n\", v.data.i); break;\n        case FLOAT_T: printf(\"Float: %.2f\\n\", v.data.f); break;\n    }\n}"
+]
+validation_mode = "exact_stdout"

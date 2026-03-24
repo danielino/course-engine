@@ -1,0 +1,106 @@
+id          = "12-error-handling"
+title       = "Error Handling"
+description = "Handle errors in C with return codes, guard clauses, errno, and enum error types."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Error Codes via Return Values"
+prompt          = """C functions signal errors by returning a special value — commonly -1 or NULL for failure, and a valid value on success. This is the universal C error-handling pattern. Write a function int safe_value() that returns 42 on success. In main, check the return value: if >= 0, print "Success: 42"."""
+expected_output = "Success: 42"
+starter_code    = """#include <stdio.h>
+
+int safe_value() {
+    // Return 42 to signal success
+    return 42;
+}
+
+int main() {
+    int result = safe_value();
+    // Check result and print "Success: 42"
+    return 0;
+}"""
+hints = [
+    "Check: if (result >= 0) { printf(\"Success: %d\\n\", result); } else { printf(\"Error\\n\"); }",
+    "if (result >= 0) {\n    printf(\"Success: %d\\n\", result);\n} else {\n    printf(\"Error\\n\");\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Guard Against Division by Zero"
+prompt          = """Dividing by zero causes undefined behavior in C (or a crash). Always validate inputs before using them. Write a function int safe_divide(int a, int b) that returns -1 if b is 0, otherwise returns a/b. Test it with safe_divide(10, 0) and print: Error: division by zero"""
+expected_output = "Error: division by zero"
+starter_code    = """#include <stdio.h>
+
+int safe_divide(int a, int b) {
+    // Return -1 if b is 0, otherwise return a / b
+    return 0;
+}
+
+int main() {
+    int result = safe_divide(10, 0);
+    if (result == -1) {
+        printf("Error: division by zero\n");
+    } else {
+        printf("Result: %d\n", result);
+    }
+    return 0;
+}"""
+hints = [
+    "if (b == 0) return -1; else return a / b;",
+    "int safe_divide(int a, int b) {\n    if (b == 0) return -1;\n    return a / b;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Handling NULL from fopen"
+prompt          = """Functions like fopen() return NULL when they fail. Always check for NULL before using a pointer. Attempt to open a file named "nonexistent_file_xyz.txt" for reading. If fopen returns NULL, print: Error: file not found"""
+expected_output = "Error: file not found"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    FILE *f = fopen("nonexistent_file_xyz.txt", "r");
+    // Check if f is NULL
+    return 0;
+}"""
+hints = [
+    "if (f == NULL) { printf(\"Error: file not found\\n\"); } else { fclose(f); }",
+    "if (f == NULL) {\n    printf(\"Error: file not found\\n\");\n} else {\n    fclose(f);\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Enum Error Codes"
+prompt          = """Using named error codes (via enum) makes error handling self-documenting. Rather than magic numbers like -1 or -2, you use descriptive names. Define an enum with ERROR_NONE=0 and ERROR_INVALID_INPUT=1. Write a function that returns ERROR_INVALID_INPUT when given a negative number. Use a switch to print: Error: invalid input"""
+expected_output = "Error: invalid input"
+starter_code    = """#include <stdio.h>
+
+typedef enum {
+    ERROR_NONE = 0,
+    ERROR_INVALID_INPUT = 1
+} ErrorCode;
+
+ErrorCode validate(int n) {
+    // Return ERROR_INVALID_INPUT if n < 0, else ERROR_NONE
+    return ERROR_NONE;
+}
+
+int main() {
+    ErrorCode err = validate(-5);
+    switch (err) {
+        case ERROR_NONE:
+            printf("OK\n");
+            break;
+        case ERROR_INVALID_INPUT:
+            printf("Error: invalid input\n");
+            break;
+    }
+    return 0;
+}"""
+hints = [
+    "In validate(), add: if (n < 0) return ERROR_INVALID_INPUT;",
+    "ErrorCode validate(int n) {\n    if (n < 0) return ERROR_INVALID_INPUT;\n    return ERROR_NONE;\n}"
+]
+validation_mode = "exact_stdout"

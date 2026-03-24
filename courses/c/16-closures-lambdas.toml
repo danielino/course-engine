@@ -1,0 +1,112 @@
+id          = "16-closures-lambdas"
+title       = "Function Pointers"
+description = "Use function pointers as first-class values: assign, pass, and store them in arrays."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic Function Pointer"
+prompt          = """C has no anonymous functions (closures), but function pointers let you treat functions as values. A function pointer stores the address of a function and lets you call it indirectly. This is the foundation of callbacks, dispatch tables, and polymorphism in C. Declare a function pointer to int square(int n), then call it with 5. Print: Result: 25"""
+expected_output = "Result: 25"
+starter_code    = """#include <stdio.h>
+
+int square(int n) {
+    return n * n;
+}
+
+int main() {
+    // Declare a function pointer fp that points to square
+    // Call fp(5) and print "Result: 25"
+    return 0;
+}"""
+hints = [
+    "The syntax for a function pointer: int (*fp)(int) = square; Then call it: fp(5).",
+    "int (*fp)(int) = square;\nprintf(\"Result: %d\\n\", fp(5));"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Passing Functions as Arguments"
+prompt          = """Passing a function pointer as a parameter lets you write generic code that delegates its core behavior to the caller — this is the callback pattern. Write a function apply(int (*f)(int), int x) that returns f(x). Call it with both a double() and a square() function. Print:
+Double of 5: 10
+Square of 5: 25"""
+expected_output = """Double of 5: 10
+Square of 5: 25"""
+starter_code    = """#include <stdio.h>
+
+int double_it(int n) { return n * 2; }
+int square(int n)    { return n * n; }
+
+int apply(int (*f)(int), int x) {
+    // Call f with x and return the result
+    return 0;
+}
+
+int main() {
+    printf("Double of 5: %d\n", apply(double_it, 5));
+    printf("Square of 5: %d\n", apply(square, 5));
+    return 0;
+}"""
+hints = [
+    "Inside apply(), just call f(x) and return the result.",
+    "int apply(int (*f)(int), int x) {\n    return f(x);\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Array of Function Pointers"
+prompt          = """An array of function pointers acts as a dispatch table — index into it to call the right function. This replaces long if/else or switch chains and is the basis of vtables (virtual function tables) used in C-based OOP. Create an array holding add, sub, and mul. Call each with (3, 4). Print:
+add: 7
+sub: -1
+mul: 12"""
+expected_output = """add: 7
+sub: -1
+mul: 12"""
+starter_code    = """#include <stdio.h>
+
+int add(int a, int b) { return a + b; }
+int sub(int a, int b) { return a - b; }
+int mul(int a, int b) { return a * b; }
+
+int main() {
+    // Declare array of function pointers: int (*ops[3])(int, int)
+    // Initialize with add, sub, mul
+    // Print results for (3, 4)
+    return 0;
+}"""
+hints = [
+    "int (*ops[3])(int, int) = {add, sub, mul}; declares an array of three function pointers. Call ops[0](3, 4) etc.",
+    "int (*ops[3])(int, int) = {add, sub, mul};\nchar *names[] = {\"add\", \"sub\", \"mul\"};\nfor (int i = 0; i < 3; i++) {\n    printf(\"%s: %d\\n\", names[i], ops[i](3, 4));\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Sorting with a Callback"
+prompt          = """qsort() from <stdlib.h> uses a function pointer as its comparator. By swapping in a different compare function you can sort ascending or descending without changing qsort itself. Sort {5, 3, 1, 4, 2} in ascending order using qsort with a compare callback. Print: 1 2 3 4 5"""
+expected_output = "1 2 3 4 5"
+starter_code    = """#include <stdio.h>
+#include <stdlib.h>
+
+int compare_asc(const void *a, const void *b) {
+    // Return negative if *a < *b
+    return 0;
+}
+
+int main() {
+    int arr[] = {5, 3, 1, 4, 2};
+    int n = 5;
+    qsort(arr, n, sizeof(int), compare_asc);
+    for (int i = 0; i < n; i++) {
+        if (i > 0) printf(" ");
+        printf("%d", arr[i]);
+    }
+    printf("\n");
+    return 0;
+}"""
+hints = [
+    "int compare_asc(const void *a, const void *b) { return *(int*)a - *(int*)b; }",
+    "int compare_asc(const void *a, const void *b) {\n    return *(int*)a - *(int*)b;\n}"
+]
+validation_mode = "exact_stdout"

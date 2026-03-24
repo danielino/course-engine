@@ -1,0 +1,117 @@
+id          = "11-collections-set"
+title       = "Sets (Arrays as Sets)"
+description = "Implement set operations in C using arrays: membership test, deduplication, union, and intersection."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Membership Test"
+prompt          = """A set is a collection with no duplicates. In C, we implement sets as sorted or unsorted arrays with explicit membership checks. The membership test (is element X in set S?) is a linear scan. Check if 3 is in the array {1, 2, 3, 4, 5} and print: 3 is in set: yes"""
+expected_output = "3 is in set: yes"
+starter_code    = """#include <stdio.h>
+
+int contains(int *set, int size, int target) {
+    // Return 1 if target is in set, 0 otherwise
+    return 0;
+}
+
+int main() {
+    int set[] = {1, 2, 3, 4, 5};
+    int size = 5;
+    int target = 3;
+    if (contains(set, size, target)) {
+        printf("3 is in set: yes\n");
+    } else {
+        printf("3 is in set: no\n");
+    }
+    return 0;
+}"""
+hints = [
+    "In the contains() function, loop through the array. If arr[i] == target, return 1. After the loop, return 0.",
+    "for (int i = 0; i < size; i++) {\n    if (set[i] == target) return 1;\n}\nreturn 0;"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Building a Set (Deduplication)"
+prompt          = """To build a set from data that may have duplicates, add each element only if it's not already present. This is the core of set construction. Given the input {1, 2, 2, 3, 3, 4}, build a set with unique elements and print: Unique count: 4"""
+expected_output = "Unique count: 4"
+starter_code    = """#include <stdio.h>
+
+int contains(int *set, int size, int val) {
+    for (int i = 0; i < size; i++)
+        if (set[i] == val) return 1;
+    return 0;
+}
+
+int main() {
+    int input[] = {1, 2, 2, 3, 3, 4};
+    int input_size = 6;
+    int unique[6];
+    int unique_size = 0;
+    // Add each input element to unique only if not already present
+    printf("Unique count: %d\n", unique_size);
+    return 0;
+}"""
+hints = [
+    "For each element in input, call contains(unique, unique_size, input[i]). If it returns 0, add it: unique[unique_size++] = input[i];",
+    "for (int i = 0; i < input_size; i++) {\n    if (!contains(unique, unique_size, input[i])) {\n        unique[unique_size++] = input[i];\n    }\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Set Union"
+prompt          = """The union of two sets contains all elements from both sets, with no duplicates. Start with set A = {1, 2, 3} and add all elements of set B = {2, 3, 4, 5} that aren't already in the result. Print the union sorted: Union: 1 2 3 4 5"""
+expected_output = "Union: 1 2 3 4 5"
+starter_code    = """#include <stdio.h>
+
+int contains(int *set, int size, int val) {
+    for (int i = 0; i < size; i++)
+        if (set[i] == val) return 1;
+    return 0;
+}
+
+int main() {
+    int a[] = {1, 2, 3};
+    int b[] = {2, 3, 4, 5};
+    int result[10];
+    int result_size = 0;
+    // Copy all of a into result
+    // Then add elements of b not already in result
+    // Print "Union: 1 2 3 4 5"
+    return 0;
+}"""
+hints = [
+    "First copy all elements of a into result. Then loop through b and use contains() to skip duplicates. Since inputs are already sorted, the result will be sorted.",
+    "for (int i = 0; i < 3; i++) result[result_size++] = a[i];\nfor (int i = 0; i < 4; i++) {\n    if (!contains(result, result_size, b[i])) result[result_size++] = b[i];\n}\nprintf(\"Union:\");\nfor (int i = 0; i < result_size; i++) printf(\" %d\", result[i]);\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Set Intersection"
+prompt          = """The intersection of two sets contains only elements that appear in BOTH sets. Loop through one set and check if each element also exists in the other. Compute the intersection of {1, 2, 3, 4} and {2, 4, 6} and print: Intersection: 2 4"""
+expected_output = "Intersection: 2 4"
+starter_code    = """#include <stdio.h>
+
+int contains(int *set, int size, int val) {
+    for (int i = 0; i < size; i++)
+        if (set[i] == val) return 1;
+    return 0;
+}
+
+int main() {
+    int a[] = {1, 2, 3, 4};
+    int b[] = {2, 4, 6};
+    int result[10];
+    int result_size = 0;
+    // Build intersection
+    // Print "Intersection: 2 4"
+    return 0;
+}"""
+hints = [
+    "Loop through a. For each element, if contains(b, 3, a[i]) is true, add it to result.",
+    "for (int i = 0; i < 4; i++) {\n    if (contains(b, 3, a[i])) result[result_size++] = a[i];\n}\nprintf(\"Intersection:\");\nfor (int i = 0; i < result_size; i++) printf(\" %d\", result[i]);\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"

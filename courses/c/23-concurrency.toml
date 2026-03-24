@@ -1,0 +1,129 @@
+id          = "23-concurrency"
+title       = "Concurrency with pthreads"
+description = "Create and join POSIX threads, pass data, and use mutexes to protect shared state."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Creating and Joining a Thread"
+prompt          = """POSIX threads (pthreads) let a program run multiple execution streams. pthread_create() starts a thread; pthread_join() waits for it to finish. The thread function takes and returns void*. The compiler flags already include -lpthread. Create a thread that sets a shared int result = 42. Join it and print from main: Result: 42"""
+expected_output = "Result: 42"
+starter_code    = """#include <stdio.h>
+#include <pthread.h>
+
+int result = 0;
+
+void *thread_func(void *arg) {
+    result = 42;
+    return NULL;
+}
+
+int main() {
+    pthread_t t;
+    pthread_create(&t, NULL, thread_func, NULL);
+    pthread_join(t, NULL);
+    printf("Result: %d\n", result);
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. pthread_create starts the thread; pthread_join waits until it finishes before we print.",
+    "The code is correct as written. pthread_join ensures result is set before printf runs."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Passing Data to a Thread"
+prompt          = """Threads receive data through the void* argument passed to pthread_create. Typically you pass a pointer to a variable or struct. The thread doubles the input value and the main thread reads the result after joining. Pass an int 10 to a thread that doubles it and writes the result back. Print: Thread result: 20"""
+expected_output = "Thread result: 20"
+starter_code    = """#include <stdio.h>
+#include <pthread.h>
+
+void *double_value(void *arg) {
+    int *n = (int *)arg;
+    *n = *n * 2;
+    return NULL;
+}
+
+int main() {
+    int value = 10;
+    pthread_t t;
+    pthread_create(&t, NULL, double_value, &value);
+    pthread_join(t, NULL);
+    printf("Thread result: %d\n", value);
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. The thread receives a pointer to value, doubles it in place. After join, main prints the updated value.",
+    "pthread_create(&t, NULL, double_value, &value); passes &value. The thread modifies *n, which is value."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Mutex-Protected Counter"
+prompt          = """When multiple threads modify shared data, race conditions can corrupt the result. A mutex (mutual exclusion lock) ensures only one thread modifies the data at a time. Three threads each increment a shared counter once using a mutex. After all threads finish, print: Final counter: 3"""
+expected_output = "Final counter: 3"
+starter_code    = """#include <stdio.h>
+#include <pthread.h>
+
+int counter = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void *increment(void *arg) {
+    pthread_mutex_lock(&mutex);
+    counter++;
+    pthread_mutex_unlock(&mutex);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[3];
+    for (int i = 0; i < 3; i++)
+        pthread_create(&threads[i], NULL, increment, NULL);
+    for (int i = 0; i < 3; i++)
+        pthread_join(threads[i], NULL);
+    printf("Final counter: %d\n", counter);
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. The mutex prevents two threads from incrementing simultaneously, guaranteeing the final count is exactly 3.",
+    "pthread_mutex_lock and pthread_mutex_unlock bracket the critical section (counter++)."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Summing Thread Indices"
+prompt          = """Each thread can receive its own index and contribute to a shared total. Five threads add their indices (0 through 4) to a shared sum protected by a mutex. After all finish, the sum is 0+1+2+3+4 = 10. Print: Total sum: 10"""
+expected_output = "Total sum: 10"
+starter_code    = """#include <stdio.h>
+#include <pthread.h>
+
+int shared_sum = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void *add_index(void *arg) {
+    int idx = *(int *)arg;
+    pthread_mutex_lock(&mutex);
+    shared_sum += idx;
+    pthread_mutex_unlock(&mutex);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[5];
+    int indices[5];
+    for (int i = 0; i < 5; i++) {
+        indices[i] = i;
+        pthread_create(&threads[i], NULL, add_index, &indices[i]);
+    }
+    for (int i = 0; i < 5; i++)
+        pthread_join(threads[i], NULL);
+    printf("Total sum: %d\n", shared_sum);
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. Each thread adds its index to shared_sum under mutex protection. After joining all threads, the sum is deterministically 10.",
+    "0+1+2+3+4 = 10. The mutex ensures no two threads update shared_sum at the same time."
+]
+validation_mode = "exact_stdout"

@@ -1,0 +1,116 @@
+id          = "07-slices-and-strings"
+title       = "Slices and Strings"
+description = "Understand the difference between String and &str, work with string slices, and manipulate text with std methods."
+
+[[exercises]]
+id              = "ex_01"
+title           = "&str vs String"
+prompt          = """
+Declare a `&str` literal `"hello"` and a `String::from("world")`.
+Concatenate them with a space in between and print the result.
+
+Expected output:
+    hello world
+"""
+expected_output = "hello world"
+starter_code    = """
+fn main() {
+    let s1: &str = "hello";
+    let s2: String = String::from("world");
+    // concatenate and print
+}
+"""
+hints = [
+    "Use format!(\"{} {}\", s1, s2) to build a new String.",
+    "You cannot use + directly between &str and String without a reference; format! is simpler.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "String slices"
+prompt          = """
+Given `let s = String::from(\"hello world\")`, take a slice of the first 5 characters and print it.
+
+Expected output:
+    hello
+"""
+expected_output = "hello"
+starter_code    = """
+fn main() {
+    let s = String::from("hello world");
+    // slice the first 5 characters and print
+}
+"""
+hints = [
+    "String slices use byte indices: &s[0..5]",
+    "let hello = &s[0..5]; println!(\"{}\", hello);",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "String methods"
+prompt          = """
+Take the string `"  Rust is great!  "`.
+Trim the surrounding whitespace, convert to uppercase, and print.
+
+Expected output:
+    RUST IS GREAT!
+"""
+expected_output = "RUST IS GREAT!"
+starter_code    = """
+fn main() {
+    let s = "  Rust is great!  ";
+    // trim, uppercase, print
+}
+"""
+hints = [
+    "s.trim() returns a &str with whitespace removed from both ends.",
+    "Chain .to_uppercase() on the result of .trim().",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Split and index"
+prompt          = """
+Split `"one,two,three"` on `','`.
+Collect into a `Vec<&str>` and print the second element (index 1).
+
+Expected output:
+    two
+"""
+expected_output = "two"
+starter_code    = """
+fn main() {
+    let s = "one,two,three";
+    // split, collect, print index 1
+}
+"""
+hints = [
+    "s.split(',').collect::<Vec<&str>>()",
+    "Access with parts[1].",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "format!"
+prompt          = """
+Use `format!` to build the string `"Name: Alice, Age: 30"` from separate variables:
+    let name = "Alice";
+    let age  = 30;
+
+Print the result.
+
+Expected output:
+    Name: Alice, Age: 30
+"""
+expected_output = "Name: Alice, Age: 30"
+starter_code    = """
+fn main() {
+    let name = "Alice";
+    let age  = 30;
+    // use format! and print
+}
+"""
+hints = [
+    "let msg = format!(\"Name: {}, Age: {}\", name, age);",
+]

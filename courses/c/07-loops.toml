@@ -1,0 +1,102 @@
+id          = "07-loops"
+title       = "Loops"
+description = "Repeat code with for and while loops, and control flow with break and continue."
+
+[[exercises]]
+id              = "ex_01"
+title           = "for Loop: Counting 1 to 5"
+prompt          = """A for loop repeats a block of code a known number of times. It has three parts: initialization, condition, and update — all in one line. This is the most common loop in C. Print the numbers 1 through 5 separated by spaces: 1 2 3 4 5"""
+expected_output = "1 2 3 4 5"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Use a for loop to print 1 through 5 space-separated
+    return 0;
+}"""
+hints = [
+    "for (int i = 1; i <= 5; i++) — starts at 1, continues while i <= 5, increments by 1 each time. Print a space between numbers but not after the last one.",
+    "for (int i = 1; i <= 5; i++) {\n    if (i > 1) printf(\" \");\n    printf(\"%d\", i);\n}\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "while Loop: Countdown"
+prompt          = """A while loop keeps running as long as its condition is true. It's best when you don't know in advance how many iterations you need. Print a countdown from 3 to 1, then "Blastoff!":
+3
+2
+1
+Blastoff!"""
+expected_output = """3
+2
+1
+Blastoff!"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    int count = 3;
+    // while count > 0, print count and decrement
+    // After loop, print "Blastoff!"
+    return 0;
+}"""
+hints = [
+    "while (count > 0) { printf(\"%d\\n\", count); count--; } — each iteration prints count then decrements it.",
+    "while (count > 0) {\n    printf(\"%d\\n\", count);\n    count--;\n}\nprintf(\"Blastoff!\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Breaking Out of a Loop"
+prompt          = """The break statement immediately exits a loop. This is useful when you've found what you're looking for and don't need to continue iterating. Run a for loop from 1 to 10 but break when i equals 4. Print the numbers before breaking: 1 2 3"""
+expected_output = "1 2 3"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Loop from 1 to 10, break at 4, print numbers before break
+    return 0;
+}"""
+hints = [
+    "Inside the loop, add: if (i == 4) break; before or instead of printing.",
+    "for (int i = 1; i <= 10; i++) {\n    if (i == 4) break;\n    if (i > 1) printf(\" \");\n    printf(\"%d\", i);\n}\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Skipping with continue"
+prompt          = """The continue statement skips the rest of the current iteration and jumps to the next one. It's useful for filtering — process only items that meet a condition. Loop from 1 to 10 and use continue to skip odd numbers. Print only the even numbers: 2 4 6 8 10"""
+expected_output = "2 4 6 8 10"
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Loop 1-10, skip odd numbers with continue, print evens
+    return 0;
+}"""
+hints = [
+    "A number is odd if n % 2 != 0. If that's true, call continue to skip to the next iteration.",
+    "for (int i = 1; i <= 10; i++) {\n    if (i % 2 != 0) continue;\n    if (i > 2) printf(\" \");\n    printf(\"%d\", i);\n}\nprintf(\"\\n\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Nested Loops: Multiplication Table"
+prompt          = """Nested loops — a loop inside another loop — are used for 2D iteration: grids, matrices, and tables. The inner loop runs completely for each iteration of the outer loop. Print a 3x3 multiplication table:
+1 2 3
+2 4 6
+3 6 9"""
+expected_output = """1 2 3
+2 4 6
+3 6 9"""
+starter_code    = """#include <stdio.h>
+
+int main() {
+    // Use nested for loops to print a 3x3 multiplication table
+    return 0;
+}"""
+hints = [
+    "Use two loops: for (int i = 1; i <= 3; i++) and inside for (int j = 1; j <= 3; j++). Print i*j with a space between values and a newline after each row.",
+    "for (int i = 1; i <= 3; i++) {\n    for (int j = 1; j <= 3; j++) {\n        if (j > 1) printf(\" \");\n        printf(\"%d\", i * j);\n    }\n    printf(\"\\n\");\n}"
+]
+validation_mode = "exact_stdout"

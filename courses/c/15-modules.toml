@@ -1,0 +1,109 @@
+id          = "15-modules"
+title       = "Standard Library Modules"
+description = "Use C's standard headers: math.h, stdlib.h, and ctype.h for common operations."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Square Root with math.h"
+prompt          = """The <math.h> header provides mathematical functions: sqrt, pow, sin, cos, log, and more. These are not built into the language — you include the header and link with -lm. The compiler flags already include -lm for you. Compute sqrt(25.0) and print: sqrt(25) = 5.00"""
+expected_output = "sqrt(25) = 5.00"
+starter_code    = """#include <stdio.h>
+#include <math.h>
+
+int main() {
+    double result = sqrt(25.0);
+    // Print "sqrt(25) = 5.00"
+    return 0;
+}"""
+hints = [
+    "sqrt() returns a double. Use %.2f to format it with two decimal places.",
+    "printf(\"sqrt(25) = %.2f\\n\", result);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "Powers with math.h"
+prompt          = """pow(base, exponent) from <math.h> computes base raised to the power of exponent. It always returns a double. Compute 2 raised to the power 10 and print: 2^10 = 1024"""
+expected_output = "2^10 = 1024"
+starter_code    = """#include <stdio.h>
+#include <math.h>
+
+int main() {
+    double result = pow(2.0, 10.0);
+    // Print "2^10 = 1024"
+    return 0;
+}"""
+hints = [
+    "Cast the result to int for printing, or use %.0f to print without decimal places.",
+    "printf(\"2^10 = %d\\n\", (int)result);"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Sorting with qsort"
+prompt          = """qsort() from <stdlib.h> sorts any array. You provide: the array, the number of elements, the element size, and a comparison function. The compare function returns negative, zero, or positive to tell qsort the relative order. Sort {5, 2, 8, 1, 9} and print: Sorted: 1 2 5 8 9"""
+expected_output = "Sorted: 1 2 5 8 9"
+starter_code    = """#include <stdio.h>
+#include <stdlib.h>
+
+int compare_ints(const void *a, const void *b) {
+    // Return negative if *a < *b, 0 if equal, positive if *a > *b
+    return 0;
+}
+
+int main() {
+    int arr[] = {5, 2, 8, 1, 9};
+    int n = 5;
+    qsort(arr, n, sizeof(int), compare_ints);
+    printf("Sorted:");
+    for (int i = 0; i < n; i++) printf(" %d", arr[i]);
+    printf("\n");
+    return 0;
+}"""
+hints = [
+    "In compare_ints, cast the void pointers: int x = *(int*)a; int y = *(int*)b; return x - y;",
+    "int compare_ints(const void *a, const void *b) {\n    return *(int*)a - *(int*)b;\n}"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Character Classification with ctype.h"
+prompt          = """<ctype.h> provides functions to test and convert single characters: isdigit(), isalpha(), isspace(), isupper(), islower(), etc. They return non-zero (true) for a match. Check if '5' is a digit and if 'a' is alphabetic, and print:
+isdigit('5'): 1
+isalpha('a'): 1"""
+expected_output = """isdigit('5'): 1
+isalpha('a'): 1"""
+starter_code    = """#include <stdio.h>
+#include <ctype.h>
+
+int main() {
+    // Print isdigit and isalpha results as 1 or 0
+    return 0;
+}"""
+hints = [
+    "isdigit() and isalpha() return non-zero for true. Use !! to normalize to exactly 1: !!isdigit('5').",
+    "printf(\"isdigit('5'): %d\\n\", !!isdigit('5'));\nprintf(\"isalpha('a'): %d\\n\", !!isalpha('a'));"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_05"
+title           = "String to Integer with atoi"
+prompt          = """atoi() (ASCII to integer) from <stdlib.h> converts a numeric string to an int. It stops at the first non-digit character. This is commonly used to parse command-line arguments. Convert the string "42" to an integer and print: Number: 42"""
+expected_output = "Number: 42"
+starter_code    = """#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    char s[] = "42";
+    // Convert s to int using atoi and print "Number: 42"
+    return 0;
+}"""
+hints = [
+    "int n = atoi(s); converts the string to an integer.",
+    "int n = atoi(s);\nprintf(\"Number: %d\\n\", n);"
+]
+validation_mode = "exact_stdout"

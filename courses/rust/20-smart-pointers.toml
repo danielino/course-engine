@@ -1,0 +1,143 @@
+id          = "20-smart-pointers"
+title       = "Smart Pointers — Box, Rc, RefCell"
+description = "Put values on the heap with Box, share ownership with Rc, and achieve interior mutability with RefCell."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Box<T>"
+prompt          = """
+Allocate `Box::new(42i32)`.
+Dereference it with `*` and print the value.
+
+Expected output:
+    42
+"""
+expected_output = "42"
+starter_code    = """
+fn main() {
+    let b = Box::new(42i32);
+    println!("{}", *b);
+}
+"""
+hints = [
+    "*b dereferences the Box to get the inner i32.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Recursive type with Box"
+prompt          = """
+Define:
+    enum List { Cons(i32, Box<List>), Nil }
+
+Build `Cons(1, Box::new(Cons(2, Box::new(Nil))))`.
+Write a recursive function `sum(list: &List) -> i32` and print the sum.
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+enum List {
+    Cons(i32, Box<List>),
+    Nil,
+}
+
+fn sum(list: &List) -> i32 {
+    match list {
+        List::Cons(val, rest) => val + sum(rest),
+        List::Nil => 0,
+    }
+}
+
+fn main() {
+    let list = List::Cons(1, Box::new(List::Cons(2, Box::new(List::Nil))));
+    println!("{}", sum(&list));
+}
+"""
+hints = [
+    "Box<T> is required here because without it the enum would be infinitely sized.",
+    "The recursive sum function matches on Cons and Nil — it is already complete in the starter code.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Rc<T> — shared ownership"
+prompt          = """
+Create `Rc::new(String::from(\"shared\"))`.
+Clone the Rc twice so there are three owners total.
+Print the reference count using `Rc::strong_count`.
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+use std::rc::Rc;
+
+fn main() {
+    let a = Rc::new(String::from("shared"));
+    // clone twice
+    println!("{}", Rc::strong_count(&a));
+}
+"""
+hints = [
+    "let b = Rc::clone(&a); let c = Rc::clone(&a);",
+    "Rc::strong_count(&a) returns the number of Rc pointers to the same allocation.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "RefCell<T> — interior mutability"
+prompt          = """
+Wrap a `Vec<i32>` in a `RefCell`.
+Borrow it mutably with `borrow_mut()` and push `99`.
+Then borrow it immutably with `borrow()` and print the first element.
+
+Expected output:
+    99
+"""
+expected_output = "99"
+starter_code    = """
+use std::cell::RefCell;
+
+fn main() {
+    let data = RefCell::new(Vec::<i32>::new());
+    // borrow mutably and push 99
+    // borrow immutably and print first element
+}
+"""
+hints = [
+    "data.borrow_mut().push(99);",
+    "println!(\"{}\", data.borrow()[0]);",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Rc<RefCell<T>> — shared mutable state"
+prompt          = """
+Create an `Rc<RefCell<i32>>` counter with value `0`.
+Clone the Rc to get a second owner.
+Increment via the first owner, then via the second.
+Print the final value.
+
+Expected output:
+    2
+"""
+expected_output = "2"
+starter_code    = """
+use std::rc::Rc;
+use std::cell::RefCell;
+
+fn main() {
+    let counter = Rc::new(RefCell::new(0i32));
+    let counter2 = Rc::clone(&counter);
+    // increment via counter
+    // increment via counter2
+    println!("{}", *counter.borrow());
+}
+"""
+hints = [
+    "*counter.borrow_mut() += 1;",
+    "Do this for both counter and counter2.",
+]

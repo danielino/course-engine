@@ -1,0 +1,116 @@
+id          = "24-testing"
+title       = "Testing"
+description = "Write unit tests in C using custom ASSERT macros, test suites, and the standard assert.h."
+
+[[exercises]]
+id              = "ex_01"
+title           = "A Simple ASSERT Macro"
+prompt          = """C has no built-in testing framework, but you can build one with macros. A basic ASSERT macro evaluates a condition and prints PASS or FAIL with the test name. This teaches you how testing frameworks work internally. Define ASSERT and test that add(2, 3) == 5. Print: test_add: PASS"""
+expected_output = "test_add: PASS"
+starter_code    = """#include <stdio.h>
+
+#define ASSERT(cond, name) \
+    printf("%s: %s\n", (name), (cond) ? "PASS" : "FAIL")
+
+int add(int a, int b) { return a + b; }
+
+int main() {
+    ASSERT(add(2, 3) == 5, "test_add");
+    return 0;
+}"""
+hints = [
+    "The ASSERT macro is already defined. Call ASSERT(add(2, 3) == 5, \"test_add\");",
+    "ASSERT(add(2, 3) == 5, \"test_add\");"
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_02"
+title           = "A Test Suite"
+prompt          = """Real test suites run multiple tests and report a final summary. Extend the ASSERT macro to count passes and failures. Test add(2,3)==5, square(4)==16, and factorial(5)==120. All should pass. Print:
+test_add: PASS
+test_square: PASS
+test_factorial: PASS
+All tests passed!"""
+expected_output = """test_add: PASS
+test_square: PASS
+test_factorial: PASS
+All tests passed!"""
+starter_code    = """#include <stdio.h>
+
+int passed = 0, failed = 0;
+
+#define ASSERT(cond, name) do { \
+    if (cond) { printf("%s: PASS\n", name); passed++; } \
+    else       { printf("%s: FAIL\n", name); failed++; } \
+} while(0)
+
+int add(int a, int b)       { return a + b; }
+int square(int n)           { return n * n; }
+int factorial(int n)        { return n <= 1 ? 1 : n * factorial(n-1); }
+
+int main() {
+    ASSERT(add(2, 3) == 5,        "test_add");
+    ASSERT(square(4) == 16,       "test_square");
+    ASSERT(factorial(5) == 120,   "test_factorial");
+    if (failed == 0) printf("All tests passed!\n");
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. The ASSERT macro increments passed or failed, and the final check prints the summary.",
+    "The code is correct as written — all three tests should produce PASS."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_03"
+title           = "Detecting a Failing Test"
+prompt          = """A good test suite must also catch failures. Test test_valid (checks that 5 > 0, which is true) and test_boundary (checks that 10 > 10, which is false). Print the pass/fail for each, then the summary:
+test_valid: PASS
+test_boundary: FAIL
+Tests: 1/2 passed"""
+expected_output = """test_valid: PASS
+test_boundary: FAIL
+Tests: 1/2 passed"""
+starter_code    = """#include <stdio.h>
+
+int passed = 0, failed = 0;
+
+#define ASSERT(cond, name) do { \
+    if (cond) { printf("%s: PASS\n", name); passed++; } \
+    else       { printf("%s: FAIL\n", name); failed++; } \
+} while(0)
+
+int main() {
+    ASSERT(5 > 0,   "test_valid");
+    ASSERT(10 > 10, "test_boundary");
+    printf("Tests: %d/%d passed\n", passed, passed + failed);
+    return 0;
+}"""
+hints = [
+    "The starter code is complete. 5 > 0 is true (PASS); 10 > 10 is false (FAIL).",
+    "The code is correct as written. The summary line uses passed and passed+failed."
+]
+validation_mode = "exact_stdout"
+
+[[exercises]]
+id              = "ex_04"
+title           = "Using assert.h"
+prompt          = """The standard <assert.h> header provides assert(expression), which aborts the program with an error message if the expression is false. It's useful for catching programming errors (preconditions, postconditions). If all assertions pass, the program reaches the final print. Write three assert() calls that all hold, then print: All assertions passed!"""
+expected_output = "All assertions passed!"
+starter_code    = """#include <stdio.h>
+#include <assert.h>
+
+int add(int a, int b) { return a + b; }
+
+int main() {
+    // Write 3 assertions that are true
+    // e.g.: assert(add(1, 2) == 3);
+    printf("All assertions passed!\n");
+    return 0;
+}"""
+hints = [
+    "assert() takes any condition. If it's true, nothing happens. If false, the program aborts. Use three true conditions.",
+    "assert(add(1, 2) == 3);\nassert(2 + 2 == 4);\nassert(10 > 5);\nprintf(\"All assertions passed!\\n\");"
+]
+validation_mode = "exact_stdout"
