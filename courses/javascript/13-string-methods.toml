@@ -1,0 +1,117 @@
+id          = "13-string-methods"
+title       = "More String Methods"
+description = "split, join, trim, replace, padStart, and repeat for powerful string manipulation."
+
+[[exercises]]
+id              = "ex_01"
+title           = "split and join"
+prompt          = """
+Given `const sentence = "the quick brown fox";`, split it into words, capitalise
+the first letter of each word, then join them back with a space.
+
+Expected output:
+    The Quick Brown Fox
+"""
+expected_output = "The Quick Brown Fox"
+starter_code    = """
+const sentence = "the quick brown fox";
+const result = sentence
+    .split(" ")
+    .map(w => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
+console.log(result);
+"""
+hints = [
+    "split(\" \") splits on spaces. map() transforms each element. join(\" \") reassembles.",
+    "Capitalise: w[0].toUpperCase() + w.slice(1)",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "trim"
+prompt          = """
+Given `const raw = "   lots of spaces   ";`, print the trimmed version and its length.
+
+Expected output:
+    lots of spaces
+    14
+"""
+expected_output = """lots of spaces
+14"""
+starter_code    = """
+const raw     = "   lots of spaces   ";
+const trimmed = raw.trim();
+console.log(trimmed);
+console.log(trimmed.length);
+"""
+hints = [
+    "trim() removes leading and trailing whitespace. trimStart() and trimEnd() do one side.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "replace and replaceAll"
+prompt          = """
+Given `const text = "foo bar foo baz foo";`:
+  1. Replace only the first "foo" with "qux" — print it.
+  2. Replace all "foo" with "qux" — print it.
+
+Expected output:
+    qux bar foo baz foo
+    qux bar qux baz qux
+"""
+expected_output = """qux bar foo baz foo
+qux bar qux baz qux"""
+starter_code    = """
+const text = "foo bar foo baz foo";
+console.log(text.replace("foo", "qux"));
+console.log(text.replaceAll("foo", "qux"));
+"""
+hints = [
+    "replace() replaces only the first occurrence. replaceAll() replaces every occurrence.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "padStart"
+prompt          = """
+Format the numbers 1, 10, and 100 each padded to 5 characters wide with leading zeros.
+
+Expected output:
+    00001
+    00010
+    00100
+"""
+expected_output = """00001
+00010
+00100"""
+starter_code    = """
+console.log(String(1).padStart(5, "0"));
+console.log(String(10).padStart(5, "0"));
+console.log(String(100).padStart(5, "0"));
+"""
+hints = [
+    "String(n).padStart(totalLength, padChar) pads the left side.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "repeat"
+prompt          = """
+Print a divider of 20 dashes, then use repeat to build the string "ha ha ha" by
+repeating "ha " three times and trimming the trailing space.
+
+Expected output:
+    --------------------
+    ha ha ha
+"""
+expected_output = """--------------------
+ha ha ha"""
+starter_code    = """
+console.log("-".repeat(20));
+console.log("ha ".repeat(3).trim());
+"""
+hints = [
+    "str.repeat(n) returns a new string containing str repeated n times.",
+    "Chain .trim() to remove the trailing space left by the last repetition.",
+]

@@ -1,0 +1,186 @@
+id          = "24-testing"
+title       = "Testing"
+description = "Write a manual assert function, a simple test runner, and group tests logically."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Manual assert"
+prompt          = """
+Write an `assert(condition, message)` function that throws an Error with `message`
+when `condition` is false, and does nothing when true.
+
+Test it:
+  - assert(1 + 1 === 2, "math broken")  → no error
+  - Try assert(1 + 1 === 3, "sum wrong") in a try/catch and print the message.
+
+Expected output:
+    sum wrong
+"""
+expected_output = "sum wrong"
+starter_code    = """
+function assert(condition, message) {
+    if (!condition) throw new Error(message);
+}
+assert(1 + 1 === 2, "math broken");
+try {
+    assert(1 + 1 === 3, "sum wrong");
+} catch (err) {
+    console.log(err.message);
+}
+"""
+hints = [
+    "if (!condition) throw new Error(message);",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "assertEqual"
+prompt          = """
+Write `assertEqual(actual, expected)` that throws if actual !== expected,
+with the message "Expected <expected> but got <actual>".
+
+Test:
+  - assertEqual(2 + 2, 4)                 → passes silently
+  - assertEqual(2 + 2, 5) in try/catch   → print the error message
+
+Expected output:
+    Expected 5 but got 4
+"""
+expected_output = "Expected 5 but got 4"
+starter_code    = """
+function assertEqual(actual, expected) {
+    if (actual !== expected) {
+        throw new Error(`Expected ${expected} but got ${actual}`);
+    }
+}
+assertEqual(2 + 2, 4);
+try {
+    assertEqual(2 + 2, 5);
+} catch (err) {
+    console.log(err.message);
+}
+"""
+hints = [
+    "The error message should tell you what was expected and what was actually received.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Simple test runner"
+prompt          = """
+Write a `test(name, fn)` function that:
+  - Runs fn().
+  - Prints "PASS: <name>" if no error is thrown.
+  - Prints "FAIL: <name> — <error.message>" if an error is thrown.
+
+Run three tests: two that pass and one that fails.
+
+Expected output:
+    PASS: adds correctly
+    PASS: subtracts correctly
+    FAIL: bad test — Expected 5 but got 4
+"""
+expected_output = """PASS: adds correctly
+PASS: subtracts correctly
+FAIL: bad test — Expected 5 but got 4"""
+starter_code    = """
+function assertEqual(actual, expected) {
+    if (actual !== expected) throw new Error(`Expected ${expected} but got ${actual}`);
+}
+function test(name, fn) {
+    try {
+        fn();
+        console.log("PASS: " + name);
+    } catch (err) {
+        console.log("FAIL: " + name + " \u2014 " + err.message);
+    }
+}
+test("adds correctly",      () => assertEqual(2 + 2, 4));
+test("subtracts correctly", () => assertEqual(5 - 2, 3));
+test("bad test",            () => assertEqual(2 + 2, 5));
+"""
+hints = [
+    "Wrap fn() in try/catch — success → PASS, error → FAIL with the message.",
+    "The em dash in the output is the Unicode character \\u2014.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Testing a function"
+prompt          = """
+Write a function `clamp(n, min, max)` that returns n if within range, min if below, max if above.
+
+Write tests using the test runner from the previous exercise and verify all pass.
+Tests:
+  - clamp(5, 0, 10)  === 5
+  - clamp(-1, 0, 10) === 0
+  - clamp(15, 0, 10) === 10
+
+Expected output:
+    PASS: within range
+    PASS: below min
+    PASS: above max
+"""
+expected_output = """PASS: within range
+PASS: below min
+PASS: above max"""
+starter_code    = """
+function assertEqual(actual, expected) {
+    if (actual !== expected) throw new Error(`Expected ${expected} but got ${actual}`);
+}
+function test(name, fn) {
+    try { fn(); console.log("PASS: " + name); }
+    catch (err) { console.log("FAIL: " + name + " \u2014 " + err.message); }
+}
+function clamp(n, min, max) {
+    if (n < min) return min;
+    if (n > max) return max;
+    return n;
+}
+test("within range", () => assertEqual(clamp(5,   0, 10), 5));
+test("below min",    () => assertEqual(clamp(-1,  0, 10), 0));
+test("above max",    () => assertEqual(clamp(15,  0, 10), 10));
+"""
+hints = [
+    "clamp: return Math.min(max, Math.max(min, n)) or use explicit if-checks.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Grouping tests"
+prompt          = """
+Write a `describe(groupName, fn)` function that prints "--- <groupName> ---"
+then runs fn() which contains test() calls.
+
+Group two tests under "String utils":
+  - "trim" passes
+  - "upper" passes
+
+Expected output:
+    --- String utils ---
+    PASS: trim
+    PASS: upper
+"""
+expected_output = """--- String utils ---
+PASS: trim
+PASS: upper"""
+starter_code    = """
+function assertEqual(actual, expected) {
+    if (actual !== expected) throw new Error(`Expected ${expected} but got ${actual}`);
+}
+function test(name, fn) {
+    try { fn(); console.log("PASS: " + name); }
+    catch (err) { console.log("FAIL: " + name + " \u2014 " + err.message); }
+}
+function describe(groupName, fn) {
+    console.log("--- " + groupName + " ---");
+    fn();
+}
+describe("String utils", () => {
+    test("trim",  () => assertEqual("  hi  ".trim(), "hi"));
+    test("upper", () => assertEqual("hi".toUpperCase(), "HI"));
+});
+"""
+hints = [
+    "describe() prints the header then immediately calls fn() to run the tests inside.",
+]

@@ -1,0 +1,130 @@
+id          = "19-symbols-generators"
+title       = "Symbols and Generators"
+description = "Create unique Symbol values and write generator functions with function* and yield."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Symbol uniqueness"
+prompt          = """
+Create two Symbols with the same description "id" and print whether they are equal.
+Then print the description of the first symbol.
+
+Expected output:
+    false
+    id
+"""
+expected_output = """false
+id"""
+starter_code    = """
+const a = Symbol("id");
+const b = Symbol("id");
+console.log(a === b);
+console.log(a.description);
+"""
+hints = [
+    "Every Symbol() call returns a unique value, even with the same description.",
+    "Access the label via .description (not .toString()).",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Basic generator"
+prompt          = """
+Write a generator function `count(start, end)` that yields every integer
+from start to end (inclusive).
+
+Collect the results into an array using the spread operator and print it.
+
+Call count(1, 5) — expected output:
+    [1,2,3,4,5]
+"""
+expected_output = "[1,2,3,4,5]"
+starter_code    = """
+function* count(start, end) {
+    for (let i = start; i <= end; i++) {
+        yield i;
+    }
+}
+console.log(JSON.stringify([...count(1, 5)]));
+"""
+hints = [
+    "Declare with function*. Use yield inside to emit values one at a time.",
+    "Spread a generator: [...gen()] collects all yielded values into an array.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Manual iteration"
+prompt          = """
+Write a generator `fibonacci()` that yields an infinite Fibonacci sequence
+(0, 1, 1, 2, 3, 5, 8, …).
+
+Take the first 7 values using a for...of loop with a counter and print each.
+
+Expected output:
+    0
+    1
+    1
+    2
+    3
+    5
+    8
+"""
+expected_output = """0
+1
+1
+2
+3
+5
+8"""
+starter_code    = """
+function* fibonacci() {
+    let a = 0, b = 1;
+    while (true) {
+        yield a;
+        [a, b] = [b, a + b];
+    }
+}
+let n = 0;
+for (const val of fibonacci()) {
+    if (n++ >= 7) break;
+    console.log(val);
+}
+"""
+hints = [
+    "Use [a, b] = [b, a + b] to update both variables simultaneously.",
+    "Break out of for...of once you've printed 7 values.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Generator as iterator protocol"
+prompt          = """
+Call a generator function, get its iterator, and manually call .next() three times.
+Print the value from each .next() call.
+
+Use the count(10, 12) generator from the earlier exercise.
+
+Expected output:
+    10
+    11
+    12
+"""
+expected_output = """10
+11
+12"""
+starter_code    = """
+function* count(start, end) {
+    for (let i = start; i <= end; i++) {
+        yield i;
+    }
+}
+const iter = count(10, 12);
+console.log(iter.next().value);
+console.log(iter.next().value);
+console.log(iter.next().value);
+"""
+hints = [
+    "Calling a generator function returns an iterator object with a .next() method.",
+    ".next() returns { value, done }. Access .value to get the yielded value.",
+]

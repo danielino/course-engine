@@ -1,0 +1,127 @@
+id          = "17-iterators"
+title       = "Iterators and Comprehensions"
+description = "List comprehensions, generator expressions, map/filter, zip, and enumerate."
+
+[[exercises]]
+id              = "ex_01"
+title           = "List comprehension"
+prompt          = """
+A list comprehension builds a new list by applying an expression to each element.
+Syntax: [expression for item in iterable if condition]
+
+Build a list of squares for numbers 1–6, then print it.
+
+Expected output:
+    [1, 4, 9, 16, 25, 36]
+"""
+expected_output = "[1, 4, 9, 16, 25, 36]"
+starter_code    = """
+squares = [x ** 2 for x in range(1, 7)]
+print(squares)
+"""
+hints = [
+    "x ** 2 is applied to each x in range(1, 7).",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Filtered comprehension"
+prompt          = """
+Add an if clause to filter elements.
+
+From numbers 1–20, build a list of those divisible by 3, then print it.
+
+Expected output:
+    [3, 6, 9, 12, 15, 18]
+"""
+expected_output = "[3, 6, 9, 12, 15, 18]"
+starter_code    = """
+divisible_by_3 = [x for x in range(1, 21) if x % 3 == 0]
+print(divisible_by_3)
+"""
+hints = [
+    "Add `if x % 3 == 0` after the for clause.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "map() and filter()"
+prompt          = """
+map(func, iterable)    applies func to every element.
+filter(func, iterable) keeps only elements where func returns True.
+
+Given nums = [1, 2, 3, 4, 5]:
+  1. Print list(map(lambda x: x * 10, nums))
+  2. Print list(filter(lambda x: x % 2 == 0, nums))
+
+Expected output:
+    [10, 20, 30, 40, 50]
+    [2, 4]
+"""
+expected_output = """[10, 20, 30, 40, 50]
+[2, 4]"""
+starter_code    = """
+nums = [1, 2, 3, 4, 5]
+print(list(map(lambda x: x * 10, nums)))
+print(list(filter(lambda x: x % 2 == 0, nums)))
+"""
+hints = [
+    "map() and filter() return lazy iterators — wrap in list() to materialise them.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "zip() and enumerate()"
+prompt          = """
+zip(a, b) pairs elements from two iterables.
+enumerate(iterable) yields (index, value) pairs.
+
+Given names = ["Alice", "Bob", "Carol"] and scores = [90, 85, 92]:
+  1. Use zip to print "Alice: 90", "Bob: 85", "Carol: 92".
+  2. Use enumerate to print "0 Alice", "1 Bob", "2 Carol".
+"""
+expected_output = """Alice: 90
+Bob: 85
+Carol: 92
+0 Alice
+1 Bob
+2 Carol"""
+starter_code    = """
+names  = ["Alice", "Bob", "Carol"]
+scores = [90, 85, 92]
+
+for name, score in zip(names, scores):
+    print(f"{name}: {score}")
+
+for i, name in enumerate(names):
+    print(i, name)
+"""
+hints = [
+    "zip(names, scores) produces (\"Alice\", 90), (\"Bob\", 85), ...",
+    "enumerate starts at 0 by default; pass start=1 to begin at 1.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Generator expression"
+prompt          = """
+A generator expression is like a list comprehension but lazy — it doesn't build the
+whole list in memory. Use it inside sum(), min(), max(), etc.
+
+Compute the sum of squares of odd numbers from 1 to 19 using a generator expression.
+
+Expected output:
+    1000
+"""
+expected_output = "1000"
+starter_code    = """
+result = sum(x ** 2 for x in range(1, 20) if x % 2 != 0)
+print(result)
+"""
+hints = [
+    "Drop the square brackets: sum(x**2 for x in ...) — that's a generator expression.",
+    "Odd numbers from 1 to 19: 1,3,5,7,9,11,13,15,17,19. Sum of their squares = 1000.",
+]

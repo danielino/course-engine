@@ -1,0 +1,152 @@
+id          = "06-conditionals"
+title       = "Conditionals"
+description = "if/elif/else, nested conditions, and the ternary (conditional) expression."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic if/else"
+prompt          = """
+The if statement runs a block of code only when a condition is True.
+
+Given temperature = 35, print:
+    hot    if temperature > 30
+    warm   if temperature > 20
+    cool   otherwise
+
+Expected output:
+    hot
+"""
+expected_output = "hot"
+starter_code    = """
+temperature = 35
+if temperature > 30:
+    print("hot")
+elif temperature > 20:
+    print("warm")
+else:
+    print("cool")
+"""
+hints = [
+    "Python uses elif (not else if) for additional conditions.",
+    "Conditions are checked top to bottom; the first True branch runs.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "if/elif/else chain"
+prompt          = """
+Grade boundaries: A ≥ 90, B ≥ 80, C ≥ 70, F otherwise.
+
+Given score = 85, print the corresponding letter grade.
+
+Expected output:
+    B
+"""
+expected_output = "B"
+starter_code    = """
+score = 85
+if score >= 90:
+    print("A")
+elif score >= 80:
+    print("B")
+elif score >= 70:
+    print("C")
+else:
+    print("F")
+"""
+hints = [
+    "85 >= 90 is False, 85 >= 80 is True — so the B branch runs.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Nested conditions"
+prompt          = """
+You can nest if statements inside other if statements.
+
+Given:
+  x = 10
+  y = 20
+
+If x > 0:
+    if y > x:
+        print "both positive and y is larger"
+    else:
+        print "x is positive but y is not larger"
+else:
+    print "x is not positive"
+
+Expected output:
+    both positive and y is larger
+"""
+expected_output = "both positive and y is larger"
+starter_code    = """
+x = 10
+y = 20
+if x > 0:
+    if y > x:
+        print("both positive and y is larger")
+    else:
+        print("x is positive but y is not larger")
+else:
+    print("x is not positive")
+"""
+hints = [
+    "The inner if only runs when the outer if is True.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Ternary expression"
+prompt          = """
+A ternary (conditional) expression selects a value in one line:
+    value_if_true if condition else value_if_false
+
+Given n = 7, assign to `label` the string "odd" if n % 2 != 0, else "even".
+Print label.
+
+Expected output:
+    odd
+"""
+expected_output = "odd"
+starter_code    = """
+n = 7
+label = "odd" if n % 2 != 0 else "even"
+print(label)
+"""
+hints = [
+    "The ternary expression: result = a if condition else b",
+    "7 % 2 = 1, which is != 0, so label = \"odd\".",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Combining conditions"
+prompt          = """
+Use `and`, `or`, and `not` inside conditions to express complex logic.
+
+Given:
+  age  = 20
+  has_id = True
+
+Print "entry allowed" if age >= 18 AND has_id is True.
+Print "entry denied" otherwise.
+
+Expected output:
+    entry allowed
+"""
+expected_output = "entry allowed"
+starter_code    = """
+age    = 20
+has_id = True
+if age >= 18 and has_id:
+    print("entry allowed")
+else:
+    print("entry denied")
+"""
+hints = [
+    "You can write `if has_id:` instead of `if has_id == True:`.",
+    "Both conditions must be True for `and` to be True.",
+]

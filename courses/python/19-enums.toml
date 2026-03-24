@@ -1,0 +1,177 @@
+id          = "19-enums"
+title       = "Enums"
+description = "enum.Enum, enum.auto(), iterating members, and match/case (Python 3.10+)."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Define an Enum"
+prompt          = """
+An Enum gives meaningful names to a fixed set of values,
+preventing bugs from typos or magic numbers.
+
+Define a Color enum with members RED, GREEN, BLUE.
+Print Color.RED and its .value.
+
+Expected output:
+    Color.RED
+    1
+"""
+expected_output = """Color.RED
+1"""
+starter_code    = """
+from enum import Enum
+
+class Color(Enum):
+    RED   = 1
+    GREEN = 2
+    BLUE  = 3
+
+print(Color.RED)
+print(Color.RED.value)
+"""
+hints = [
+    "Enum members are accessed as ClassName.MEMBER_NAME.",
+    ".value returns the underlying value assigned in the class body.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "enum.auto()"
+prompt          = """
+auto() assigns incrementing values automatically — useful when the exact
+numbers don't matter.
+
+Define Direction(Enum) with NORTH, SOUTH, EAST, WEST using auto().
+Iterate over all members and print "<name>: <value>".
+
+Expected output:
+    NORTH: 1
+    SOUTH: 2
+    EAST: 3
+    WEST: 4
+"""
+expected_output = """NORTH: 1
+SOUTH: 2
+EAST: 3
+WEST: 4"""
+starter_code    = """
+from enum import Enum, auto
+
+class Direction(Enum):
+    NORTH = auto()
+    SOUTH = auto()
+    EAST  = auto()
+    WEST  = auto()
+
+for member in Direction:
+    print(f"{member.name}: {member.value}")
+"""
+hints = [
+    "auto() starts at 1 and increments by 1 for each member.",
+    "Iterating over an Enum class yields its members in definition order.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Enum comparison"
+prompt          = """
+Enum members are singletons — compare with `is` or ==.
+
+Given Status(Enum) with PENDING=1, DONE=2, ERROR=3:
+Set current = Status.DONE and print:
+  1. (current == Status.DONE)    → True
+  2. (current is Status.PENDING) → False
+  3. current.name                → DONE
+"""
+expected_output = """True
+False
+DONE"""
+starter_code    = """
+from enum import Enum
+
+class Status(Enum):
+    PENDING = 1
+    DONE    = 2
+    ERROR   = 3
+
+current = Status.DONE
+print(current == Status.DONE)
+print(current is Status.PENDING)
+print(current.name)
+"""
+hints = [
+    ".name gives the member's string name; .value gives its underlying value.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "match/case with Enum (Python 3.10+)"
+prompt          = """
+match/case (Python 3.10+) is the idiomatic way to branch on Enum values.
+If your system uses Python < 3.10, use if/elif instead.
+
+Given the same Status enum, write describe(s) that returns:
+  "waiting"   for PENDING
+  "finished"  for DONE
+  "failed"    for ERROR
+
+Print describe(Status.ERROR).
+
+Expected output:
+    failed
+"""
+expected_output = "failed"
+starter_code    = """
+from enum import Enum
+
+class Status(Enum):
+    PENDING = 1
+    DONE    = 2
+    ERROR   = 3
+
+def describe(s):
+    match s:
+        case Status.PENDING:
+            return "waiting"
+        case Status.DONE:
+            return "finished"
+        case Status.ERROR:
+            return "failed"
+
+print(describe(Status.ERROR))
+"""
+hints = [
+    "match/case requires Python 3.10+. If unavailable, use if/elif chains.",
+    "Each case checks equality with the matched value.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Enum from value"
+prompt          = """
+Enum(value) looks up a member by its value.
+This is useful when deserialising data (e.g., from JSON).
+
+Given Planet(Enum) with MERCURY=1, VENUS=2, EARTH=3:
+Convert the integer 3 to its Enum member and print its name.
+
+Expected output:
+    EARTH
+"""
+expected_output = "EARTH"
+starter_code    = """
+from enum import Enum
+
+class Planet(Enum):
+    MERCURY = 1
+    VENUS   = 2
+    EARTH   = 3
+
+p = Planet(3)
+print(p.name)
+"""
+hints = [
+    "Planet(3) looks up the member whose value is 3.",
+    "Run the starter code as-is.",
+]

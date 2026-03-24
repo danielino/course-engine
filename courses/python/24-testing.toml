@@ -1,0 +1,200 @@
+id          = "24-testing"
+title       = "Testing with unittest"
+description = "unittest.TestCase, assertEqual, assertRaises, setUp, and running tests programmatically."
+
+[[exercises]]
+id              = "ex_01"
+title           = "First test case"
+prompt          = """
+unittest.TestCase provides a framework for writing tests.
+Each test_ method is run independently.
+
+Write a test for an add(a, b) function.
+Use unittest.TextTestRunner(verbosity=0) so the output is just the summary line.
+
+The summary line for all-passing tests looks like:
+    OK
+
+But we want a fixed output — print "all tests passed" manually after running
+the suite so the output is deterministic regardless of timing info.
+
+Expected output:
+    all tests passed
+"""
+expected_output = "all tests passed"
+starter_code    = """
+import unittest
+
+def add(a, b):
+    return a + b
+
+class TestAdd(unittest.TestCase):
+    def test_positive(self):
+        self.assertEqual(add(2, 3), 5)
+
+    def test_negative(self):
+        self.assertEqual(add(-1, -1), -2)
+
+    def test_zero(self):
+        self.assertEqual(add(0, 0), 0)
+
+suite  = unittest.TestLoader().loadTestsFromTestCase(TestAdd)
+result = unittest.TextTestRunner(verbosity=0, stream=open("/dev/null", "w")).run(suite)
+if result.wasSuccessful():
+    print("all tests passed")
+else:
+    print("some tests failed")
+"""
+hints = [
+    "unittest.TestLoader().loadTestsFromTestCase() collects all test_ methods.",
+    "Redirect runner output to /dev/null so only our print() reaches stdout.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "assertRaises"
+prompt          = """
+assertRaises checks that a function raises the expected exception.
+
+Write a safe_divide(a, b) that raises ValueError("division by zero") when b == 0.
+Test both normal division and the exception case.
+
+Print "all tests passed" if the suite passes.
+
+Expected output:
+    all tests passed
+"""
+expected_output = "all tests passed"
+starter_code    = """
+import unittest
+
+def safe_divide(a, b):
+    if b == 0:
+        raise ValueError("division by zero")
+    return a / b
+
+class TestDivide(unittest.TestCase):
+    def test_normal(self):
+        self.assertEqual(safe_divide(10, 2), 5.0)
+
+    def test_zero_divisor(self):
+        with self.assertRaises(ValueError):
+            safe_divide(10, 0)
+
+suite  = unittest.TestLoader().loadTestsFromTestCase(TestDivide)
+result = unittest.TextTestRunner(verbosity=0, stream=open("/dev/null", "w")).run(suite)
+if result.wasSuccessful():
+    print("all tests passed")
+else:
+    print("some tests failed")
+"""
+hints = [
+    "with self.assertRaises(ValueError): wraps the call that should raise.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "setUp and tearDown"
+prompt          = """
+setUp() runs before each test method; tearDown() runs after.
+Use setUp() to prepare shared state so each test starts clean.
+
+Test a Stack class (list-backed) with push/pop.
+Use setUp to create a fresh Stack for each test.
+
+Print "all tests passed" if the suite passes.
+
+Expected output:
+    all tests passed
+"""
+expected_output = "all tests passed"
+starter_code    = """
+import unittest
+
+class Stack:
+    def __init__(self):
+        self._data = []
+    def push(self, item):
+        self._data.append(item)
+    def pop(self):
+        return self._data.pop()
+    def __len__(self):
+        return len(self._data)
+
+class TestStack(unittest.TestCase):
+    def setUp(self):
+        self.stack = Stack()
+
+    def test_push_increases_size(self):
+        self.stack.push(1)
+        self.assertEqual(len(self.stack), 1)
+
+    def test_pop_returns_last(self):
+        self.stack.push(10)
+        self.stack.push(20)
+        self.assertEqual(self.stack.pop(), 20)
+
+    def test_empty_pop_raises(self):
+        with self.assertRaises(IndexError):
+            self.stack.pop()
+
+suite  = unittest.TestLoader().loadTestsFromTestCase(TestStack)
+result = unittest.TextTestRunner(verbosity=0, stream=open("/dev/null", "w")).run(suite)
+if result.wasSuccessful():
+    print("all tests passed")
+else:
+    print("some tests failed")
+"""
+hints = [
+    "setUp creates self.stack fresh before each test so tests don't share state.",
+    "list.pop() on an empty list raises IndexError — no extra code needed.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Multiple assertion methods"
+prompt          = """
+unittest.TestCase has many assertion methods beyond assertEqual:
+  assertTrue / assertFalse
+  assertIn / assertNotIn
+  assertIsNone / assertIsNotNone
+
+Write tests for a function is_palindrome(s) -> bool.
+
+Print "all tests passed" if the suite passes.
+
+Expected output:
+    all tests passed
+"""
+expected_output = "all tests passed"
+starter_code    = """
+import unittest
+
+def is_palindrome(s: str) -> bool:
+    return s == s[::-1]
+
+class TestPalindrome(unittest.TestCase):
+    def test_is_palindrome(self):
+        self.assertTrue(is_palindrome("racecar"))
+
+    def test_not_palindrome(self):
+        self.assertFalse(is_palindrome("hello"))
+
+    def test_single_char(self):
+        self.assertTrue(is_palindrome("a"))
+
+    def test_empty(self):
+        self.assertTrue(is_palindrome(""))
+
+suite  = unittest.TestLoader().loadTestsFromTestCase(TestPalindrome)
+result = unittest.TextTestRunner(verbosity=0, stream=open("/dev/null", "w")).run(suite)
+if result.wasSuccessful():
+    print("all tests passed")
+else:
+    print("some tests failed")
+"""
+hints = [
+    "s[::-1] reverses the string — a palindrome reads the same forwards and backwards.",
+    "Run the starter code as-is.",
+]

@@ -1,0 +1,123 @@
+id          = "02-variables"
+title       = "Variables"
+description = "Variable assignment, naming rules, multiple assignment, and deleting variables."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Assign and print"
+prompt          = """
+Variables store values so you can reuse them.
+Assign the integer 42 to a variable called `answer`, then print it.
+
+Expected output:
+    42
+"""
+expected_output = "42"
+starter_code    = """
+answer = # assign here
+print(answer)
+"""
+hints = [
+    "answer = 42",
+    "Variables don't need a type declaration in Python — just write name = value.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Multiple assignment"
+prompt          = """
+Python lets you assign several variables on one line using tuple unpacking.
+Assign x = 10 and y = 20 on a single line, then print both on separate lines.
+
+Expected output:
+    10
+    20
+"""
+expected_output = """10
+20"""
+starter_code    = """
+x, y = # assign both here
+print(x)
+print(y)
+"""
+hints = [
+    "x, y = 10, 20  — the right-hand side is a tuple.",
+    "The comma on the left is the unpacking syntax.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Swap two variables"
+prompt          = """
+A classic trick: swap the values of two variables without a temporary variable.
+Start with a = 1 and b = 2, swap them, then print a and b on separate lines.
+
+Expected output:
+    2
+    1
+"""
+expected_output = """2
+1"""
+starter_code    = """
+a = 1
+b = 2
+# swap a and b in one line
+print(a)
+print(b)
+"""
+hints = [
+    "Python tuple unpacking makes swapping trivial.",
+    "a, b = b, a",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Naming rules"
+prompt          = """
+Variable names in Python are case-sensitive and follow snake_case by convention.
+Create three variables:
+  - first_name = "Alice"
+  - last_name  = "Smith"
+  - full_name  built from the two above using string concatenation (+)
+
+Then print full_name.
+
+Expected output:
+    Alice Smith
+"""
+expected_output = "Alice Smith"
+starter_code    = """
+first_name = "Alice"
+last_name  = "Smith"
+full_name  = # combine them with a space in between
+print(full_name)
+"""
+hints = [
+    "String concatenation uses +.  Remember to add a space: first_name + \" \" + last_name",
+    'full_name = first_name + " " + last_name',
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Delete a variable"
+prompt          = """
+The `del` statement removes a variable from the current scope.
+Assign x = 99, print it, delete it, then print "deleted" to show the rest of the code ran.
+
+Expected output:
+    99
+    deleted
+"""
+expected_output = """99
+deleted"""
+starter_code    = """
+x = 99
+print(x)
+del x
+# x no longer exists here
+print("deleted")
+"""
+hints = [
+    "del x removes the variable x from the namespace.",
+    "After del x, accessing x would raise NameError — but we just print a string instead.",
+]

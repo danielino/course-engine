@@ -1,0 +1,154 @@
+id          = "07-loops"
+title       = "Loops"
+description = "Repeat code with for, while, and do-while loops; control flow with break and continue."
+
+[[exercises]]
+id              = "ex_01"
+title           = "for loop"
+prompt          = """
+Use a for loop to print the numbers 1 through 5, each on its own line.
+
+Expected output:
+    1
+    2
+    3
+    4
+    5
+"""
+expected_output = """1
+2
+3
+4
+5"""
+starter_code    = """
+for (let i = 1; i <= 5; i++) {
+    console.log(i);
+}
+"""
+hints = [
+    "A for loop: for (initializer; condition; update) { body }",
+    "for (let i = 1; i <= 5; i++) { console.log(i); }",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "while loop"
+prompt          = """
+Use a while loop to compute and print the sum of numbers 1 through 10.
+
+Expected output:
+    55
+"""
+expected_output = "55"
+starter_code    = """
+let sum = 0;
+let i   = 1;
+while (i <= 10) {
+    sum += i;
+    i++;
+}
+console.log(sum);
+"""
+hints = [
+    "Accumulate the sum inside the loop, then print after the loop ends.",
+    "let sum = 0; let i = 1; while (i <= 10) { sum += i; i++; } console.log(sum);",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "break"
+prompt          = """
+Print numbers starting from 1, but stop (break) as soon as you reach a multiple of 7.
+Print that multiple as the last line.
+
+Expected output:
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+"""
+expected_output = """1
+2
+3
+4
+5
+6
+7"""
+starter_code    = """
+for (let i = 1; i <= 100; i++) {
+    console.log(i);
+    if (i % 7 === 0) {
+        break;
+    }
+}
+"""
+hints = [
+    "Print i first, then check if it is divisible by 7 and break.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "continue"
+prompt          = """
+Print every number from 1 to 10, but skip multiples of 3.
+
+Expected output:
+    1
+    2
+    4
+    5
+    7
+    8
+    10
+"""
+expected_output = """1
+2
+4
+5
+7
+8
+10"""
+starter_code    = """
+for (let i = 1; i <= 10; i++) {
+    if (i % 3 === 0) {
+        continue;
+    }
+    console.log(i);
+}
+"""
+hints = [
+    "Use continue to skip the rest of the loop body for multiples of 3.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "do-while loop"
+prompt          = """
+Use a do-while loop to print a countdown from 3 to 1, then print "Go!".
+
+Expected output:
+    3
+    2
+    1
+    Go!
+
+A do-while always executes the body at least once before checking the condition.
+"""
+expected_output = """3
+2
+1
+Go!"""
+starter_code    = """
+let count = 3;
+do {
+    console.log(count);
+    count--;
+} while (count > 0);
+console.log("Go!");
+"""
+hints = [
+    "do { ... } while (condition); — the body runs first, then the condition is checked.",
+]

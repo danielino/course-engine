@@ -1,0 +1,144 @@
+id          = "23-concurrency"
+title       = "Concurrency"
+description = "threading.Thread, ThreadPoolExecutor, and basic thread synchronisation."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic threading"
+prompt          = """
+threading.Thread runs a function in a separate OS thread.
+Call .start() to launch it and .join() to wait for it to finish.
+
+Create two threads: one that appends "thread-1" to a shared list,
+one that appends "thread-2". Join both, then print the sorted list.
+(Sorting ensures deterministic output regardless of scheduling.)
+
+Expected output:
+    ['thread-1', 'thread-2']
+"""
+expected_output = "['thread-1', 'thread-2']"
+starter_code    = """
+import threading
+
+results = []
+
+def worker(name):
+    results.append(name)
+
+t1 = threading.Thread(target=worker, args=("thread-1",))
+t2 = threading.Thread(target=worker, args=("thread-2",))
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+print(sorted(results))
+"""
+hints = [
+    "target= takes the function; args= passes arguments as a tuple.",
+    "join() blocks until the thread finishes.",
+    "sorted(results) gives a predictable order regardless of which thread ran first.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Thread with a Lock"
+prompt          = """
+Without a lock, multiple threads can overwrite a shared counter incorrectly.
+threading.Lock() protects a critical section with acquire()/release() — or
+use `with lock:` for automatic release.
+
+Increment a counter 1000 times across 2 threads (500 each) safely.
+Print the final count.
+
+Expected output:
+    1000
+"""
+expected_output = "1000"
+starter_code    = """
+import threading
+
+counter = 0
+lock    = threading.Lock()
+
+def increment(times):
+    global counter
+    for _ in range(times):
+        with lock:
+            counter += 1
+
+t1 = threading.Thread(target=increment, args=(500,))
+t2 = threading.Thread(target=increment, args=(500,))
+t1.start()
+t2.start()
+t1.join()
+t2.join()
+print(counter)
+"""
+hints = [
+    "with lock: acquires the lock on entry and releases it on exit (even if an exception occurs).",
+    "Without the lock, two threads can read the same counter value and both write the same incremented value, losing one increment.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "ThreadPoolExecutor"
+prompt          = """
+concurrent.futures.ThreadPoolExecutor manages a pool of worker threads.
+executor.map(fn, iterable) applies fn to each item and returns results in order.
+
+Use a ThreadPoolExecutor with 4 workers to square each number in [1,2,3,4,5].
+Print the sorted results.
+
+Expected output:
+    [1, 4, 9, 16, 25]
+"""
+expected_output = "[1, 4, 9, 16, 25]"
+starter_code    = """
+from concurrent.futures import ThreadPoolExecutor
+
+def square(n):
+    return n * n
+
+with ThreadPoolExecutor(max_workers=4) as executor:
+    results = list(executor.map(square, [1, 2, 3, 4, 5]))
+
+print(sorted(results))
+"""
+hints = [
+    "executor.map() preserves input order in its results — but sort anyway for safety.",
+    "The with block automatically shuts down the executor and waits for all tasks.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Collecting results with futures"
+prompt          = """
+executor.submit(fn, *args) returns a Future whose .result() gives the return value.
+
+Submit 3 tasks that each return their input squared.
+Print each result in submission order.
+
+Expected output:
+    4
+    9
+    16
+"""
+expected_output = """4
+9
+16"""
+starter_code    = """
+from concurrent.futures import ThreadPoolExecutor
+
+def square(n):
+    return n * n
+
+with ThreadPoolExecutor(max_workers=3) as executor:
+    futures = [executor.submit(square, n) for n in [2, 3, 4]]
+
+for f in futures:
+    print(f.result())
+"""
+hints = [
+    "submit() returns a Future immediately; .result() blocks until the computation is done.",
+    "Iterating futures in the same order as submitted gives deterministic output.",
+]

@@ -1,0 +1,150 @@
+id          = "14-file-io"
+title       = "File I/O"
+description = "open/read/write with the with statement, pathlib.Path, and FileNotFoundError."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Write then read a file"
+prompt          = """
+The with statement ensures files are automatically closed after the block.
+
+  1. Write "Hello, file!" to /tmp/course_test.txt
+  2. Read it back and print the contents (stripped of whitespace).
+
+Expected output:
+    Hello, file!
+"""
+expected_output = "Hello, file!"
+starter_code    = """
+with open("/tmp/course_test.txt", "w") as f:
+    f.write("Hello, file!")
+
+with open("/tmp/course_test.txt", "r") as f:
+    content = f.read()
+
+print(content.strip())
+"""
+hints = [
+    "Open mode \"w\" creates or overwrites the file; \"r\" reads it.",
+    "f.read() returns the entire file as a string.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Write multiple lines"
+prompt          = """
+Write three lines to /tmp/course_lines.txt and read them back.
+Use writelines() with explicit newlines, then readlines() to get a list.
+
+Lines to write:
+  line one
+  line two
+  line three
+
+Print each line stripped, one per line.
+
+Expected output:
+    line one
+    line two
+    line three
+"""
+expected_output = """line one
+line two
+line three"""
+starter_code    = """
+lines = ["line one\n", "line two\n", "line three\n"]
+with open("/tmp/course_lines.txt", "w") as f:
+    f.writelines(lines)
+
+with open("/tmp/course_lines.txt", "r") as f:
+    for line in f.readlines():
+        print(line.strip())
+"""
+hints = [
+    "writelines() writes each string in the list as-is — include \\n if you want newlines.",
+    "line.strip() removes the trailing newline when reading back.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "pathlib.Path"
+prompt          = """
+pathlib.Path provides an object-oriented interface to file paths.
+Path.write_text() and Path.read_text() handle open/close for you.
+
+  1. Use Path("/tmp/course_path.txt").write_text("pathlib works!")
+  2. Read it back with .read_text() and print it.
+
+Expected output:
+    pathlib works!
+"""
+expected_output = "pathlib works!"
+starter_code    = """
+from pathlib import Path
+
+p = Path("/tmp/course_path.txt")
+p.write_text("pathlib works!")
+print(p.read_text())
+"""
+hints = [
+    "Path.write_text(content) writes a string to the file.",
+    "Path.read_text() returns the file's contents as a string.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Handle FileNotFoundError"
+prompt          = """
+Trying to open a file that doesn't exist raises FileNotFoundError.
+Always handle it gracefully.
+
+Try to open "/tmp/does_not_exist_12345.txt".
+If it doesn't exist, print "file not found".
+
+Expected output:
+    file not found
+"""
+expected_output = "file not found"
+starter_code    = """
+try:
+    with open("/tmp/does_not_exist_12345.txt", "r") as f:
+        print(f.read())
+except FileNotFoundError:
+    print("file not found")
+"""
+hints = [
+    "FileNotFoundError is a subclass of OSError.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Append to a file"
+prompt          = """
+Open mode "a" appends to the end of a file without overwriting it.
+
+  1. Write "first\n" to /tmp/course_append.txt (mode "w" to start fresh).
+  2. Append "second\n" (mode "a").
+  3. Read the file and print both lines stripped.
+
+Expected output:
+    first
+    second
+"""
+expected_output = """first
+second"""
+starter_code    = """
+with open("/tmp/course_append.txt", "w") as f:
+    f.write("first\n")
+
+with open("/tmp/course_append.txt", "a") as f:
+    f.write("second\n")
+
+with open("/tmp/course_append.txt", "r") as f:
+    for line in f:
+        print(line.strip())
+"""
+hints = [
+    "Mode \"a\" opens for appending — the file pointer starts at the end.",
+    "Iterating over the file object yields lines including the newline.",
+]

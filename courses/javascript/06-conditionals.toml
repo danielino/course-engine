@@ -1,0 +1,150 @@
+id          = "06-conditionals"
+title       = "Conditionals"
+description = "Control flow with if/else if/else, nested conditions, and switch statements."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Simple if/else"
+prompt          = """
+Given `const x = 10;`, print "positive" if x > 0, otherwise print "non-positive".
+
+Expected output:
+    positive
+"""
+expected_output = "positive"
+starter_code    = """
+const x = 10;
+if (x > 0) {
+    console.log("positive");
+} else {
+    console.log("non-positive");
+}
+"""
+hints = [
+    "The condition x > 0 is true for x = 10, so the if-branch runs.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "else if chain"
+prompt          = """
+Given `const score = 72;`, classify and print the grade:
+  - score >= 90 → "A"
+  - score >= 80 → "B"
+  - score >= 70 → "C"
+  - otherwise  → "F"
+
+Expected output:
+    C
+"""
+expected_output = "C"
+starter_code    = """
+const score = 72;
+if (score >= 90) {
+    console.log("A");
+} else if (score >= 80) {
+    console.log("B");
+} else if (score >= 70) {
+    console.log("C");
+} else {
+    console.log("F");
+}
+"""
+hints = [
+    "Conditions are checked top-to-bottom; the first one that is true wins.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Nested conditionals"
+prompt          = """
+Given `const n = -5;`, print:
+  - "positive even", "positive odd", "negative even", "negative odd", or "zero"
+
+For n = -5, expected output:
+    negative odd
+"""
+expected_output = "negative odd"
+starter_code    = """
+const n = -5;
+if (n === 0) {
+    console.log("zero");
+} else if (n > 0) {
+    if (n % 2 === 0) {
+        console.log("positive even");
+    } else {
+        console.log("positive odd");
+    }
+} else {
+    if (n % 2 === 0) {
+        console.log("negative even");
+    } else {
+        console.log("negative odd");
+    }
+}
+"""
+hints = [
+    "Check zero first, then positive/negative, then odd/even inside each branch.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "switch statement"
+prompt          = """
+Given `const day = "Wednesday";`, use a switch to print the type of day:
+  - Monday/Tuesday/Wednesday/Thursday/Friday → "Weekday"
+  - Saturday/Sunday → "Weekend"
+
+Expected output:
+    Weekday
+"""
+expected_output = "Weekday"
+starter_code    = """
+const day = "Wednesday";
+switch (day) {
+    case "Monday":
+    case "Tuesday":
+    case "Wednesday":
+    case "Thursday":
+    case "Friday":
+        console.log("Weekday");
+        break;
+    case "Saturday":
+    case "Sunday":
+        console.log("Weekend");
+        break;
+    default:
+        console.log("Unknown");
+}
+"""
+hints = [
+    "Multiple cases can fall through to the same block by omitting break between them.",
+    "Always include break at the end of each group and a default case.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Combining conditions"
+prompt          = """
+Given:
+  const age      = 20;
+  const hasId    = true;
+
+Print "entry granted" if age >= 18 AND hasId is true, otherwise print "entry denied".
+
+Expected output:
+    entry granted
+"""
+expected_output = "entry granted"
+starter_code    = """
+const age   = 20;
+const hasId = true;
+if (age >= 18 && hasId) {
+    console.log("entry granted");
+} else {
+    console.log("entry denied");
+}
+"""
+hints = [
+    "Use && to require both conditions to be true simultaneously.",
+]

@@ -1,0 +1,159 @@
+id          = "04-operators"
+title       = "Operators"
+description = "Arithmetic, comparison, logical operators, floor division, and modulo."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Arithmetic operators"
+prompt          = """
+Python's arithmetic operators: + - * / // % **
+Using a = 17 and b = 5, print the result of each operation on its own line:
+
+    a + b   → 22
+    a - b   → 12
+    a * b   → 85
+    a / b   → 3.4
+    a // b  → 3
+    a % b   → 2
+    a ** b  → 1419857
+"""
+expected_output = """22
+12
+85
+3.4
+3
+2
+1419857"""
+starter_code    = """
+a = 17
+b = 5
+print(a + b)
+print(a - b)
+print(a * b)
+print(a / b)
+print(a // b)
+print(a % b)
+print(a ** b)
+"""
+hints = [
+    "// is floor (integer) division; % gives the remainder.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Modulo for even/odd"
+prompt          = """
+The modulo operator (%) gives the remainder of division.
+A number is even if n % 2 == 0.
+
+Print whether each number is even or odd, one per line:
+  4  → even
+  7  → odd
+  10 → even
+
+Expected output:
+    even
+    odd
+    even
+"""
+expected_output = """even
+odd
+even"""
+starter_code    = """
+for n in [4, 7, 10]:
+    if n % 2 == 0:
+        print("even")
+    else:
+        print("odd")
+"""
+hints = [
+    "n % 2 is 0 for even numbers and 1 for odd numbers.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Comparison operators"
+prompt          = """
+Comparison operators return True or False: == != < > <= >=
+
+Given x = 10, print the result of:
+    x == 10   → True
+    x != 5    → True
+    x > 15    → False
+    x <= 10   → True
+"""
+expected_output = """True
+True
+False
+True"""
+starter_code    = """
+x = 10
+print(x == 10)
+print(x != 5)
+print(x > 15)
+print(x <= 10)
+"""
+hints = [
+    "== checks equality; = is assignment — don't confuse them.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Logical operators"
+prompt          = """
+Logical operators combine boolean expressions: and, or, not
+
+Print:
+    True and False   → False
+    True or False    → True
+    not True         → False
+    5 > 3 and 2 < 4  → True
+"""
+expected_output = """False
+True
+False
+True"""
+starter_code    = """
+print(True and False)
+print(True or False)
+print(not True)
+print(5 > 3 and 2 < 4)
+"""
+hints = [
+    "and is True only if both sides are True.",
+    "or is True if at least one side is True.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Operator precedence"
+prompt          = """
+Python follows PEMDAS/BODMAS. Multiplication before addition,
+comparison before logical operators.
+
+Without changing the code, predict and then run:
+    result = 2 + 3 * 4 - 1
+    flag   = result > 10 and result < 20
+    print(result)
+    print(flag)
+
+Expected output:
+    13
+    True
+"""
+expected_output = """13
+True"""
+starter_code    = """
+result = 2 + 3 * 4 - 1
+flag   = result > 10 and result < 20
+print(result)
+print(flag)
+"""
+hints = [
+    "3 * 4 is evaluated first (multiplication before addition), giving 12; 2 + 12 - 1 = 13.",
+    "13 > 10 is True and 13 < 20 is True, so True and True = True.",
+]

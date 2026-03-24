@@ -1,0 +1,143 @@
+id          = "22-prototype-chain"
+title       = "Prototype Chain"
+description = "Explore JavaScript's prototype system: Object.create, hasOwnProperty, and instanceof."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Object.create"
+prompt          = """
+Create a base object `animal` with a method `describe()` that returns "I am an animal".
+Use Object.create(animal) to create `dog` and print dog.describe().
+
+Expected output:
+    I am an animal
+"""
+expected_output = "I am an animal"
+starter_code    = """
+const animal = {
+    describe() { return "I am an animal"; },
+};
+const dog = Object.create(animal);
+console.log(dog.describe());
+"""
+hints = [
+    "Object.create(proto) returns a new object whose prototype is proto.",
+    "dog.describe() is not on dog itself — it is found by walking up the prototype chain.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "hasOwnProperty"
+prompt          = """
+Given:
+  const parent = { inherited: true };
+  const child  = Object.create(parent);
+  child.own    = true;
+
+Print:
+  - child.hasOwnProperty("own")        → true
+  - child.hasOwnProperty("inherited")  → false
+
+Expected output:
+    true
+    false
+"""
+expected_output = """true
+false"""
+starter_code    = """
+const parent = { inherited: true };
+const child  = Object.create(parent);
+child.own    = true;
+console.log(child.hasOwnProperty("own"));
+console.log(child.hasOwnProperty("inherited"));
+"""
+hints = [
+    "hasOwnProperty returns true only for properties directly on the object, not inherited ones.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "instanceof"
+prompt          = """
+Define a class `Vehicle` and a class `Car extends Vehicle`.
+Create an instance of Car and print:
+  - car instanceof Car      → true
+  - car instanceof Vehicle  → true
+  - car instanceof Array    → false
+
+Expected output:
+    true
+    true
+    false
+"""
+expected_output = """true
+true
+false"""
+starter_code    = """
+class Vehicle {}
+class Car extends Vehicle {}
+const car = new Car();
+console.log(car instanceof Car);
+console.log(car instanceof Vehicle);
+console.log(car instanceof Array);
+"""
+hints = [
+    "instanceof walks the prototype chain — a Car instance is also a Vehicle instance.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Prototype property addition"
+prompt          = """
+Create a constructor function `Point(x, y)` and add a method `toString()`
+to `Point.prototype` that returns "Point(x, y)".
+
+Create new Point(3, 4) and print toString().
+
+Expected output:
+    Point(3, 4)
+"""
+expected_output = "Point(3, 4)"
+starter_code    = """
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+}
+Point.prototype.toString = function() {
+    return `Point(${this.x}, ${this.y})`;
+};
+const p = new Point(3, 4);
+console.log(p.toString());
+"""
+hints = [
+    "Adding a method to SomeFunction.prototype makes it available on all instances.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Prototype chain lookup"
+prompt          = """
+Show prototype chain lookup: create a chain of three objects using Object.create,
+each overriding a `greet()` method. Call greet() on the innermost object.
+
+Chain:
+  grandparent.greet() → "Hi from grandparent"
+  parent inherits grandparent, overrides greet() → "Hi from parent"
+  child  inherits parent (no override)
+
+child.greet() should call the parent's method.
+
+Expected output:
+    Hi from parent
+"""
+expected_output = "Hi from parent"
+starter_code    = """
+const grandparent = { greet() { return "Hi from grandparent"; } };
+const parent      = Object.create(grandparent);
+parent.greet      = function() { return "Hi from parent"; };
+const child       = Object.create(parent);
+console.log(child.greet());
+"""
+hints = [
+    "Lookup starts at the object itself, then moves up the chain until the method is found.",
+]

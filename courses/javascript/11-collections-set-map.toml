@@ -1,0 +1,132 @@
+id          = "11-collections-set-map"
+title       = "Set and Map"
+description = "Use Set for unique values and Map for key-value pairs with any key type."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Set basics"
+prompt          = """
+Create a Set from the array [1, 2, 2, 3, 3, 3] and print its size.
+A Set stores only unique values.
+
+Expected output:
+    3
+"""
+expected_output = "3"
+starter_code    = """
+const nums = new Set([1, 2, 2, 3, 3, 3]);
+console.log(nums.size);
+"""
+hints = [
+    "Pass an array to the Set constructor to initialise it. Duplicates are dropped automatically.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Set add and has"
+prompt          = """
+Create an empty Set, add "apple", "banana", "apple" (duplicate).
+Print:
+  - The size of the set.
+  - Whether it has "banana".
+  - Whether it has "cherry".
+
+Expected output:
+    2
+    true
+    false
+"""
+expected_output = """2
+true
+false"""
+starter_code    = """
+const s = new Set();
+s.add("apple");
+s.add("banana");
+s.add("apple");
+console.log(s.size);
+console.log(s.has("banana"));
+console.log(s.has("cherry"));
+"""
+hints = [
+    "Set.add() returns the Set itself; duplicates are silently ignored.",
+    "Set.has(value) returns a boolean.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Map basics"
+prompt          = """
+Create a Map that stores:
+  - "name" → "Alice"
+  - "role" → "admin"
+
+Print the value for "role".
+
+Expected output:
+    admin
+"""
+expected_output = "admin"
+starter_code    = """
+const m = new Map();
+m.set("name", "Alice");
+m.set("role", "admin");
+console.log(m.get("role"));
+"""
+hints = [
+    "Map.set(key, value) stores a pair; Map.get(key) retrieves it.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Map iteration"
+prompt          = """
+Given the Map:
+  const inventory = new Map([["apples", 5], ["bananas", 3], ["cherries", 12]]);
+
+Use forEach to print each entry as "item: count".
+
+Expected output:
+    apples: 5
+    bananas: 3
+    cherries: 12
+"""
+expected_output = """apples: 5
+bananas: 3
+cherries: 12"""
+starter_code    = """
+const inventory = new Map([["apples", 5], ["bananas", 3], ["cherries", 12]]);
+inventory.forEach((value, key) => {
+    console.log(key + ": " + value);
+});
+"""
+hints = [
+    "Map.forEach callback receives (value, key) — note the order is value first.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Deduplicate an array with Set"
+prompt          = """
+Given `const words = ["hello","world","hello","foo","world","bar"];`,
+use a Set to deduplicate it, convert back to a sorted array, and print each
+unique word on its own line.
+
+Expected output:
+    bar
+    foo
+    hello
+    world
+"""
+expected_output = """bar
+foo
+hello
+world"""
+starter_code    = """
+const words   = ["hello","world","hello","foo","world","bar"];
+const unique  = [...new Set(words)].sort();
+unique.forEach(w => console.log(w));
+"""
+hints = [
+    "Spread a Set into an array: [...new Set(arr)]. Then call .sort() and .forEach().",
+]

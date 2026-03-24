@@ -1,0 +1,153 @@
+id          = "12-error-handling"
+title       = "Error Handling"
+description = "Handle runtime errors with try/catch/finally, inspect the Error object, and throw custom errors."
+
+[[exercises]]
+id              = "ex_01"
+title           = "try/catch"
+prompt          = """
+The following code throws a ReferenceError. Wrap it in a try/catch and print
+the error message instead of crashing.
+
+  undeclaredVariable;
+
+Expected output:
+    caught: undeclaredVariable is not defined
+"""
+expected_output = "caught: undeclaredVariable is not defined"
+starter_code    = """
+try {
+    undeclaredVariable;
+} catch (err) {
+    console.log("caught: " + err.message);
+}
+"""
+hints = [
+    "Inside the catch block, err.message contains the human-readable error description.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "finally block"
+prompt          = """
+Write a try/catch/finally block where:
+  - The try block throws new Error("oops").
+  - The catch block prints "error: oops".
+  - The finally block prints "done".
+
+Expected output:
+    error: oops
+    done
+"""
+expected_output = """error: oops
+done"""
+starter_code    = """
+try {
+    throw new Error("oops");
+} catch (err) {
+    console.log("error: " + err.message);
+} finally {
+    console.log("done");
+}
+"""
+hints = [
+    "finally always runs, whether or not an error was thrown or caught.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Throwing a custom error"
+prompt          = """
+Write a function `divide(a, b)` that throws an Error with message "Division by zero"
+if b is 0, otherwise returns a / b.
+
+Call divide(10, 0) inside a try/catch and print the error message.
+
+Expected output:
+    Division by zero
+"""
+expected_output = "Division by zero"
+starter_code    = """
+function divide(a, b) {
+    if (b === 0) {
+        throw new Error("Division by zero");
+    }
+    return a / b;
+}
+
+try {
+    divide(10, 0);
+} catch (err) {
+    console.log(err.message);
+}
+"""
+hints = [
+    "throw new Error(\"message\") creates and throws an Error object.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Error type checking"
+prompt          = """
+Catch the error from JSON.parse("bad json") and print:
+  - The error's constructor name (err.constructor.name).
+  - The first 16 characters of its message.
+
+Expected output:
+    SyntaxError
+    Unexpected token
+"""
+expected_output = """SyntaxError
+Unexpected token"""
+starter_code    = """
+try {
+    JSON.parse("bad json");
+} catch (err) {
+    console.log(err.constructor.name);
+    console.log(err.message.slice(0, 16));
+}
+"""
+hints = [
+    "err.constructor.name gives the error class name (e.g. SyntaxError, TypeError).",
+    "err.message.slice(0, 16) takes the first 16 characters.",
+]
+validation_mode = "contains"
+
+[[exercises]]
+id              = "ex_05"
+title           = "Re-throwing errors"
+prompt          = """
+Write a function `parseAge(str)` that:
+  1. Parses str as an integer.
+  2. Throws a RangeError("Age must be positive") if the result is <= 0.
+  3. Returns the parsed integer otherwise.
+
+Call parseAge("-5") inside try/catch and print the error message.
+Then call parseAge("25") and print the result.
+
+Expected output:
+    Age must be positive
+    25
+"""
+expected_output = """Age must be positive
+25"""
+starter_code    = """
+function parseAge(str) {
+    const n = parseInt(str, 10);
+    if (n <= 0) {
+        throw new RangeError("Age must be positive");
+    }
+    return n;
+}
+
+try {
+    parseAge("-5");
+} catch (err) {
+    console.log(err.message);
+}
+console.log(parseAge("25"));
+"""
+hints = [
+    "RangeError is a built-in error subclass. You can throw it just like Error.",
+    "parseInt(str, 10) parses a decimal integer from a string.",
+]

@@ -1,0 +1,204 @@
+id          = "22-decorators"
+title       = "Decorators"
+description = "Function decorators, @wraps, decorators with arguments, and @property."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Basic decorator"
+prompt          = """
+A decorator is a function that takes a function and returns a new function,
+wrapping it with extra behaviour.
+
+Write a decorator loud(func) that prints "calling <func.__name__>"
+before calling func, then returns its result.
+
+Decorate say_hello() and call it.
+
+Expected output:
+    calling say_hello
+    hello!
+"""
+expected_output = """calling say_hello
+hello!"""
+starter_code    = """
+def loud(func):
+    def wrapper(*args, **kwargs):
+        print(f"calling {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@loud
+def say_hello():
+    print("hello!")
+
+say_hello()
+"""
+hints = [
+    "@loud is syntactic sugar for say_hello = loud(say_hello).",
+    "wrapper captures *args/**kwargs so it works with any function signature.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "@wraps — preserve function metadata"
+prompt          = """
+Without @wraps, the wrapper hides the original function's __name__ and __doc__.
+functools.wraps copies that metadata onto the wrapper.
+
+Apply @wraps(func) inside the decorator from ex_01.
+After decorating say_hello, print say_hello.__name__.
+
+Expected output:
+    calling say_hello
+    hello!
+    say_hello
+"""
+expected_output = """calling say_hello
+hello!
+say_hello"""
+starter_code    = """
+from functools import wraps
+
+def loud(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"calling {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
+
+@loud
+def say_hello():
+    print("hello!")
+
+say_hello()
+print(say_hello.__name__)
+"""
+hints = [
+    "@wraps(func) copies __name__, __doc__, and other attributes to wrapper.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Decorator with arguments"
+prompt          = """
+A parameterised decorator adds another layer: a function that returns a decorator.
+
+Write repeat(n) that returns a decorator making the function run n times.
+
+@repeat(3)
+def hi():
+    print("hi")
+
+Call hi() and see three lines of output.
+
+Expected output:
+    hi
+    hi
+    hi
+"""
+expected_output = """hi
+hi
+hi"""
+starter_code    = """
+from functools import wraps
+
+def repeat(n):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for _ in range(n):
+                func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@repeat(3)
+def hi():
+    print("hi")
+
+hi()
+"""
+hints = [
+    "The outer function (repeat) takes the argument; the inner function (decorator) takes the function.",
+    "Three levels of nesting: repeat → decorator → wrapper.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "@property"
+prompt          = """
+@property turns a method into a read-only attribute, letting you compute values lazily.
+
+Define a Rectangle class with _width and _height.
+Add a perimeter property that returns 2*(width + height).
+
+r = Rectangle(4, 6)
+print(r.perimeter)   → 20
+"""
+expected_output = "20"
+starter_code    = """
+class Rectangle:
+    def __init__(self, width, height):
+        self._width  = width
+        self._height = height
+
+    @property
+    def perimeter(self):
+        return 2 * (self._width + self._height)
+
+r = Rectangle(4, 6)
+print(r.perimeter)
+"""
+hints = [
+    "@property makes perimeter accessible as r.perimeter (no parentheses).",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Timing decorator"
+prompt          = """
+A practical decorator: measure how long a function takes.
+
+Write timer(func) that:
+  1. Records time before and after calling func (use time.time()).
+  2. Prints "elapsed: Xs" where X is the elapsed seconds truncated to 0 decimals.
+  3. Returns the function's result.
+
+For determinism, test with a function that does work without sleeping.
+Decorate compute() that returns sum(range(1_000_000)) and prints the result.
+
+The elapsed time will be 0 seconds on modern hardware.
+
+Expected output:
+    499999500000
+    elapsed: 0s
+"""
+expected_output = """499999500000
+elapsed: 0s"""
+starter_code    = """
+import time
+from functools import wraps
+
+def timer(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start  = time.time()
+        result = func(*args, **kwargs)
+        end    = time.time()
+        print(f"elapsed: {int(end - start)}s")
+        return result
+    return wrapper
+
+@timer
+def compute():
+    result = sum(range(1_000_000))
+    print(result)
+    return result
+
+compute()
+"""
+hints = [
+    "time.time() returns the current time in seconds since epoch (float).",
+    "int(end - start) truncates the elapsed time to whole seconds.",
+]

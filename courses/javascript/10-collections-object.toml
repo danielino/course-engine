@@ -1,0 +1,121 @@
+id          = "10-collections-object"
+title       = "Objects"
+description = "Object literals, property access, mutation, and Object.keys/values/entries."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Object literal"
+prompt          = """
+Create an object `person` with properties `name` ("Alice") and `age` (28).
+Print the name and age on separate lines.
+
+Expected output:
+    Alice
+    28
+"""
+expected_output = """Alice
+28"""
+starter_code    = """
+const person = { name: "Alice", age: 28 };
+console.log(person.name);
+console.log(person.age);
+"""
+hints = [
+    "Access properties with dot notation: obj.property.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Bracket notation and dynamic keys"
+prompt          = """
+Given:
+  const key = "city";
+  const place = { city: "Paris", country: "France" };
+
+Use bracket notation to access the value for the key stored in `key` and print it.
+
+Expected output:
+    Paris
+"""
+expected_output = "Paris"
+starter_code    = """
+const key   = "city";
+const place = { city: "Paris", country: "France" };
+console.log(place[key]);
+"""
+hints = [
+    "Bracket notation: obj[variable] — evaluates the variable and looks up that key.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Add and delete properties"
+prompt          = """
+Start with `const car = { make: "Toyota", model: "Camry" };`.
+  1. Add property `year: 2022`.
+  2. Delete property `model`.
+  3. Print the keys of `car` sorted and joined with a comma.
+
+Expected output:
+    make,year
+"""
+expected_output = "make,year"
+starter_code    = """
+const car = { make: "Toyota", model: "Camry" };
+car.year = 2022;
+delete car.model;
+console.log(Object.keys(car).sort().join(","));
+"""
+hints = [
+    "Add a property: obj.newProp = value. Remove one: delete obj.prop.",
+    "Object.keys() returns an array of the object's own keys.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "Object.keys, values, entries"
+prompt          = """
+Given `const config = { host: "localhost", port: 3000, debug: true };`, print:
+  - All keys joined by ", "
+  - All values joined by ", "
+
+Expected output:
+    host, port, debug
+    localhost, 3000, true
+"""
+expected_output = """host, port, debug
+localhost, 3000, true"""
+starter_code    = """
+const config = { host: "localhost", port: 3000, debug: true };
+console.log(Object.keys(config).join(", "));
+console.log(Object.values(config).join(", "));
+"""
+hints = [
+    "Object.keys(obj) → array of keys. Object.values(obj) → array of values.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "Iterating with Object.entries"
+prompt          = """
+Given `const scores = { alice: 90, bob: 85, carol: 92 };`, use Object.entries
+and forEach to print each entry as "name: score" on its own line.
+
+Expected output:
+    alice: 90
+    bob: 85
+    carol: 92
+"""
+expected_output = """alice: 90
+bob: 85
+carol: 92"""
+starter_code    = """
+const scores = { alice: 90, bob: 85, carol: 92 };
+Object.entries(scores).forEach(([name, score]) => {
+    console.log(name + ": " + score);
+});
+"""
+hints = [
+    "Object.entries(obj) returns [[key, value], ...]. Destructure each pair in the callback.",
+    "Object.entries(scores).forEach(([name, score]) => { console.log(name + \": \" + score); });",
+]

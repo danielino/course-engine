@@ -1,0 +1,135 @@
+id          = "13-string-methods"
+title       = "String Methods"
+description = "split, join, replace, strip, startswith/endswith, and zfill."
+
+[[exercises]]
+id              = "ex_01"
+title           = "split() and join()"
+prompt          = """
+split(sep) breaks a string into a list of substrings.
+join(iterable) concatenates an iterable of strings with the separator.
+
+Given sentence = "the quick brown fox":
+  1. Split on spaces and print the resulting list.
+  2. Rejoin with " - " and print.
+
+Expected output:
+    ['the', 'quick', 'brown', 'fox']
+    the - quick - brown - fox
+"""
+expected_output = """['the', 'quick', 'brown', 'fox']
+the - quick - brown - fox"""
+starter_code    = """
+sentence = "the quick brown fox"
+words = sentence.split()
+print(words)
+print(" - ".join(words))
+"""
+hints = [
+    "split() with no argument splits on any whitespace.",
+    "\" - \".join(words) puts \" - \" between every element of words.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "replace()"
+prompt          = """
+replace(old, new) returns a new string with all occurrences of old replaced by new.
+
+Given text = "I like cats and cats like me":
+  Replace "cats" with "dogs" and print the result.
+
+Expected output:
+    I like dogs and dogs like me
+"""
+expected_output = "I like dogs and dogs like me"
+starter_code    = """
+text = "I like cats and cats like me"
+print(text.replace("cats", "dogs"))
+"""
+hints = [
+    "replace() replaces every occurrence by default.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "strip(), lstrip(), rstrip()"
+prompt          = """
+strip()  removes leading and trailing whitespace (or a given set of chars).
+lstrip() removes only leading; rstrip() only trailing.
+
+Given s = "***hello***":
+  1. Print s.strip("*")         → hello
+  2. Print s.lstrip("*")        → hello***
+  3. Print s.rstrip("*")        → ***hello
+"""
+expected_output = """hello
+hello***
+***hello"""
+starter_code    = """
+s = "***hello***"
+print(s.strip("*"))
+print(s.lstrip("*"))
+print(s.rstrip("*"))
+"""
+hints = [
+    "strip(chars) removes any leading/trailing characters found in the chars string.",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_04"
+title           = "startswith() and endswith()"
+prompt          = """
+These return True/False and are useful for filtering or routing.
+
+Given filenames = ["report.pdf", "notes.txt", "photo.jpg", "doc.pdf"]:
+Print only the filenames that end with ".pdf", one per line.
+
+Expected output:
+    report.pdf
+    doc.pdf
+"""
+expected_output = """report.pdf
+doc.pdf"""
+starter_code    = """
+filenames = ["report.pdf", "notes.txt", "photo.jpg", "doc.pdf"]
+for f in filenames:
+    if f.endswith(".pdf"):
+        print(f)
+"""
+hints = [
+    "endswith(\".pdf\") returns True if the string ends with \".pdf\".",
+    "Run the starter code as-is.",
+]
+
+[[exercises]]
+id              = "ex_05"
+title           = "zfill() — zero-padding"
+prompt          = """
+zfill(width) pads a numeric string on the left with zeros to reach width characters.
+Useful for formatting IDs, timestamps, or serial numbers.
+
+Print the numbers 1 through 5 padded to 3 digits, one per line.
+
+Expected output:
+    001
+    002
+    003
+    004
+    005
+"""
+expected_output = """001
+002
+003
+004
+005"""
+starter_code    = """
+for i in range(1, 6):
+    print(str(i).zfill(3))
+"""
+hints = [
+    "str(i) converts the integer to a string first.",
+    "zfill(3) ensures the string is at least 3 characters wide, padded with zeros.",
+]
