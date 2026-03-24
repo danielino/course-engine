@@ -65,8 +65,10 @@ web/
   index.html       — SPA shell; loads Monaco from CDN
   style.css        — Catppuccin dark theme; split-pane flex layout
   app.js           — fetches /api/config for Monaco language; Monaco bootstrap; API calls
-lessons/
-  NN-slug.toml     — lesson files, loaded alphabetically (01–25)
+examples/
+  rust/            — example lesson for the Rust preset (default for rust-course binary)
+  python/          — example lesson for the Python preset
+  javascript/      — example lesson for the JavaScript preset
 ```
 
 ### REST API

@@ -42,7 +42,7 @@ enum Cmd {
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
-    let lessons_dir = cli.lessons_dir.unwrap_or_else(|| PathBuf::from("lessons"));
+    let lessons_dir = cli.lessons_dir.unwrap_or_else(|| PathBuf::from("examples/rust"));
 
     match cli.command.unwrap_or(Cmd::Run) {
         Cmd::Serve { port } => {

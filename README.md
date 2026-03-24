@@ -69,41 +69,27 @@ Select a lesson from the arrow-key menu, read the exercise prompt, press **Enter
 | `cargo run -- serve` | Launch the web UI |
 | `cargo run -- list` | List all lessons with completion status |
 | `cargo run -- reset` | Clear all saved progress |
-| `cargo run -- --lessons-dir <path>` | Use a custom lessons directory |
+| `cargo run -- --lessons-dir <path>` | Use a custom lessons directory (default: `examples/rust`) |
 
 ---
 
-## Lessons
+## Example lessons
 
-25 lessons covering Rust from first program to advanced patterns:
+The `examples/` directory contains one starter lesson per supported language:
 
-| # | Title |
-|---|-------|
-| 01 | Hello, World! |
-| 02 | Variables and Mutability |
-| 03 | Ownership |
-| 04 | Scalar Data Types |
-| 05 | Functions |
-| 06 | Control Flow |
-| 07 | Slices and Strings |
-| 08 | Structs |
-| 09 | Enums and Pattern Matching |
-| 10 | Option\<T\> |
-| 11 | Result\<T, E\> and Error Handling |
-| 12 | Vec\<T\> |
-| 13 | HashMap\<K, V\> |
-| 14 | Generics |
-| 15 | Traits |
-| 16 | Lifetimes |
-| 17 | Closures |
-| 18 | Iterators |
-| 19 | Modules |
-| 20 | Smart Pointers — Box, Rc, RefCell |
-| 21 | Trait Objects and Dynamic Dispatch |
-| 22 | Concurrency — Threads, Arc, Mutex |
-| 23 | Custom Iterators and Advanced Combinators |
-| 24 | Advanced Error Handling |
-| 25 | Advanced Patterns |
+| Path | Language |
+|------|----------|
+| `examples/rust/` | Rust (default for `rust-course`) |
+| `examples/python/` | Python 3 |
+| `examples/javascript/` | Node.js |
+
+Each example covers Hello World, multi-line output, and variables — enough to verify the runner works end-to-end.
+
+To run the Python example:
+```bash
+cargo run -- serve --lessons-dir examples/python
+# then open http://localhost:3000 and select LanguageConfig::python() in your own binary
+```
 
 ---
 
@@ -156,7 +142,7 @@ validation_mode = "exact_stdout"
 | `exercises[].hints` | no | Strings revealed one at a time on demand |
 | `exercises[].validation_mode` | no | `"exact_stdout"` (default) or `"contains"` |
 
-**Note:** the Rust preset compiles with bare `rustc` (no Cargo), so solutions must use `std` only.
+**Note:** the Rust preset compiles with bare `rustc` (no Cargo), so solutions must use `std` only. For Python and JavaScript exercises, `starter_code` defaults to an empty file and the `fn main()` placeholder is not added automatically.
 
 ---
 

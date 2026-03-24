@@ -1,0 +1,62 @@
+id          = "01-hello-world"
+title       = "Hello, World!"
+description = "Your first Python program: print text to stdout using the print() function."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Print Hello, world!"
+prompt          = """
+Write a Python program that prints exactly:
+
+    Hello, world!
+
+In Python you print to stdout with the built-in print() function.
+"""
+expected_output = "Hello, world!"
+starter_code    = """
+# your code here
+"""
+hints = [
+    "Use print(\"Hello, world!\")",
+    "Make sure the capitalisation and punctuation match exactly.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Print two lines"
+prompt          = """
+Print exactly these two lines, in this order:
+
+    Hello, world!
+    I am learning Python!
+
+You will need two print() calls.
+"""
+expected_output = """Hello, world!
+I am learning Python!"""
+starter_code    = """
+# two print() calls here
+"""
+hints = [
+    "Call print() twice, once for each line.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Variables"
+prompt          = """
+Declare a variable `name` with the value "Python", then print:
+
+    Hello from Python!
+
+Use an f-string: print(f"Hello from {name}!")
+"""
+expected_output = "Hello from Python!"
+starter_code    = """
+name = # assign a value here
+print(f"Hello from {name}!")
+"""
+hints = [
+    "name = \"Python\"",
+    "F-strings start with f before the opening quote.",
+]

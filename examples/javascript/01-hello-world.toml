@@ -1,0 +1,62 @@
+id          = "01-hello-world"
+title       = "Hello, World!"
+description = "Your first JavaScript program: print text to stdout using console.log()."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Print Hello, world!"
+prompt          = """
+Write a JavaScript program that prints exactly:
+
+    Hello, world!
+
+In Node.js you print to stdout with console.log().
+"""
+expected_output = "Hello, world!"
+starter_code    = """
+// your code here
+"""
+hints = [
+    "Use console.log(\"Hello, world!\")",
+    "Make sure the capitalisation and punctuation match exactly.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Print two lines"
+prompt          = """
+Print exactly these two lines, in this order:
+
+    Hello, world!
+    I am learning JavaScript!
+
+You will need two console.log() calls.
+"""
+expected_output = """Hello, world!
+I am learning JavaScript!"""
+starter_code    = """
+// two console.log() calls here
+"""
+hints = [
+    "Call console.log() twice, once for each line.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Variables"
+prompt          = """
+Declare a variable `name` with the value "JavaScript", then print:
+
+    Hello from JavaScript!
+
+Use a template literal: console.log(`Hello from ${name}!`);
+"""
+expected_output = "Hello from JavaScript!"
+starter_code    = """
+const name = // assign a value here
+console.log(`Hello from ${name}!`);
+"""
+hints = [
+    "const name = \"JavaScript\";",
+    "Template literals use backticks (`) and ${} for interpolation.",
+]

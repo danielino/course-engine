@@ -1,0 +1,70 @@
+id          = "01-hello-world"
+title       = "Hello, World!"
+description = "Your first Rust program: print text to stdout using the println! macro."
+
+[[exercises]]
+id              = "ex_01"
+title           = "Print Hello, world!"
+prompt          = """
+Write a Rust program that prints exactly:
+
+    Hello, world!
+
+In Rust you print to stdout with the `println!` macro.
+The `!` marks a macro call, not a function call.
+"""
+expected_output = "Hello, world!"
+starter_code    = """
+fn main() {
+    // your code here
+}
+"""
+hints = [
+    "Use println!(\"Hello, world!\"); inside fn main().",
+    "Make sure the capitalisation and punctuation match exactly.",
+]
+
+[[exercises]]
+id              = "ex_02"
+title           = "Print two lines"
+prompt          = """
+Print exactly these two lines, in this order:
+
+    Hello, world!
+    I am learning Rust!
+
+You will need two println! calls.
+"""
+expected_output = """Hello, world!
+I am learning Rust!"""
+starter_code    = """
+fn main() {
+    // two println! calls here
+}
+"""
+hints = [
+    "Call println! twice, once for each line.",
+    "Each println! call ends with a semicolon.",
+]
+
+[[exercises]]
+id              = "ex_03"
+title           = "Variables"
+prompt          = """
+Declare a variable `name` with the value "Rust", then print:
+
+    Hello from Rust!
+
+Use string formatting: println!("Hello from {}!", name);
+"""
+expected_output = "Hello from Rust!"
+starter_code    = """
+fn main() {
+    let name = // assign a value here
+    println!("Hello from {}!", name);
+}
+"""
+hints = [
+    "let name = \"Rust\";",
+    "String literals in Rust are wrapped in double quotes.",
+]
