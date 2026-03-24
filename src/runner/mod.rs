@@ -148,6 +148,7 @@ fn run_with_timeout(
         Err(e) => return Ok(Err(e.into())),
     };
 
+    #[cfg(unix)]
     let child_id = child.id();
     let stdout_handle = child.stdout.take();
     let stderr_handle = child.stderr.take();
