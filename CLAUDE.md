@@ -128,6 +128,19 @@ validation_mode = "exact_stdout"  # or "contains"
 
 ---
 
+## CI/CD
+
+Two GitHub Actions workflows in `.github/workflows/`:
+
+| Workflow | Trigger | Jobs |
+|----------|---------|------|
+| `ci.yml` | push/PR to `main` or `develop` | `fmt` (rustfmt --check) · `clippy` (-D warnings) · `test` (ubuntu, macos, windows) |
+| `release.yml` | push of a `v*.*.*` tag | cross-compile binaries for Linux/macOS/Windows, publish GitHub Release with artifacts |
+
+Pre-commit hooks (`.pre-commit-config.yaml`) mirror the CI checks locally.
+
+---
+
 ## Test coverage
 
 Unit tests live inside each module (`#[cfg(test)]`):
