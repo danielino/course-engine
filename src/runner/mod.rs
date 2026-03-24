@@ -15,10 +15,18 @@ use crate::language::LanguageConfig;
 #[serde(tag = "status", rename_all = "snake_case")]
 pub enum RunResult {
     Success,
-    CompileError { stderr: String },
-    WrongOutput { expected: String, actual: String, diff: String },
+    CompileError {
+        stderr: String,
+    },
+    WrongOutput {
+        expected: String,
+        actual: String,
+        diff: String,
+    },
     Timeout,
-    InternalError { message: String },
+    InternalError {
+        message: String,
+    },
 }
 
 /// Compile (if needed) and run the user-supplied source code, returning a RunResult.
@@ -30,14 +38,20 @@ pub fn run(
 ) -> RunResult {
     let dir = match TempDir::new() {
         Ok(d) => d,
-        Err(e) => return RunResult::InternalError { message: e.to_string() },
+        Err(e) => {
+            return RunResult::InternalError {
+                message: e.to_string(),
+            };
+        }
     };
 
     let src_path = dir.path().join(&lang.source_file);
     let out_path = dir.path().join("exercise");
 
     if let Err(e) = std::fs::write(&src_path, source) {
-        return RunResult::InternalError { message: e.to_string() };
+        return RunResult::InternalError {
+            message: e.to_string(),
+        };
     }
 
     // ── Compile step (optional) ────────────────────────────────────────────
@@ -57,7 +71,11 @@ pub fn run(
 
         match compile_result {
             Err(_) => return RunResult::Timeout,
-            Ok(Err(e)) => return RunResult::InternalError { message: e.to_string() },
+            Ok(Err(e)) => {
+                return RunResult::InternalError {
+                    message: e.to_string(),
+                };
+            }
             Ok(Ok(output)) => {
                 if !output.status.success() {
                     return RunResult::CompileError {
@@ -86,7 +104,9 @@ pub fn run(
 
     match exec_result {
         Err(_) => RunResult::Timeout,
-        Ok(Err(e)) => RunResult::InternalError { message: e.to_string() },
+        Ok(Err(e)) => RunResult::InternalError {
+            message: e.to_string(),
+        },
         Ok(Ok(output)) => {
             let actual = String::from_utf8_lossy(&output.stdout).into_owned();
             let passes = match validation_mode {
@@ -148,7 +168,11 @@ fn run_with_timeout(
 
     match rx.recv_timeout(timeout) {
         Ok((status_result, stdout, stderr)) => match status_result {
-            Ok(status) => Ok(Ok(std::process::Output { status, stdout, stderr })),
+            Ok(status) => Ok(Ok(std::process::Output {
+                status,
+                stdout,
+                stderr,
+            })),
             Err(e) => Ok(Err(e.into())),
         },
         Err(_elapsed) => {

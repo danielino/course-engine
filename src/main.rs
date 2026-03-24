@@ -6,10 +6,12 @@ use console::Style;
 
 use course_engine::lesson::loader::load_all_lessons;
 use course_engine::progress::model::Progress;
-use course_engine::progress::store::{load as load_progress, progress_file_path, save as save_progress};
-use course_engine::runner::{run, RunResult};
+use course_engine::progress::store::{
+    load as load_progress, progress_file_path, save as save_progress,
+};
+use course_engine::runner::{RunResult, run};
 use course_engine::ui::LessonEntry;
-use course_engine::{serve, LanguageConfig};
+use course_engine::{LanguageConfig, serve};
 
 #[derive(Parser)]
 #[command(name = "rust-course", about = "Learn Rust by doing.")]
@@ -42,7 +44,9 @@ enum Cmd {
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
-    let lessons_dir = cli.lessons_dir.unwrap_or_else(|| PathBuf::from("examples/rust"));
+    let lessons_dir = cli
+        .lessons_dir
+        .unwrap_or_else(|| PathBuf::from("examples/rust"));
 
     match cli.command.unwrap_or(Cmd::Run) {
         Cmd::Serve { port } => {
@@ -154,7 +158,9 @@ fn run_course(
                     RunResult::CompileError { stderr } => {
                         course_engine::ui::display_compile_error(&stderr);
                     }
-                    RunResult::WrongOutput { expected, actual, .. } => {
+                    RunResult::WrongOutput {
+                        expected, actual, ..
+                    } => {
                         course_engine::ui::display_wrong_output(&expected, &actual);
                     }
                     RunResult::Timeout => {
@@ -189,10 +195,7 @@ fn run_course(
     Ok(())
 }
 
-fn list_lessons(
-    lessons: &[course_engine::lesson::model::Lesson],
-    progress: &Progress,
-) {
+fn list_lessons(lessons: &[course_engine::lesson::model::Lesson], progress: &Progress) {
     let bold = Style::new().bold();
     let green = Style::new().green();
     let dim = Style::new().dim();

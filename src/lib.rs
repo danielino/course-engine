@@ -7,5 +7,5 @@ pub mod server;
 pub mod ui;
 
 pub use language::LanguageConfig;
-pub use runner::{diff_output, run, RunResult};
+pub use runner::{RunResult, diff_output, run};
 pub use server::serve;

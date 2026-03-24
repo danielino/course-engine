@@ -14,7 +14,7 @@ use crate::lesson::loader::load_all_lessons;
 use crate::lesson::model::Lesson;
 use crate::progress::model::Progress;
 use crate::progress::store::{load as load_progress, progress_file_path, save as save_progress};
-use crate::runner::{run, RunResult};
+use crate::runner::{RunResult, run};
 
 // ── App state ─────────────────────────────────────────────────────────────────
 

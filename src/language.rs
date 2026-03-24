@@ -38,11 +38,7 @@ impl LanguageConfig {
             source_file: "main.rs".to_string(),
             compile: Some((
                 "rustc".to_string(),
-                vec![
-                    "{src}".to_string(),
-                    "-o".to_string(),
-                    "{out}".to_string(),
-                ],
+                vec!["{src}".to_string(), "-o".to_string(), "{out}".to_string()],
             )),
             run: ("{out}".to_string(), vec![]),
             compile_timeout_secs: 15,
