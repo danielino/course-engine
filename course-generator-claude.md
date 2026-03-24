@@ -1,80 +1,61 @@
 # course-generator-claude.md
 
-This file is a **ready-to-use CLAUDE.md template** for generating a new course with `course-engine`.
+This file is a **ready-to-use CLAUDE.md template** for generating a new course compatible with `course-engine`.
 
 ---
 
 ## How to use this template
 
-1. Create a new directory for your course (e.g. `python-course/`).
-2. Copy the block below into a file called `CLAUDE.md` inside that directory.
-3. Edit the `[LANGUAGE]` / `[PRESET]` placeholders to match the target language.
-4. Tell Claude: *"Create the full course as described in CLAUDE.md."*
+1. Decide the course language (e.g. `python`, `go`, `typescript`).
+2. If the language is not already a preset in `src/language.rs`, add one first (see § Adding a new language below).
+3. Create the directory `courses/{language}/` inside the `course-engine` repo.
+4. Tell Claude: *"Create the full course as described in course-generator-claude.md, for language X, and place the TOML files in courses/X/."*
 
-Claude will generate all lesson TOML files in `lessons/`, plus a minimal `main.rs` binary and `Cargo.toml` that wire up `course-engine`.
+Claude will generate all lesson TOML files directly in `courses/{language}/`. No `Cargo.toml` or `main.rs` is needed — the course-engine binary auto-discovers all course subdirectories on startup.
 
 ---
 
-## Template — paste this as `CLAUDE.md` in the new course project
+## Adding a new language preset
+
+If the language is not yet in `src/language.rs`, you must add it before the course can be served.
+
+1. Add a `pub fn {language}() -> Self` preset in `impl LanguageConfig` (see the existing `rust()`, `python()`, `javascript()`, `c()` presets as models).
+2. Add `"{language}" => Ok(Self::{language}())` to `from_name()`.
+3. Add a test in the `#[cfg(test)]` block.
+4. Run `cargo test` and `cargo clippy -- -D warnings` to verify.
+
+Available presets (as of now): `rust()` · `python()` · `javascript()` · `c()`.
+
+---
+
+## Template — paste this as `CLAUDE.md` in a scratch directory, or use inline
 
 ````markdown
 # CLAUDE.md — [LANGUAGE] Course
 
 ## Goal
 
-Generate a complete, progressive **[LANGUAGE]** course using the `course-engine` library.
+Generate a complete, progressive **[LANGUAGE]** course for the `course-engine` library.
 The course must take a complete beginner from "Hello, world!" all the way to an advanced
 ("hero") level, covering the full idiomatic surface of the language.
 
 ---
 
-## Project layout to create
+## Where to put the files
+
+All output goes in `courses/[LANGUAGE]/` inside the course-engine repository.
+Each lesson is a single TOML file named `NN-slug.toml`.
 
 ```
-[LANGUAGE]-course/
-  Cargo.toml          ← thin binary that wraps course-engine
-  src/
-    main.rs           ← calls serve(…, LanguageConfig::[PRESET]())
-  lessons/            ← one TOML file per lesson, named NN-slug.toml
+courses/[LANGUAGE]/
+  01-hello-world.toml
+  02-variables.toml
+  …
+  26-capstone.toml
 ```
 
----
-
-## Cargo.toml to generate
-
-```toml
-[package]
-name    = "[LANGUAGE]-course"
-version = "0.1.0"
-edition = "2024"
-
-[[bin]]
-name = "[LANGUAGE]-course"
-path = "src/main.rs"
-
-[dependencies]
-course-engine = { path = "../course-engine" }   # adjust path as needed
-tokio         = { version = "1", features = ["full"] }
-anyhow        = "1.0"
-```
-
----
-
-## src/main.rs to generate
-
-```rust
-use course_engine::{serve, LanguageConfig};
-use std::path::PathBuf;
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    serve(PathBuf::from("lessons"), 3000, LanguageConfig::[PRESET]()).await?;
-    Ok(())
-}
-```
-
-Available presets: `rust()` · `python()` · `javascript()`.
-For any other language define a custom `LanguageConfig` (see course-engine docs).
+No `Cargo.toml`, no `src/`, no binaries. The course-engine server auto-discovers
+this directory on startup via `LanguageConfig::from_name("[LANGUAGE]")`.
 
 ---
 
@@ -177,10 +158,10 @@ File names: `01-hello-world.toml`, `02-variables.toml`, … up to `NN-…`.
 ## Output checklist
 
 Before finishing, verify:
-- [ ] All 26 lesson files exist in `lessons/` with correct `NN-slug.toml` filenames
+- [ ] All 26 lesson files exist in `courses/[LANGUAGE]/` with correct `NN-slug.toml` filenames
 - [ ] Every lesson has 3–6 exercises
 - [ ] No two exercises in the same lesson share an `id`
 - [ ] Every `expected_output` is achievable by a short standard-library-only program
-- [ ] `Cargo.toml` and `src/main.rs` are generated and reference the correct preset
-- [ ] `cargo build` would succeed (library path, preset name, edition all correct)
+- [ ] `LanguageConfig::from_name("[LANGUAGE]")` exists in `src/language.rs`
+- [ ] `cargo test` passes after adding/updating the preset
 ````

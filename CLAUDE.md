@@ -134,6 +134,16 @@ validation_mode = "exact_stdout"  # or "contains"
 
 ---
 
+## Adding a new course
+
+The full specification for generating a new course is in **`course-generator-claude.md`** at the repo root. Steps in brief:
+
+1. If the language has no preset in `src/language.rs`, add `pub fn {language}() -> Self` to `impl LanguageConfig`, wire it in `from_name()`, add a test, then run `cargo test` and `cargo clippy -- -D warnings`.
+2. Create `courses/{language}/` and populate it with 26 TOML lesson files (`01-hello-world.toml` … `26-capstone.toml`) following the schema above and the curriculum table in `course-generator-claude.md`.
+3. The server auto-discovers the new directory on next startup — no other code changes needed.
+
+---
+
 ## CI/CD
 
 Two GitHub Actions workflows in `.github/workflows/`:
